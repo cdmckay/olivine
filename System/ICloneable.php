@@ -4,5 +4,5 @@ namespace System;
 
 interface ICloneable
 {
-    public function clone_();
+    public function __clone();
 }
