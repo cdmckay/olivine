@@ -4,5 +4,5 @@ namespace System;
 
 interface IComparable
 {
-    public function compareTo(Object $obj);
+    public function compareTo(NObject $object);
 }

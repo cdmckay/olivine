@@ -1,5 +1,7 @@
 <?php
 
+// TODO all strings returned by an NObject should be NString.
+
 namespace System;
 
 class NObject
