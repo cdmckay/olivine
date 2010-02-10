@@ -38,5 +38,5 @@ function _($var)
     if (is_string($var))
         return _string($var);
 
-    return _object();
+    throw new \System\ArgumentException();
 }

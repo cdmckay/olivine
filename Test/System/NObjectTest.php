@@ -12,8 +12,8 @@ class NObjectTest extends PHPUnit_Framework_TestCase
     {
         $o1 = new NObject();
         $o2 = new NObject();
-        $this->assertTrue($o1->equals($o1));
-        $this->assertFalse($o1->equals($o2));
+        $this->assertTrue($o1->equals($o1)->bool());
+        $this->assertFalse($o1->equals($o2)->bool());
     }
 
     public function testGetHashCode()

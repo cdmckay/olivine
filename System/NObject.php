@@ -4,21 +4,22 @@
 
 namespace System;
 
-class NObject implements IObject
+final class NObject
+    implements IObject
 {
-    public static function staticEquals($object1, $object2)
+    public static function staticEquals(IObject $object1, IObject $object2)
     {
         return $object1->equals($object2);
     }
 
-    public static function referenceEquals($object1, $object2)
+    public static function referenceEquals(IObject $object1, IObject $object2)
     {
-        return $object1 === $object2;
+        return NBoolean::get($object1 === $object2);
     }
 
-    public function equals($object)
+    public function equals(IObject $object)
     {
-        return $this === $object;
+        return NBoolean::get($this === $object);
     }
 
     public function getHashCode()

@@ -21,32 +21,31 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithBooleanArguments()
     {
-        $boolFalse = new NBoolean(false);
-        $this->assertFalse($boolFalse->toNativeBoolean());
+        $false = NBoolean::get(false);
+        $this->assertFalse($false->bool());
 
-        $boolTrue = new NBoolean(true);
-        $this->assertTrue($boolTrue->toNativeBoolean());
-    }
-
-    public function testConstructorWithIntegerArguments()
-    {
-        $boolZero = new NBoolean(0);
-        $this->assertFalse($boolZero->toNativeBoolean());
-
-        $boolOne = new NBoolean(1);
-        $this->assertTrue($boolOne->toNativeBoolean());
-
-        $boolNegative = new NBoolean(-1);
-        $this->assertTrue($boolNegative->toNativeBoolean());
-    }
+        $true = NBoolean::get(true);
+        $this->assertTrue($true->bool());
+    }   
 
     public function testGetHashCode()
     {
-        $false = new NBoolean(false);
-        $true  = new NBoolean(true);
+        $false = NBoolean::get(false);
+        $true  = NBoolean::get(true);
 
-        $this->assertEquals(0, $false->getHashCode()->toNativeInteger());
-        $this->assertEquals(1, $true->getHashCode()->toNativeInteger());
+        $this->assertEquals(0, $false->getHashCode()->int());
+        $this->assertEquals(1, $true->getHashCode()->int());
+    }
+
+    public function testCompareTo()
+    {
+        $true  = NBoolean::get(true);
+        $false = NBoolean::get(false);
+
+        $this->assertEquals(-1, $false->compareTo($true)->int());
+        $this->assertEquals(1, $true->compareTo($false)->int());
+        $this->assertEquals(0, $false->compareTo($false)->int());
+        $this->assertEquals(0, $true->compareTo($true)->int());
     }
 
 }

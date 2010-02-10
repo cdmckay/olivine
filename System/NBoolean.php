@@ -2,7 +2,7 @@
 
 namespace System;
 
-class NBoolean
+final class NBoolean
     extends NObject
     implements IComparable, IConvertible //, IFormattable, IEquatable
 {
@@ -11,9 +11,33 @@ class NBoolean
 
     private $value = false;
 
-    public function __construct($value)
+    private static $true;
+    private static $false;
+
+    private function __construct($value)
     {
-        $this->value = (bool) $value;
+        $this->value = $value;
+    }
+
+    public static function get($value)
+    {
+        if (!is_bool($value))
+            throw new ArgumentException('$value must be a bool', '$value');
+
+        if ($value)
+        {
+            if (!isset(NBoolean::$true))
+                NBoolean::$true = new NBoolean(true);
+
+            return NBoolean::$true;
+        }
+        else
+        {
+            if (!isset(NBoolean::$false))
+                NBoolean::$false = new NBoolean(false);
+
+            return NBoolean::$false;
+        }
     }
 
     /**
@@ -31,7 +55,7 @@ class NBoolean
      * @param NObject $object
      * @return NInteger
      */
-    public function compareTo(NObject $object)
+    public function compareTo(IObject $object)
     {
         // TODO We need an ArgumentException.
         if (!($object instanceof NBoolean))
@@ -40,8 +64,8 @@ class NBoolean
         if ($object === null)
             return new NInteger(1);
 
-        $o1 = $this->toNativeBoolean();
-        $o2 = $object->toNativeBoolean();
+        $o1 = $this->bool();
+        $o2 = $object->bool();
 
         if ($o1 === $o2)
             return new NInteger(0);
@@ -53,27 +77,47 @@ class NBoolean
             return new NInteger(1);
     }
 
+    /**
+     *
+     * @param IObject $object
+     * @return NBoolean
+     */
+    public function equals(IObject $object)
+    {
+        return $object instanceof NBoolean
+                && $this->toNativeBoolean() === $object->bool();
+    }
+
+    /**
+     * Returns the hash code for this instance.
+     *
+     * The NBoolean class implements true as the integer, 1, and false as
+     * the integer, 0. However, a particular programming language might
+     * represent true and false with other values.
+     *
+     * @return NInteger
+     */
     public function getHashCode()
     {
         return $this->value ? new NInteger(1) : new NInteger(0);
-    }
+    }    
 
-    public function toNativeArray()
-    {
-        throw new InvalidCastException();
-    }
-
-    public function toNativeBoolean()
+    public function bool()
     {
         return $this->value;
     }
 
-    public function toNativeInteger()
+    public function int()
     {
         return $this->value ? 1 : 0;
     }
 
-    public function toNativeString()
+    public function int()
+    {
+        return (float) $this->value ? 1 : 0;
+    }
+
+    public function string()
     {
         return (string) $this->value;
     }

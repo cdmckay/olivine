@@ -2,7 +2,8 @@
 
 namespace System;
 
-class NFloat implements IComparable, IFormattable, IConvertible, IEquatable
+final class NFloat
+    implements IComparable, IFormattable, IConvertible, IEquatable
 {
 
 }

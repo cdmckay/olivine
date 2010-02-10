@@ -9,12 +9,12 @@ class NException extends \Exception implements IObject
         parent::__construct($message, $errorCode, $innerException);              
     }
 
-    public static function referenceEquals($object1, $object2)
+    public static function referenceEquals(IObject $object1, IObject $object2)
     {
         NObject::referenceEquals($object1, $object2);
     }
 
-    public static function staticEquals($object1, $object2)
+    public static function staticEquals(IObject $object1, IObject $object2)
     {
         NObject::staticEquals($object1, $object2);
     }
@@ -24,9 +24,9 @@ class NException extends \Exception implements IObject
         return $this->getPrevious();
     }
 
-    public function equals($object)
+    public function equals(IObject $object)
     {
-        return $this === $object;
+        return NBoolean::get($this === $object);
     }
 
     public function getHashCode()

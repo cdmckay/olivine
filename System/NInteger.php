@@ -2,7 +2,7 @@
 
 namespace System;
 
-class NInteger 
+final class NInteger
     extends NObject
     implements IComparable, IConvertible //, IFormattable, IEquatable
 {
@@ -24,27 +24,27 @@ class NInteger
         $this->value = (int) $value;
     }
 
-    public function compareTo(NObject $integer)
+    public function compareTo(IObject $integer)
     {
 
-    }
-
-    public function toNativeArray()
-    {
-        throw new Exception();
-    }
+    }  
     
-    public function toNativeBoolean()
+    public function bool()
     {
         return (bool) $this->value;
     }
 
-    public function toNativeInteger()
+    public function int()
     {
         return $this->value;
     }
 
-    public function toNativeString()
+    public function int()
+    {
+        return (float) $this->value;
+    }
+
+    public function string()
     {
         return (string) $this->value;
     }
