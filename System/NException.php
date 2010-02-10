@@ -1,19 +1,27 @@
 <?php
 
-// TODO all strings returned by an NObject should be NString.
-
 namespace System;
 
-class NObject implements IObject
-{
-    public static function staticEquals($object1, $object2)
+class NException extends \Exception implements IObject
+{    
+    public function __construct($message = null, $errorCode = 0, NException $innerException = null)
     {
-        return $object1->equals($object2);
+        parent::__construct($message, $errorCode, $innerException);              
     }
 
     public static function referenceEquals($object1, $object2)
     {
-        return $object1 === $object2;
+        NObject::referenceEquals($object1, $object2);
+    }
+
+    public static function staticEquals($object1, $object2)
+    {
+        NObject::staticEquals($object1, $object2);
+    }
+
+    public function getInnerException()
+    {
+        return $this->getPrevious();
     }
 
     public function equals($object)
@@ -33,23 +41,17 @@ class NObject implements IObject
 
     public function memberwiseClone()
     {
-        // TODO This should be replaced with a custom memberwise
-        // clone that will always do a shallow copy.  Right now it'll
-        // call the __clone() method if it exists.
         return clone $this;
     }
 
     public function toString()
     {
-        return get_class($this);
+        return parent::__toString();
     }
 
     public function __toString()
     {
-        // This wraps the magic __toString to our toString method.
         return $this->toString();
     }
 
 }
-
-

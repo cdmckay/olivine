@@ -11,7 +11,7 @@ class NBoolean
 
     private $value = false;
 
-    public function NBoolean($value)
+    public function __construct($value)
     {
         $this->value = (bool) $value;
     }
@@ -35,7 +35,7 @@ class NBoolean
     {
         // TODO We need an ArgumentException.
         if (!($object instanceof NBoolean))
-            throw new Exception('$object is not a NBoolean');
+            throw new ArgumentException('$object is not an NBoolean', '$object');
 
         if ($object === null)
             return new NInteger(1);
@@ -60,7 +60,7 @@ class NBoolean
 
     public function toNativeArray()
     {
-        throw new Exception();
+        throw new InvalidCastException();
     }
 
     public function toNativeBoolean()

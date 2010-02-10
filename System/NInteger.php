@@ -19,7 +19,7 @@ class NInteger
 
     private $value = 0;
 
-    public function NInteger($value = 0)
+    public function __construct($value = 0)
     {
         $this->value = (int) $value;
     }

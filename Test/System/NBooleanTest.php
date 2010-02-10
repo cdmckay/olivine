@@ -3,6 +3,7 @@
 require_once 'PHPUnit/Framework.php';
 require_once dirname(__FILE__) . '/../../System/IComparable.php';
 require_once dirname(__FILE__) . '/../../System/IConvertible.php';
+require_once dirname(__FILE__) . '/../../System/IObject.php';
 require_once dirname(__FILE__) . '/../../System/NObject.php';
 require_once dirname(__FILE__) . '/../../System/NBoolean.php';
 require_once dirname(__FILE__) . '/../../System/NInteger.php';

@@ -1,6 +1,7 @@
 <?php
 
 require_once 'PHPUnit/Framework.php';
+require_once dirname(__FILE__) . '/../../System/IObject.php';
 require_once dirname(__FILE__) . '/../../System/NObject.php';
 
 use \System\NObject;
