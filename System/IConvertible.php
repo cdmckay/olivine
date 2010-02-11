@@ -6,9 +6,9 @@ interface IConvertible
 {
 
     // To PHP native types.
-    public function bool();
-    public function int();
-    public function float();
-    public function string();
+    public function boolValue();
+    public function intValue();
+    public function floatValue();
+    public function stringValue();
 
 }

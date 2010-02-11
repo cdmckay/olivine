@@ -64,8 +64,8 @@ final class NBoolean
         if ($object === null)
             return new NInteger(1);
 
-        $o1 = $this->bool();
-        $o2 = $object->bool();
+        $o1 = $this->boolValue();
+        $o2 = $object->boolValue();
 
         if ($o1 === $o2)
             return new NInteger(0);
@@ -102,22 +102,33 @@ final class NBoolean
         return $this->value ? new NInteger(1) : new NInteger(0);
     }    
 
-    public function bool()
+    public static function parse($value)
+    {
+        if ($value == null)
+            throw new ArgumentNullException(null, '$value');
+
+        if (!($value instanceof NString))
+            throw new ArgumentException('$value is not an NString', '$value');
+
+        
+    }
+
+    public function boolValue()
     {
         return $this->value;
     }
 
-    public function int()
+    public function intValue()
     {
         return $this->value ? 1 : 0;
     }
 
-    public function int()
+    public function floatValue()
     {
         return (float) $this->value ? 1 : 0;
     }
 
-    public function string()
+    public function stringValue()
     {
         return (string) $this->value;
     }

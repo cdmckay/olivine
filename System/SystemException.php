@@ -2,14 +2,15 @@
 
 namespace System;
 
-class InvalidCastException extends SystemException
-{    
+class SystemException extends NException
+{
     public function __construct(
-            $message = "Cannot cast from source type to destination type.",
+            $message = "A system error has occurred.",
             $errorCode = 0,
             NException $innerException = null)
     {
         parent::__construct($message, $errorCode, $innerException);
-    }   
-    
+    }
+
 }
+

@@ -2,7 +2,7 @@
 
 namespace System;
 
-class ArgumentException extends NException
+class ArgumentException extends SystemException
 {
     private $paramName;
 
@@ -17,7 +17,7 @@ class ArgumentException extends NException
             $message .= $paramName == null ? "." : (": " . $paramName);
         }
 
-        parent::__construct($message, $errorCode, $innerException);
+        parent::__construct($message, 0, $innerException);
         $this->paramName = $paramName;
     }
 

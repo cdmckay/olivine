@@ -4,7 +4,7 @@
 
 namespace System;
 
-final class NObject
+class NObject
     implements IObject
 {
     public static function staticEquals(IObject $object1, IObject $object2)

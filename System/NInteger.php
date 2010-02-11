@@ -29,22 +29,22 @@ final class NInteger
 
     }  
     
-    public function bool()
+    public function boolValue()
     {
         return (bool) $this->value;
     }
 
-    public function int()
+    public function intValue()
     {
         return $this->value;
     }
 
-    public function int()
+    public function floatValue()
     {
         return (float) $this->value;
     }
 
-    public function string()
+    public function stringValue()
     {
         return (string) $this->value;
     }
