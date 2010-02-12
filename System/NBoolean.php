@@ -2,12 +2,35 @@
 
 namespace System;
 
+//require_once dirname(__FILE__) . '/IComparable.php';
+//require_once dirname(__FILE__) . '/IConvertible.php';
+//require_once dirname(__FILE__) . '/IEquatable.php';
+//require_once dirname(__FILE__) . '/IFormattable.php';
+//require_once dirname(__FILE__) . '/NInteger.php';
+//require_once dirname(__FILE__) . '/NObject.php';
+
 final class NBoolean
     extends NObject
-    implements IComparable, IConvertible //, IFormattable, IEquatable
+    implements IComparable, IConvertible, IFormattable, IEquatable
 {
-    const FALSE_STRING = "false";
-    const TRUE_STRING = "true";
+    private static $falseString;
+    private static $trueString;
+
+    public static function getFalseString()
+    {
+        if (self::$falseString == null)
+            self::$falseString = new NString("false");
+
+        return self::$falseString;
+    }
+
+    public static function getTrueString()
+    {
+        if (self::$trueString == null)
+            self::$trueString = new NString("true");
+
+        return self::$trueString;
+    }
 
     private $value = false;
 

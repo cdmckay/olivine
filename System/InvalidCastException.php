@@ -2,6 +2,9 @@
 
 namespace System;
 
+//require_once dirname(__FILE__) . '/NException.php';
+//require_once dirname(__FILE__) . '/SystemException.php';
+
 class InvalidCastException extends SystemException
 {    
     public function __construct(

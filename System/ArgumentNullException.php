@@ -2,6 +2,9 @@
 
 namespace System;
 
+//require_once dirname(__FILE__) . '/NException.php';
+//require_once dirname(__FILE__) . '/ArgumentException.php';
+
 class ArgumentNullException extends ArgumentException
 {    
     public function __construct(

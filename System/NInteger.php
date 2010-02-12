@@ -2,9 +2,16 @@
 
 namespace System;
 
+//require_once dirname(__FILE__) . '/IComparable.php';
+//require_once dirname(__FILE__) . '/IFormattable.php';
+//require_once dirname(__FILE__) . '/IConvertible.php';
+//require_once dirname(__FILE__) . '/IEquatable.php';
+//require_once dirname(__FILE__) . '/NObject.php';
+//require_once dirname(__FILE__) . '/IEquatable.php';
+
 final class NInteger
     extends NObject
-    implements IComparable, IConvertible //, IFormattable, IEquatable
+    implements IComparable, IConvertible, IFormattable, IEquatable
 {
 
     public static function getMaxValue()

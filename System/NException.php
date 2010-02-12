@@ -2,6 +2,8 @@
 
 namespace System;
 
+//require_once dirname(__FILE__) . '/IObject.php';
+
 class NException extends \Exception implements IObject
 {    
     public function __construct($message = null, $errorCode = 0, NException $innerException = null)

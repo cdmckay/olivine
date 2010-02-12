@@ -1,8 +1,9 @@
 <?php
 
-// TODO all strings returned by an NObject should be NString.
-
 namespace System;
+
+//require_once dirname(__FILE__) . '/IObject.php';
+//require_once dirname(__FILE__) . '/NString.php';
 
 class NObject
     implements IObject
@@ -22,14 +23,23 @@ class NObject
         return NBoolean::get($this === $object);
     }
 
+    /**
+     *
+     * @return NString
+     */
     public function getHashCode()
     {
-        return spl_object_hash($this);
+        return new NString(spl_object_hash($this));
     }
 
+    /**
+     * Gets the Type of the current instance as an NString.
+     *
+     * @return NString
+     */
     public function getType()
     {
-        return get_class($this);
+        return new NString(get_class($this));
     }
 
     public function memberwiseClone()
@@ -40,15 +50,25 @@ class NObject
         return clone $this;
     }
 
+    /**
+     * Returns an NString that represents the current NObject.
+     *
+     * @return NString
+     */
     public function toString()
     {
-        return get_class($this);
+        return new NString(get_class($this));
     }
 
+    /**
+     * Returns a PHP string that represents the current NObject.
+     *
+     * @return string
+     */
     public function __toString()
     {
         // This wraps the magic __toString to our toString method.
-        return $this->toString();
+        return $this->toString()->stringValue();
     }
 
 }

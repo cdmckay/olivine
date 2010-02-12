@@ -2,6 +2,8 @@
 
 namespace System;
 
+//require_once dirname(__FILE__) . '/SystemException.php';
+
 class FormatException extends SystemException
 {
     public function __construct(

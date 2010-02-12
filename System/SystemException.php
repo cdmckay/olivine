@@ -2,6 +2,8 @@
 
 namespace System;
 
+//require_once dirname(__FILE__) . '/NException.php';
+
 class SystemException extends NException
 {
     public function __construct(

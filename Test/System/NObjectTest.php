@@ -1,10 +1,11 @@
 <?php
 
 require_once 'PHPUnit/Framework.php';
-require_once dirname(__FILE__) . '/../../System/IObject.php';
-require_once dirname(__FILE__) . '/../../System/NObject.php';
+require_once dirname(__FILE__) . '/../../Olivine/Framework.php';
 
 use \System\NObject;
+
+import("System");
 
 class NObjectTest extends PHPUnit_Framework_TestCase
 {
@@ -27,8 +28,8 @@ class NObjectTest extends PHPUnit_Framework_TestCase
     public function testGetType()
     {
         $o = new NObject();
-        $this->assertEquals("System\NObject", $o->getType());
-        $this->assertNotEquals("System\NString", $o->getType());
+        $this->assertEquals("System\NObject", $o->getType()->stringValue());
+        $this->assertNotEquals("System\NString", $o->getType()->stringValue());
     }
 
     public function testMemberwiseClone()
@@ -42,14 +43,14 @@ class NObjectTest extends PHPUnit_Framework_TestCase
     public function testToString()
     {
         $o = new NObject();
-        $this->assertEquals($o->getType(), $o->toString());
-        $this->assertNotEquals("Foo", $o->toString());
+        $this->assertEquals($o->getType()->stringValue(), $o->toString()->stringValue());
+        $this->assertNotEquals("Foo", $o->toString()->stringValue());
     }
 
     public function testToStringMagicMethod()
     {
         $o = new NObject();
-        $this->assertEquals($o->toString(), sprintf("%s", $o));
+        $this->assertEquals($o->__toString(), sprintf("%s", $o));
         $this->assertNotEquals("Foo", sprintf("%s", $o));
     }
     
