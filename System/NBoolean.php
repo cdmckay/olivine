@@ -159,6 +159,17 @@ final class NBoolean
         throw new FormatException();
     }
 
+    /**
+     * Converts the value of this instance to its equivalent string
+     * representation (either "True" or "False").
+     *
+     * @return NString
+     */
+    public function toString()
+    {
+        return $this->value ? new NString("True") : new NString("False");
+    }
+
     public function boolValue()
     {
         return $this->value;

@@ -35,6 +35,11 @@ final class NString
         
     }
 
+    public function toString()
+    {
+        return $this;
+    }
+
     public function boolValue()
     {
         return (bool) $this->value;
