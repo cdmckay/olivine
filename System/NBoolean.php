@@ -78,7 +78,7 @@ final class NBoolean
     public function compareTo(IObject $object = null)
     {                
         if ($object === null)
-            return new NInteger(1);
+            return NInteger::get(1);
 
         if (!($object instanceof NBoolean))
             throw new ArgumentException('$object is not an NBoolean', '$object');
@@ -87,12 +87,12 @@ final class NBoolean
         $o2 = $object->boolValue();
             
         if ($o1 === false && $o2 === true)
-            return new NInteger(-1);
+            return NInteger::get(-1);
 
         if ($o1 === true && $o2 === false)
-            return new NInteger(1);
+            return NInteger::get(1);
 
-        return new NInteger(0);
+        return NInteger::get(0);
     }
 
     /**
@@ -105,8 +105,8 @@ final class NBoolean
      */
     public function equals(IObject $object = null)
     {
-        return $object instanceof NBoolean
-                && $this->toNativeBoolean() === $object->bool();
+        return self::get($object instanceof NBoolean
+                && $this->boolValue() === $object->boolValue());
     }
 
     /**
@@ -120,7 +120,7 @@ final class NBoolean
      */
     public function getHashCode()
     {
-        return $this->value ? new NInteger(1) : new NInteger(0);
+        return $this->value ? NInteger::get(1) : NInteger::get(0);
     }    
 
     /**
@@ -148,18 +148,7 @@ final class NBoolean
             return self::$false;
 
         throw new FormatException();
-    }
-
-    /**
-     * Converts the value of this instance to its equivalent string
-     * representation (either "True" or "False").
-     *
-     * @return NString
-     */
-    public function toString()
-    {
-        return $this->value ? new NString("True") : new NString("False");
-    }
+    }    
 
     /**
      * Converts the specified string representation of a logical value to its
@@ -216,6 +205,32 @@ final class NBoolean
     public function stringValue()
     {
         return (string) $this->value;
+    }
+
+    public function toBoolean()
+    {
+
+    }
+
+    public function toInteger()
+    {
+        
+    }
+
+    public function toFloat()
+    {
+        
+    }
+
+    /**
+     * Converts the value of this instance to its equivalent string
+     * representation (either "True" or "False").
+     *
+     * @return NString
+     */
+    public function toString()
+    {
+        return $this->value ? new NString("True") : new NString("False");
     }
 
 }

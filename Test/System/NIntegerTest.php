@@ -12,9 +12,9 @@ class NIntegerTest extends PHPUnit_Framework_TestCase
 {
     public function testConstructor()
     {
-        $val1 = new NInteger(0);
-        $val2 = new NInteger(12);
-        $val3 = new NInteger(-12);
+        $val1 = NInteger::get(0);
+        $val2 = NInteger::get(12);
+        $val3 = NInteger::get(-12);
 
         $this->assertEquals(0, $val1->intValue());
         $this->assertEquals(12, $val2->intValue());
@@ -23,13 +23,13 @@ class NIntegerTest extends PHPUnit_Framework_TestCase
 
     public function testAlias()
     {
-        $val1 = new NInteger(0);
-        $val2 = new NInteger(12);
-        $val3 = new NInteger(-12);
+        $val1 = NInteger::get(0);
+        $val2 = NInteger::get(12);
+        $val3 = NInteger::get(-12);
 
-        $alias1 = __(0);
-        $alias2 = __(12);
-        $alias3 = __(-12);
+        $alias1 = is(0);
+        $alias2 = is(12);
+        $alias3 = is(-12);
 
         $this->assertEquals($val1->intValue(), $alias1->intValue());
         $this->assertEquals($val2->intValue(), $alias2->intValue());
@@ -38,7 +38,35 @@ class NIntegerTest extends PHPUnit_Framework_TestCase
 
     public function testCompareTo()
     {
-        
+        $neg  = is(-12);
+        $zero = is(0);
+        $pos  = is(553);
+
+        $this->assertLessThan(0, $neg->compareTo($zero)->intValue());
+        $this->assertEquals(0, $zero->compareTo($zero)->intValue());
+        $this->assertGreaterThan(0, $pos->compareTo($zero)->intValue());
+    }
+
+    public function testCompareToNull()
+    {
+        $num = is(42);
+        $this->assertGreaterThan(0, $num->compareTo(null)->intValue());
+    }
+
+    public function testEquals()
+    {
+        $int1 = is(10);
+        $int2 = is(10);
+        $int3 = is(11);
+
+        $this->assertTrue( $int1->equals($int2)->boolValue() );
+        $this->assertFalse( $int1->equals($int3)->boolValue() );
+    }
+
+    public function testEqualsNull()
+    {
+        $int = is(444);
+        $this->assertFalse( $int->equals(null)->boolValue() );
     }
 
 }

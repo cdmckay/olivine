@@ -11,4 +11,9 @@ interface IConvertible
     public function floatValue();
     public function stringValue();
 
+    // To Olivine types.
+    public function toBoolean();
+    public function toInteger();
+    public function toFloat();    
+
 }

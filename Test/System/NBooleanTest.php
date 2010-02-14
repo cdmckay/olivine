@@ -51,6 +51,21 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1, $true->getHashCode()->intValue());
     }
 
+    public function testEquals()
+    {
+        $true1 = NBoolean::get(true);
+        $true2 = NBoolean::get(true);
+        $false = NBoolean::get(false);
+        $this->assertTrue( $true1->equals($true2)->boolValue() );
+        $this->assertFalse( $true1->equals($false)->boolValue() );
+    }
+
+    public function testEqualsNull()
+    {
+        $true = NBoolean::get(true);
+        $this->assertFalse( $true->equals(null)->boolValue() );
+    }
+
     public function testParseWithValidNStrings()
     {
         $true  = NBoolean::get(true);

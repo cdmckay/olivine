@@ -78,4 +78,19 @@ final class NString
         return $this->value;
     }
 
+    public function toBoolean()
+    {
+
+    }
+
+    public function toInteger()
+    {
+
+    }
+
+    public function toFloat()
+    {
+        
+    }   
+
 }

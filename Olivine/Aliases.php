@@ -23,7 +23,7 @@ function _false()
 
 function _int($var)
 {
-    return new NInteger($var);
+    return NInteger::get($var);
 }
 
 function _float($var)
@@ -41,7 +41,7 @@ function _object()
     return new NObject();
 }
 
-function __($var = null)
+function is($var = null)
 {
     if (is_bool($var))
         return _bool($var);

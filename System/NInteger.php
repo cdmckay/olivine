@@ -18,9 +18,17 @@ final class NInteger
 
     private $value = 0;
 
-    public function __construct($value = 0)
+    private function __construct($value = 0)
     {
-        $this->value = (int) $value;
+        $this->value = $value;
+    }
+
+    public static function get($value)
+    {
+        if (!is_int($value))
+            throw new ArgumentException('$value must be an int', '$value');
+
+        return new NInteger($value);
     }
 
     /**
@@ -53,7 +61,31 @@ final class NInteger
         if ($o1 > $o2) return new NInteger(1);
 
         return new NInteger(0);
-    }  
+    }
+
+    /**
+     * Returns a value indicating whether this instance is equal to a
+     * specified object.
+     *
+     * @param IObject $object An object to compare with this instance.
+     * @return NBoolean True if obj is an instance of NInteger and equals
+     * the value of this instance; otherwise, false.
+     */
+    public function equals(IObject $object = null)
+    {
+        return NBoolean::get($object instanceof NInteger
+                && $this->intValue() === $object->intValue());
+    }
+
+    public function parse(NString $value)
+    {
+
+    }
+
+    public function tryParse(NString $value, NBoolean &$result = null)
+    {
+        
+    }
     
     public function boolValue()
     {
@@ -73,6 +105,34 @@ final class NInteger
     public function stringValue()
     {
         return (string) $this->value;
+    }
+
+    public function toBoolean()
+    {
+
+    }
+
+    public function toInteger()
+    {
+
+    }
+
+    public function toFloat()
+    {
+
+    }
+
+    /**
+     * Converts the numeric value of this instance to its equivalent 
+     * string representation.
+     *
+     * @return NString The string representation of the value of this instance,
+     * consisting of a negative sign if the value is negative, and a sequence
+     * of digits ranging from 0 to 9 with no leading zeroes.
+     */
+    public function toString()
+    {
+        return new NString($this->stringValue());
     }
 
 }

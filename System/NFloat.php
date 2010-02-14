@@ -3,6 +3,7 @@
 namespace System;
 
 final class NFloat
+    extends NObject
     implements IComparable, IFormattable, IConvertible
 {
     public function compareTo(IObject $object = null)
@@ -29,5 +30,20 @@ final class NFloat
     {
 
     }
+
+    public function toBoolean()
+    {
+
+    }
+
+    public function toInteger()
+    {
+
+    }
+
+    public function toFloat()
+    {
+
+    }    
 
 }
