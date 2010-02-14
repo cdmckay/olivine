@@ -38,8 +38,8 @@ final class NBoolean
     private $value = false;
 
     // These are the cached true and false instances.
-    private static $trueInstance;
-    private static $falseInstance;
+    private static $true;
+    private static $false;
 
     private function __construct($value)
     {
@@ -53,17 +53,17 @@ final class NBoolean
 
         if ($value)
         {
-            if (!isset(NBoolean::$trueInstance))
-                NBoolean::$trueInstance = new NBoolean(true);
+            if (!isset(self::$true))
+                self::$true = new NBoolean(true);
 
-            return NBoolean::$trueInstance;
+            return self::$true;
         }
         else
         {
-            if (!isset(NBoolean::$falseInstance))
-                NBoolean::$falseInstance = new NBoolean(false);
+            if (!isset(self::$false))
+                self::$false = new NBoolean(false);
 
-            return NBoolean::$falseInstance;
+            return self::$false;
         }
     }
 
@@ -140,21 +140,18 @@ final class NBoolean
      * @param NString $value A string containing the value to convert.
      * @return NBoolean True if value is equivalent to getTrueString(); otherwise, false.
      */
-    public static function parse($value)
+    public static function parse(NString $value)
     {
         if ($value == null)
-            throw new ArgumentNullException(null, '$value');
+            throw new ArgumentNullException(null, '$value');      
 
-        if (!($value instanceof NString))
-            throw new ArgumentException('$value is not an NString', '$value');
-
-        $str = trim($value->stringValue());
+        $str = $value->trim()->toLower()->stringValue();
 
         if ($str === self::$trueString)
-            return self::$trueInstance;
+            return self::$true;
 
         if ($str === self::$falseString)
-            return self::$falseInstance;
+            return self::$false;
 
         throw new FormatException();
     }
@@ -168,6 +165,43 @@ final class NBoolean
     public function toString()
     {
         return $this->value ? new NString("True") : new NString("False");
+    }
+
+    /**
+     * Converts the specified string representation of a logical value to its
+     * NBoolean equivalent. A return value indicates whether the conversion 
+     * succeeded or failed.
+     * 
+     * The TryParse method is like the Parse method, except the TryParse method 
+     * does not throw an exception if the conversion fails.
+     * 
+     * The value parameter can be preceded or followed by white space. 
+     * The comparison is case-insensitive.
+     *
+     * @param NString $value A string containing the value to convert.
+     * @param NBoolean $result When this method returns, if the conversion
+     * succeeded, contains true if value is equivalent to TrueString or false
+     * if value is equivalent to FalseString. If the conversion failed,
+     * contains false. The conversion fails if $value is null or is not
+     * equivalent to either getTrueString() or getFalseString().
+     * This parameter is passed uninitialized.
+     * @return NBoolean  True if value was converted successfully; otherwise, false.
+     */
+    public static function tryParse(NString $value, NBoolean &$result = null)
+    {
+        $successful = self::$false;
+        
+        try
+        {
+            $result = self::parse($value);
+            $successful = self::$true;
+        }
+        catch (NException $e)
+        {
+            $result = self::$false;;
+        }
+
+        return $successful;
     }
 
     public function boolValue()

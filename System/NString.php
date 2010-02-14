@@ -35,9 +35,34 @@ final class NString
         
     }
 
+    public function toLower()
+    {
+        return new NString(strtolower($this->value));
+    }
+
     public function toString()
     {
         return $this;
+    }
+
+    public function toUpper()
+    {
+        return new NString(strtoupper($this->value));
+    }
+
+    public function trim()
+    {
+        return new NString(trim($this->value));
+    }
+
+    public function trimStart()
+    {
+        return new NString(ltrim($this->value));
+    }
+
+    public function trimEnd()
+    {
+        return new NString(rtrim($this->value));
     }
 
     public function boolValue()
