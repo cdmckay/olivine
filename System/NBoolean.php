@@ -2,16 +2,9 @@
 
 namespace System;
 
-//require_once dirname(__FILE__) . '/IComparable.php';
-//require_once dirname(__FILE__) . '/IConvertible.php';
-//require_once dirname(__FILE__) . '/IEquatable.php';
-//require_once dirname(__FILE__) . '/IFormattable.php';
-//require_once dirname(__FILE__) . '/NInteger.php';
-//require_once dirname(__FILE__) . '/NObject.php';
-
 final class NBoolean
     extends NObject
-    implements IComparable, IConvertible, IFormattable, IEquatable
+    implements IComparable, IConvertible
 {
     private static $falseString = "false";
     private static $trueString = "true";
@@ -76,40 +69,41 @@ final class NBoolean
      *
      * This method returns 0 when the instance and $object are equal.
      *
-     * This method returns greather than 0 when the instance is true and
+     * This method returns greater than 0 when the instance is true and
      * $object is false, or if $object is null.
      *
      * @param NObject $object
      * @return NInteger
      */
-    public function compareTo(IObject $object)
-    {
-        // TODO We need an ArgumentException.
-        if (!($object instanceof NBoolean))
-            throw new ArgumentException('$object is not an NBoolean', '$object');
-
+    public function compareTo(IObject $object = null)
+    {                
         if ($object === null)
             return new NInteger(1);
 
+        if (!($object instanceof NBoolean))
+            throw new ArgumentException('$object is not an NBoolean', '$object');
+
         $o1 = $this->boolValue();
         $o2 = $object->boolValue();
-
-        if ($o1 === $o2)
-            return new NInteger(0);
-
+            
         if ($o1 === false && $o2 === true)
             return new NInteger(-1);
 
         if ($o1 === true && $o2 === false)
             return new NInteger(1);
+
+        return new NInteger(0);
     }
 
     /**
+     * Returns a value indicating whether this instance is equal to a 
+     * specified object.
      *
-     * @param IObject $object
-     * @return NBoolean
+     * @param IObject $object An object to compare to this instance.
+     * @return NBoolean True if obj is a Boolean and has the same value as
+     * this instance; otherwise, false.
      */
-    public function equals(IObject $object)
+    public function equals(IObject $object = null)
     {
         return $object instanceof NBoolean
                 && $this->toNativeBoolean() === $object->bool();

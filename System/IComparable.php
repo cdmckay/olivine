@@ -6,5 +6,5 @@ namespace System;
 
 interface IComparable
 {
-    public function compareTo(IObject $object);
+    public function compareTo(IObject $object = null);
 }

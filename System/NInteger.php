@@ -2,18 +2,10 @@
 
 namespace System;
 
-//require_once dirname(__FILE__) . '/IComparable.php';
-//require_once dirname(__FILE__) . '/IFormattable.php';
-//require_once dirname(__FILE__) . '/IConvertible.php';
-//require_once dirname(__FILE__) . '/IEquatable.php';
-//require_once dirname(__FILE__) . '/NObject.php';
-//require_once dirname(__FILE__) . '/IEquatable.php';
-
 final class NInteger
     extends NObject
-    implements IComparable, IConvertible, IFormattable, IEquatable
+    implements IComparable, IConvertible /* IFormattable */
 {
-
     public static function getMaxValue()
     {
         return PHP_INT_MAX;
@@ -31,9 +23,36 @@ final class NInteger
         $this->value = (int) $value;
     }
 
-    public function compareTo(IObject $integer)
+    /**
+     * Compares this instance to a specified object and returns an indication
+     * of their relative values.
+     *
+     * This method returns less than 0 if this instance is less than $object.
+     * 
+     * This method returns 0 if this instance is equal to $object.
+     * 
+     * This method returns greater than 0 if this instance is greater than
+     * $object, or $object is null.
+     *
+     * @param IObject $object
+     * @return NInteger A signed number indicating the relative values of
+     * this instance and value.
+     */
+    public function compareTo(IObject $object = null)
     {
+        if ($object === null)
+            return new NInteger(1);
 
+        if (!($object instanceof NInteger))
+            throw new ArgumentException('$object is not an NInteger', '$object');
+
+        $o1 = $this->intValue();
+        $o2 = $object->intValue();
+             
+        if ($o1 < $o2) return new NInteger(-1);
+        if ($o1 > $o2) return new NInteger(1);
+
+        return new NInteger(0);
     }  
     
     public function boolValue()

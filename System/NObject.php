@@ -2,23 +2,20 @@
 
 namespace System;
 
-//require_once dirname(__FILE__) . '/IObject.php';
-//require_once dirname(__FILE__) . '/NString.php';
-
 class NObject
     implements IObject
 {
-    public static function staticEquals(IObject $object1, IObject $object2)
+    public static function staticEquals(IObject $object1 = null, IObject $object2 = null)
     {
         return $object1->equals($object2);
     }
 
-    public static function referenceEquals(IObject $object1, IObject $object2)
+    public static function referenceEquals(IObject $object1 = null, IObject $object2 = null)
     {
         return NBoolean::get($object1 === $object2);
     }
 
-    public function equals(IObject $object)
+    public function equals(IObject $object = null)
     {
         return NBoolean::get($this === $object);
     }

@@ -5,7 +5,7 @@ require_once dirname(__FILE__) . '/../../Olivine/Framework.php';
 
 use \System\NObject;
 
-import("System");
+Olivine::import("System");
 
 class NObjectTest extends PHPUnit_Framework_TestCase
 {

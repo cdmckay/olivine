@@ -25,8 +25,7 @@ final class __Importer
         "ICloneable" => array(),
         "IComparable" => array(),
         "IConvertible" => array(),
-        "IEnumerable" => array(),
-        "IEquatable" => array(),
+        "IEnumerable" => array(),        
         "IFormattable" => array(),
     );
 

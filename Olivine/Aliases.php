@@ -1,33 +1,47 @@
 <?php
 
-namespace Olivine;
+use \System\NObject;
+use \System\NBoolean;
+use \System\NInteger;
+use \System\NFloat;
+use \System\NString;
 
 function _bool($var)
 {
-    return new Boolean($var);
+    return NBoolean::get($var);
+}
+
+function _true()
+{
+    return NBoolean::get(true);
+}
+
+function _false()
+{
+    return NBoolean::get(false);
 }
 
 function _int($var)
 {
-    return new Integer($var);
+    return new NInteger($var);
 }
 
 function _float($var)
 {
-    return new Float($var);
+    return new NFloat($var);
 }
 
 function _string($var)
 {
-    return new String($var);
+    return new NString($var);
 }
 
 function _object()
 {
-    return new Object();
+    return new NObject();
 }
 
-function _($var)
+function __($var = null)
 {
     if (is_bool($var))
         return _bool($var);
@@ -36,7 +50,7 @@ function _($var)
     if (is_float($var))
         return _float($var);
     if (is_string($var))
-        return _string($var);
+        return _string($var);    
 
     throw new \System\ArgumentException();
 }

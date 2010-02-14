@@ -2,16 +2,9 @@
 
 namespace System;
 
-//require_once dirname(__FILE__) . '/IComparable.php';
-//require_once dirname(__FILE__) . '/IFormattable.php';
-//require_once dirname(__FILE__) . '/IConvertible.php';
-//require_once dirname(__FILE__) . '/IEnumerable.php';
-//require_once dirname(__FILE__) . '/IEquatable.php';
-//require_once dirname(__FILE__) . '/NObject.php';
-
 final class NString
     extends NObject
-    implements IComparable, ICloneable, IConvertible, IEnumerable, IEquatable
+    implements IComparable, ICloneable, IConvertible, IEnumerable
 {
     const EMPTY_STRING = "";
 
@@ -30,7 +23,7 @@ final class NString
         
     }
 
-    public function compareTo(IObject $object)
+    public function compareTo(IObject $object = null)
     {
         
     }
