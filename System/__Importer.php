@@ -48,7 +48,6 @@ final class __Importer
 
         foreach($queue as $node)
             self::importRecursive($node);
-
     }
 
 }

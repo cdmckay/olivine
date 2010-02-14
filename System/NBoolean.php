@@ -13,29 +13,33 @@ final class NBoolean
     extends NObject
     implements IComparable, IConvertible, IFormattable, IEquatable
 {
-    private static $falseString;
-    private static $trueString;
+    private static $falseString = "false";
+    private static $trueString = "true";
+
+    private static $falseNString;
+    private static $trueNString;
 
     public static function getFalseString()
     {
-        if (self::$falseString == null)
-            self::$falseString = new NString("false");
+        if (self::$falseNString == null)
+            self::$falseNString = new NString("false");
 
-        return self::$falseString;
+        return self::$falseNString;
     }
 
     public static function getTrueString()
     {
-        if (self::$trueString == null)
-            self::$trueString = new NString("true");
+        if (self::$trueNString == null)
+            self::$trueNString = new NString("true");
 
-        return self::$trueString;
+        return self::$trueNString;
     }
 
     private $value = false;
 
-    private static $true;
-    private static $false;
+    // These are the cached true and false instances.
+    private static $trueInstance;
+    private static $falseInstance;
 
     private function __construct($value)
     {
@@ -49,17 +53,17 @@ final class NBoolean
 
         if ($value)
         {
-            if (!isset(NBoolean::$true))
-                NBoolean::$true = new NBoolean(true);
+            if (!isset(NBoolean::$trueInstance))
+                NBoolean::$trueInstance = new NBoolean(true);
 
-            return NBoolean::$true;
+            return NBoolean::$trueInstance;
         }
         else
         {
-            if (!isset(NBoolean::$false))
-                NBoolean::$false = new NBoolean(false);
+            if (!isset(NBoolean::$falseInstance))
+                NBoolean::$falseInstance = new NBoolean(false);
 
-            return NBoolean::$false;
+            return NBoolean::$falseInstance;
         }
     }
 
@@ -125,6 +129,17 @@ final class NBoolean
         return $this->value ? new NInteger(1) : new NInteger(0);
     }    
 
+    /**
+     * Converts the specified string representation of a logical value to
+     * its NBoolean equivalent.
+     *
+     * The value parameter, optionally preceded or trailed by white space,
+     * must contain either getTrueString() or getFalseString(); otherwise, an exception
+     * is thrown. The comparison is case-insensitive.
+     *
+     * @param NString $value A string containing the value to convert.
+     * @return NBoolean True if value is equivalent to getTrueString(); otherwise, false.
+     */
     public static function parse($value)
     {
         if ($value == null)
@@ -133,7 +148,15 @@ final class NBoolean
         if (!($value instanceof NString))
             throw new ArgumentException('$value is not an NString', '$value');
 
-        
+        $str = trim($value->stringValue());
+
+        if ($str === self::$trueString)
+            return self::$trueInstance;
+
+        if ($str === self::$falseString)
+            return self::$falseInstance;
+
+        throw new FormatException();
     }
 
     public function boolValue()
