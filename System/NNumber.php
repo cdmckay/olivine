@@ -1,82 +1,22 @@
 <?php
 
+// Ideally, in the future, I'd like the NNumber class to automatically
+// switch between fixed and arbitrary precision types for performance.
+// For example, if the value being wrapped is int or float, it'll automatically
+// use those values internally for arithmetic.
+
 namespace System;
 
 final class NNumber
     extends NObject
     implements IComparable, IConvertible /* IFormattable */
 {
-    private static $maxInt = null;
-    private static $maxFloat = null;
-    private static $numberPattern = "#(\-|\+)?[0-9](\.[0-9]+)?#";
+    private static $numberPattern 
+        = "#^([-+]?[0-9]*\.?[0-9]+)([eE]([-+]?[0-9]+))?$#";
     private static $scale = 10;
-    private $value = '0';
+    private $value = '0';   
 
-    /**
-     * Gets the maximum PHP float value allowed on this machine.
-     *
-     * @return The maximum PHP float value.
-     */
-    public static function getMaxFloat()
-    {
-        if (self::$maxFloat === null)
-        {
-            $val1 = 2;
-            $val2 = 2;
-
-            while (true)
-            {
-                $val2 = bcmul( $val1, $val1, 0 );
-                if ((string) ((float) $val2) === 'INF') break;
-                $val1 = $val2;
-            }
-
-            while (true)
-            {
-                $val2 = bcadd( $val1, $val1, 0 );
-                if ((string) ((float) $val2) === 'INF') break;
-                $val1 = $val2;
-            }
-
-            $mod = bcdiv( $val1, 2, 0 );
-
-            while (true)
-            {
-                if ((float) $mod < 1) break;
-                $val2 = bcadd( $val1, $mod, 0 );
-
-                if ((string) ((float) $val2) === 'INF')
-                {
-                    $mod = bcdiv( $mod, 2, 0 );
-                }
-                else
-                {
-                    $val1 = $val2;
-                }
-            }
-
-            self::$maxFloat = NNumber::get($val1);
-        }
-
-        return self::$maxFloat;
-    }
-
-    /**
-     * Gets the maximum PHP int value allowed on this machine.
-     *
-     * @return The maximum PHP int value.
-     */
-    public static function getMaxInt()
-    {
-        if (self::$maxInt === null)
-        {
-            self::$maxInt = NNumber::get(PHP_INT_MAX);
-        }
-
-        return self::$maxInt;
-    }
-
-    private function __construct($value = 0)
+    private function __construct($value)
     {
         $this->value = $value;
     }
@@ -85,21 +25,26 @@ final class NNumber
     {       
         $val = "0";
 
-        if (false) {}
-        else if (is_int($value) || is_float($value))
-        {
-            $val = (string) $value;
-        }        
-        else if (is_string($value) && preg_match(self::$numberPattern, $value))
-        {
-            $val = $value;
+        if ((is_int($value) || is_float($value) || is_string($value))
+                && preg_match(self::$numberPattern, (string) $value, $matches) !== 0)
+        {            
+            if (count($matches) > 2)
+            {                
+                $number = $matches[1];
+                $exponent = $matches[3];
+                $val = bcmul($number, bcpow(10, $exponent));
+            }
+            else
+            {
+                $val = trim($value);
+            }
         }
         else
         {
             throw new ArgumentException("Argument must be an int, float or a string containing a number: $value", '$value');
         }
 
-        return new NNumber($value);
+        return new NNumber($val);
     }
 
     /**
@@ -187,7 +132,7 @@ final class NNumber
     {        
         return self::get(bcmod($this->value, $value->stringValue()));
     }
-    
+       
     public function boolValue()
     {
         return (bool) $this->value;
@@ -195,22 +140,24 @@ final class NNumber
 
     public function intValue()
     {
-        $val = Math::ceiling($this);        
+        $val = Math::ceiling($this)->stringValue();
+        $ret = (int) $val;
 
-        if (bccomp($val, self::getMaxInt()->stringValue()) <= 0)
-            return (int) $val;
+        if (strcmp(((string) $ret), $val) !== 0)
+            throw new OverflowException("An int is not wide enough to hold: $val");
 
-        throw new OverflowException("An int is not large enough to hold: $val");
+        return $ret;
     }
 
     public function floatValue()
     {
         $val = $this->value;
-        
-        if (bccomp($val, self::getMaxFloat()->stringValue()) <= 0)
-            return (float) $val;
+        $ret = (float) $val;        
 
-        throw new OverflowException("A float is not large enough to hold: $val");
+        if (is_infinite($ret) || ($ret === 0.0 && !preg_match("#^0(\.0+)?$#", $val)))
+            throw new OverflowException("A float is not wide enough to hold: $val");
+
+        return $ret;
     }
 
     public function stringValue()

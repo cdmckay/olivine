@@ -7,6 +7,7 @@ final class Math
     public static function ceiling(NNumber $value)
     {
         $val = $value->stringValue();
+
         if (($pos = strpos($val, '.')) !== false)
         {
             if ($val[$pos + 1] != 0 && $val[0] != '-')
@@ -14,12 +15,14 @@ final class Math
             else
                 return substr($val, 0, $pos);
         }
-        return $val;
+
+        return NNumber::get($val);
     }
 
     public static function floor(NNumber $value)
     {
         $val = $value->stringValue();
+
         if (($pos = strpos($val, '.')) !== false)
         {
             if ($val[$pos + 1] != 0 && $val[0] == '-')
@@ -27,7 +30,8 @@ final class Math
             else
                 return substr($val, 0, $pos);
         }
-        return $val;
+
+        return NNInteger::get($val);
     }
 
     public static function round(NNumber $value, NNumber $decimals)

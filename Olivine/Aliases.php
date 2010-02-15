@@ -21,14 +21,9 @@ function _false()
     return NBoolean::get(false);
 }
 
-function _int($var)
+function _num($var)
 {
     return NNumber::get($var);
-}
-
-function _float($var)
-{
-    return new NFloat($var);
 }
 
 function _string($var)
@@ -45,10 +40,8 @@ function is($var = null)
 {
     if (is_bool($var))
         return _bool($var);
-    if (is_int($var))
-        return _int($var);
-    if (is_float($var))
-        return _float($var);
+    if (is_int($var) || is_float($var))
+        return _num($var);
     if (is_string($var))
         return _string($var);    
 
