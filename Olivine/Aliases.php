@@ -2,7 +2,7 @@
 
 use \System\NObject;
 use \System\NBoolean;
-use \System\NInteger;
+use \System\NNumber;
 use \System\NFloat;
 use \System\NString;
 
@@ -23,7 +23,7 @@ function _false()
 
 function _int($var)
 {
-    return NInteger::get($var);
+    return NNumber::get($var);
 }
 
 function _float($var)

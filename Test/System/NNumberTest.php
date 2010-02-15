@@ -3,18 +3,18 @@
 require_once 'PHPUnit/Framework.php';
 require_once dirname(__FILE__) . '/../../Olivine/Framework.php';
 
-use \System\NInteger;
+use \System\NNumber;
 
 Olivine::import("System");
 Olivine::useAliases();
 
-class NIntegerTest extends PHPUnit_Framework_TestCase
-{
+class NNumberTest extends PHPUnit_Framework_TestCase
+{   
     public function testConstructor()
     {
-        $val1 = NInteger::get(0);
-        $val2 = NInteger::get(12);
-        $val3 = NInteger::get(-12);
+        $val1 = NNumber::get(0);
+        $val2 = NNumber::get(12);
+        $val3 = NNumber::get(-12);
 
         $this->assertEquals(0, $val1->intValue());
         $this->assertEquals(12, $val2->intValue());
@@ -23,9 +23,9 @@ class NIntegerTest extends PHPUnit_Framework_TestCase
 
     public function testAlias()
     {
-        $val1 = NInteger::get(0);
-        $val2 = NInteger::get(12);
-        $val3 = NInteger::get(-12);
+        $val1 = NNumber::get(0);
+        $val2 = NNumber::get(12);
+        $val3 = NNumber::get(-12);
 
         $alias1 = is(0);
         $alias2 = is(12);
@@ -67,6 +67,22 @@ class NIntegerTest extends PHPUnit_Framework_TestCase
     {
         $int = is(444);
         $this->assertFalse( $int->equals(null)->boolValue() );
+    }
+
+    public function testPlus()
+    {
+        $val1 = is(1);
+        $val2 = is(2);
+        $this->assertEquals(3, $val1->plus($val2)->intValue());
+    }
+
+    public function testPlusOverflow()
+    {
+        $this->setExpectedException('System\OverflowException');
+
+        $val1 = NNumber::getMaxInt();
+        $val2 = is(1);
+        $val1->plus($val2)->intValue();
     }
 
 }

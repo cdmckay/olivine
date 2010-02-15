@@ -1,7 +1,7 @@
 <?php
 
 final class Olivine
-{
+{    
     public static function import($namespace)
     {
         // Replace all dots with forward slashes.
@@ -16,6 +16,6 @@ final class Olivine
     {
         require_once dirname(__FILE__) . "/Aliases.php";
     }
-    
+
 }
 

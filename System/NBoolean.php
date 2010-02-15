@@ -73,12 +73,12 @@ final class NBoolean
      * $object is false, or if $object is null.
      *
      * @param NObject $object
-     * @return NInteger
+     * @return NNumber
      */
     public function compareTo(IObject $object = null)
     {                
         if ($object === null)
-            return NInteger::get(1);
+            return NNumber::get(1);
 
         if (!($object instanceof NBoolean))
             throw new ArgumentException('$object is not an NBoolean', '$object');
@@ -87,12 +87,12 @@ final class NBoolean
         $o2 = $object->boolValue();
             
         if ($o1 === false && $o2 === true)
-            return NInteger::get(-1);
+            return NNumber::get(-1);
 
         if ($o1 === true && $o2 === false)
-            return NInteger::get(1);
+            return NNumber::get(1);
 
-        return NInteger::get(0);
+        return NNumber::get(0);
     }
 
     /**
@@ -116,11 +116,11 @@ final class NBoolean
      * the integer, 0. However, a particular programming language might
      * represent true and false with other values.
      *
-     * @return NInteger
+     * @return NNumber
      */
     public function getHashCode()
     {
-        return $this->value ? NInteger::get(1) : NInteger::get(0);
+        return $this->value ? NNumber::get(1) : NNumber::get(0);
     }    
 
     /**

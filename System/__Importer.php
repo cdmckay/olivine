@@ -7,13 +7,15 @@ final class __Importer
     private static $tree = array(
         "IObject" => array(
             "NObject" => array(
-                "NBoolean" => array(),
-                "NFloat" => array(),
-                "NInteger" => array(),
+                "NBoolean" => array(),                
+                "NNumber" => array(),
                 "NString" => array(),
             ),
             "NException" => array(
                 "SystemException" => array(
+                    "ArithmeticException" => array(
+                        "OverflowException" => array()
+                    ),
                     "ArgumentException" => array(
                         "ArgumentNullException" => array()
                     ),
@@ -27,6 +29,7 @@ final class __Importer
         "IConvertible" => array(),
         "IEnumerable" => array(),        
         "IFormattable" => array(),
+        "Math" => array(),
     );
 
     public static function import()
