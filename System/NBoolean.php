@@ -134,7 +134,7 @@ final class NBoolean
      * @param NString $value A string containing the value to convert.
      * @return NBoolean True if value is equivalent to getTrueString(); otherwise, false.
      */
-    public static function parse(NString $value)
+    public static function parse(NString $value = null)
     {
         if ($value == null)
             throw new ArgumentNullException(null, '$value');      
@@ -170,7 +170,7 @@ final class NBoolean
      * This parameter is passed uninitialized.
      * @return NBoolean  True if value was converted successfully; otherwise, false.
      */
-    public static function tryParse(NString $value, NBoolean &$result = null)
+    public static function tryParse(NString $value = null, NBoolean &$result = null)
     {
         $successful = self::$false;
         

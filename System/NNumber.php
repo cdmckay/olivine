@@ -14,7 +14,7 @@ final class NNumber
     private static $numberPattern 
         = "#^([-+]?[0-9]*\.?[0-9]+)([eE]([-+]?[0-9]+))?$#";
     private static $scale = 10;
-    private $value = '0';   
+    private $value;   
 
     private function __construct($value)
     {
@@ -22,29 +22,30 @@ final class NNumber
     }
 
     public static function get($value)
-    {       
-        $val = "0";
+    {
+        $str = null;
 
-        if ((is_int($value) || is_float($value) || is_string($value))
-                && preg_match(self::$numberPattern, (string) $value, $matches) !== 0)
-        {            
-            if (count($matches) > 2)
-            {                
-                $number = $matches[1];
-                $exponent = $matches[3];
-                $val = bcmul($number, bcpow(10, $exponent));
-            }
-            else
-            {
-                $val = trim($value);
-            }
-        }
-        else
+        if (is_int($value) || is_float($value))
         {
-            throw new ArgumentException("Argument must be an int, float or a string containing a number: $value", '$value');
+            $str = (string) $value;
         }
 
-        return new NNumber($val);
+        if (is_string($value))
+        {
+            $val = trim($value);
+            if (self::hasNumberFormat($val))
+            {
+                $str = $val;
+            }
+        }
+
+        if ($str === null)
+        {
+            $message = "Argument must be an int, float or a string containing a number: $value";
+            throw new ArgumentException($message, '$value');
+        }
+
+        return new NNumber(self::expandExponent($str));
     }
 
     /**
@@ -65,18 +66,15 @@ final class NNumber
     public function compareTo(IObject $object = null)
     {
         if ($object === null)
-            return new NNumber(1);
+            return self::get(1);
 
         if (!($object instanceof NNumber))
             throw new ArgumentException('$object is not an NNumber', '$object');
 
-        $o1 = $this->intValue();
-        $o2 = $object->intValue();
-             
-        if ($o1 < $o2) return new NNumber(-1);
-        if ($o1 > $o2) return new NNumber(1);
+        $o1 = $this->stringValue();
+        $o2 = $object->stringValue();
 
-        return new NNumber(0);
+        return self::get(bccomp($o1, $o2, self::$scale));
     }
 
     /**
@@ -90,42 +88,75 @@ final class NNumber
     public function equals(IObject $object = null)
     {
         return NBoolean::get($object instanceof NNumber
-                && $this->intValue() === $object->intValue());
+                && bccomp($this->value, $object->stringValue(), self::$scale) === 0);
     }
 
-    public function parse(NString $value)
+    private static function hasNumberFormat($str)
     {
-
+        return preg_match(self::$numberPattern, $str) === 1;
     }
 
-    public function tryParse(NString $value, NBoolean &$result = null)
+    private static function expandExponent($str)
+    {
+        $ret = $str;
+        if (preg_match(self::$numberPattern, $str, $matches) !== 0)
+        {
+            if (count($matches) > 2)
+            {
+                $number = $matches[1];
+                $exponent = $matches[3];
+                $ret = bcmul($number, bcpow(10, $exponent), self::$scale);
+            }
+        }
+
+        return $ret;
+    }
+
+    public static function parse(NString $value = null)
+    {
+        if ($value == null)
+        {
+            throw new ArgumentNullException(null, '$value');
+        }
+
+        $str = $value->trim()->stringValue();
+
+        if (!self::hasNumberFormat($str))
+        {
+            throw new FormatException();
+        }
+
+        return self::get($str);
+    }
+
+    public static function tryParse(NString $value = null, NBoolean &$result = null)
     {
         
     }
 
     public function negate()
     {
-        return self::get(bcmul($this->value, '-1'));
+        return self::get(bcmul($this->value, '-1', self::$scale));
     }
 
     public function plus(NNumber $value)
     {        
-        return self::get(bcadd($this->value, $value->stringValue()));
+        return self::get(bcadd($this->value, $value->stringValue(), self::$scale));
     }
 
     public function minus(NNumber $value)
     {        
-        return self::get(bcsub($this->value, $value->stringValue()));
+        return self::get(bcsub($this->value, $value->stringValue(), self::$scale));
     }
 
     public function times(NNumber $value)
     {        
-        return self::get(bcmul($this->value, $value->stringValue()));
+        return self::get(bcmul($this->value, $value->stringValue(), self::$scale));
     }
 
     public function divide(NNumber $value)
     {       
-        return self::get(bcdiv($this->value, $value->stringValue()));
+        return self::get(bcdiv($this->value, $value->stringValue(), self::$scale));
     }
 
     public function modulus(NNumber $value)
@@ -140,7 +171,7 @@ final class NNumber
 
     public function intValue()
     {
-        $val = Math::ceiling($this)->stringValue();
+        $val = Math::floor($this)->stringValue();
         $ret = (int) $val;
 
         if (strcmp(((string) $ret), $val) !== 0)
@@ -154,7 +185,7 @@ final class NNumber
         $val = $this->value;
         $ret = (float) $val;        
 
-        if (is_infinite($ret) || ($ret === 0.0 && !preg_match("#^0(\.0+)?$#", $val)))
+        if (is_infinite($ret))
             throw new OverflowException("A float is not wide enough to hold: $val");
 
         return $ret;

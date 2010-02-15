@@ -98,6 +98,12 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $this->assertFalse( $int->equals(null)->boolValue() );
     }
 
+    public function testNegate()
+    {
+        $val = is(1);
+        $this->assertEquals(-1, $val->negate()->intValue());
+    }
+
     public function testPlus()
     {
         $val1 = is(1);
@@ -142,7 +148,7 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $val1->plus($val2)->intValue();
     }
 
-    public function testIntValueUnderflow()
+    public function testIntValueNegativeOverflow()
     {
         $this->setExpectedException('System\OverflowException');
 
@@ -155,25 +161,26 @@ class NNumberTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('System\OverflowException');
         
-        $val = is(2);
+        $factor = is(4);
+        $val = is(4);
         while (true)
         {
-            $val = $val->times($val);
+            $val = $val->times($factor);
             $val->floatValue();
         }
     }
 
-//    public function testFloatValueUnderflow()
-//    {
-//        $this->setExpectedException('System\OverflowException');
-//
-//        $val = is(2);
-//        $foo = is(2);
-//        while (true)
-//        {
-//            $val = $val->divide($foo);
-//            echo $val->floatValue() . "\n";
-//        }
-//    }
+    public function testFloatValueNegativeOverflow()
+    {
+        $this->setExpectedException('System\OverflowException');
+
+        $factor = is(4);
+        $val = is(-4);
+        while (true)
+        {
+            $val = $val->times($factor);
+            $val->floatValue();
+        }
+    }    
 
 }
