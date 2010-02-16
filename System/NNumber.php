@@ -21,6 +21,15 @@ final class NNumber
         $this->value = $value;
     }
 
+    /**
+     * Returns an NNumber instance for a given int, float or string
+     * containing a number.
+     * 
+     * The number string may have an exponent, i.e. "2.0e2".
+     *
+     * @param mixed $value An int, float or string containing a number.
+     * @return NNumber
+     */
     public static function get($value)
     {
         $str = null;
@@ -91,11 +100,28 @@ final class NNumber
                 && bccomp($this->value, $object->stringValue(), self::$scale) === 0);
     }
 
+    /**
+     * Checks that a PHP string has a particular number format
+     * expected by NNumber.
+     *
+     * @param string $str
+     * @return string
+     */
     private static function hasNumberFormat($str)
     {
         return preg_match(self::$numberPattern, $str) === 1;
     }
 
+    /**
+     * Expands the exponent in a PHP string if the string has one.     
+     *
+     * For example, "2e2" would become "200".
+     *
+     * If the string does not have an exponent it will be returned unchanged.
+     *
+     * @param string $str
+     * @return string
+     */
     private static function expandExponent($str)
     {
         $ret = $str;
