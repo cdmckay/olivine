@@ -91,6 +91,23 @@ final class NString
     public function toFloat()
     {
         
-    }   
+    }
+
+    // PHP-specific
+
+    public function capitalizeFirst()
+    {
+
+    }
+
+    public function capitalize()
+    {
+        
+    }
+
+    public function wrap()
+    {
+
+    }
 
 }
