@@ -6,10 +6,12 @@ final class OlivineInfo
 {
     private static $tree = array(
         "IObject" => array(
-            "NObject" => array(
+            "NObject" => array(                
                 "NBoolean" => array(),                
                 "NNumber" => array(),
                 "NString" => array(),
+                "Console" => array(),
+                "Environment" => array(),
             ),
             "NException" => array(
                 "SystemException" => array(
@@ -28,7 +30,7 @@ final class OlivineInfo
         "IComparable" => array(),
         "IConvertible" => array(),
         "IEnumerable" => array(),        
-        "IFormattable" => array(),
+        "IFormattable" => array(),        
         "Math" => array(),
     );
 

@@ -38,9 +38,18 @@ final class NString
 
     }
 
-    public static function concat($arg0, $arg1 = null, $arg2 = null, $arg3 = null)
+    public function concat(IObject $arg0, IObject $arg1 = null, IObject $arg2 = null, IObject $arg3 = null)
     {
-        
+        $str = $arg0->toString()->stringValue();
+        if ($arg1 !== null) $str += $arg1;
+        if ($arg2 !== null) $str += $arg2;
+        if ($arg3 !== null) $str += $arg3;
+        return self::get($str);
+    }
+
+    public static function staticConcat(IObject $arg0, IObject $arg1 = null, IObject $arg2 = null, IObject $arg3 = null)
+    {
+        return $arg0->toString()->concat($arg1, $arg2, $arg3);
     }   
 
     public function compareTo(IObject $object = null)
@@ -97,7 +106,7 @@ final class NString
                 $fixed_args[] = $arg->toString()->stringValue();
             }
         }
-        return NString::get(vsprintf($format->stringValue(), $fixed_args));
+        return self::get(vsprintf($format->stringValue(), $fixed_args));
     }
 
     public function toLower()
