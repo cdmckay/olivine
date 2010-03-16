@@ -2,7 +2,7 @@
 
 namespace System;
 
-final class __Importer
+final class OlivineInfo
 {
     private static $tree = array(
         "IObject" => array(

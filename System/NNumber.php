@@ -157,14 +157,14 @@ final class NNumber
      * exponential-digits is a series of digits ranging from 0 to 9 that specify an exponent.
      *
      * @param NString $value A string containing a number to convert. 
-     * @param NBoolean $result When this method returns, contains the
+     * @param NNumber $result When this method returns, contains the
      * NNumber equivalent to the $value parameter, if the conversion succeeded,
      * or zero if the conversion failed. The conversion fails if the $value
      * parameter is null, is not a number in a valid format, This parameter
      * is passed uninitialized.
-     * @return NNumber
+     * @return NBoolean
      */
-    public static function tryParse(NString $value = null, NBoolean &$result = null)
+    public static function tryParse(NString $value = null, NNumber &$result = null)
     {
         $successful = NBoolean::get(false);
 

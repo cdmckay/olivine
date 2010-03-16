@@ -21,46 +21,108 @@ final class NString
             throw new ArgumentException('$value must be a string', '$value');
 
         return new NString($value);
-    }
+    }    
 
     public function __clone()
     {
         
     }
 
+    public static function compare(NString $strA, NString $strB, NBoolean $ignoreCase = null)
+    {
+        if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
+    }
+
+    public static function compareOrdinal(NString $strA, NString $strB)
+    {
+
+    }
+
+    public static function concat($arg0, $arg1 = null, $arg2 = null, $arg3 = null)
+    {
+        
+    }   
+
     public function compareTo(IObject $object = null)
     {
         
     }
 
-    public function toLower()
+    public function contains(NString $value)
     {
-        return new NString(strtolower($this->value));
+
     }
 
-    public function toString()
+    public static function copy(NString $str)
     {
-        return $this;
+        return self::get($str->stringValue());
     }
+
+    public function endsWith(NString $value, NBoolean $ignoreCase = null)
+    {
+        if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
+    }
+
+    public function equals(IObject $object = null)
+    {
+        
+    }
+
+    public static function staticEquals(IObject $object1 = null, IObject $object2 = null)
+    {
+        
+    }
+
+    public static function format(NString $format /*, $arg0, $arg1, ... */)
+    {
+        $args = func_get_args();
+        $args_slice = array_slice($args, 1);
+        $fixed_args = array();
+        foreach ($args_slice as $arg)
+        {
+            if (!($arg instanceof IObject))
+                throw new ArgumentException("Argument must be an IObject");
+
+            if (false);
+            else if ($arg instanceof NString)
+            {
+                $fixed_args[] = $arg->stringValue();
+            }
+            else if ($arg instanceof NNumber)
+            {
+                $fixed_args[] = $arg->floatValue();
+            }
+            else
+            {
+                $fixed_args[] = $arg->toString()->stringValue();
+            }
+        }
+        return NString::get(vsprintf($format->stringValue(), $fixed_args));
+    }
+
+    public function toLower()
+    {
+        return self::get(strtolower($this->value));
+    }    
 
     public function toUpper()
     {
-        return new NString(strtoupper($this->value));
+        return self::get(strtoupper($this->value));
     }
 
     public function trim()
     {
-        return new NString(trim($this->value));
+        return self::get(trim($this->value));
     }
 
     public function trimStart()
     {
-        return new NString(ltrim($this->value));
+        return self::get(ltrim($this->value));
     }
 
     public function trimEnd()
     {
-        return new NString(rtrim($this->value));
+        return self::get(rtrim($this->value));
     }
 
     public function boolValue()
@@ -91,6 +153,11 @@ final class NString
     public function toNumber()
     {
         
+    }
+
+    public function toString()
+    {
+        return $this;
     }
 
     // PHP-specific

@@ -6,9 +6,9 @@ final class Olivine
     {
         // Replace all dots with forward slashes.
         $path = str_replace('.', '/', $namespace);
-        $importer_path = dirname(__FILE__) . "/../$path/__Importer.php";
+        $importer_path = dirname(__FILE__) . "/../$path/.OlivineInfo.php";
         require_once $importer_path;
-        $importer = '\\' . str_replace('.', '\\', $namespace) . "\\__Importer";
+        $importer = '\\' . str_replace('.', '\\', $namespace) . "\\OlivineInfo";
         $importer::import();
     }
 
