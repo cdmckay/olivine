@@ -26,7 +26,7 @@ class NObject
      */
     public function getHashCode()
     {
-        return new NString(spl_object_hash($this));
+        return NString::get(spl_object_hash($this));
     }
 
     /**
@@ -36,7 +36,7 @@ class NObject
      */
     public function getType()
     {
-        return new NString(get_class($this));
+        return NString::get(get_class($this));
     }
 
     public function memberwiseClone()
@@ -54,7 +54,7 @@ class NObject
      */
     public function toString()
     {
-        return new NString(get_class($this));
+        return NString::get(get_class($this));
     }
 
     /**

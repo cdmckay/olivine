@@ -71,12 +71,12 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
         $true  = NBoolean::get(true);
         $false = NBoolean::get(false);
 
-        $val1 = NBoolean::parse(new NString("true"));
-        $val2 = NBoolean::parse(new NString("false"));
-        $val3 = NBoolean::parse(new NString(" true "));
-        $val4 = NBoolean::parse(new NString(" false "));
-        $val5 = NBoolean::parse(new NString("TRUE"));
-        $val6 = NBoolean::parse(new NString("FALSE"));
+        $val1 = NBoolean::parse(NString::get("true"));
+        $val2 = NBoolean::parse(NString::get("false"));
+        $val3 = NBoolean::parse(NString::get(" true "));
+        $val4 = NBoolean::parse(NString::get(" false "));
+        $val5 = NBoolean::parse(NString::get("TRUE"));
+        $val6 = NBoolean::parse(NString::get("FALSE"));
 
         $this->assertEquals(0, $val1->compareTo($true)->intValue());
         $this->assertEquals(0, $val2->compareTo($false)->intValue());
@@ -89,7 +89,7 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
     public function testParseWithInvalidNString()
     {
         $this->setExpectedException('System\FormatException');
-        NBoolean::parse(new NString("ture"));
+        NBoolean::parse(NString::get("ture"));
     }   
 
     public function testToString()
@@ -106,7 +106,7 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
         $true  = NBoolean::get(true);
         $false = NBoolean::get(false);
 
-        $successful = NBoolean::tryParse(new NString("true"), $result);
+        $successful = NBoolean::tryParse(NString::get("true"), $result);
         $this->assertEquals(true, $successful->boolValue());
         $this->assertEquals(true, $result->boolValue());
     }
@@ -116,7 +116,7 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
         $true  = NBoolean::get(true);
         $false = NBoolean::get(false);
 
-        $successful = NBoolean::tryParse(new NString("ture"), $result);
+        $successful = NBoolean::tryParse(NString::get("ture"), $result);
         $this->assertEquals(false, $successful->boolValue());
         $this->assertEquals(false, $result->boolValue());
     }

@@ -57,7 +57,7 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $alias1 = is(0);
         $alias2 = is(12);
         $alias3 = is(-12);
-        $alias4 = _num("12e12");
+        $alias4 = _number("12e12");
 
         $this->assertEquals($val1->intValue(), $alias1->intValue());
         $this->assertEquals($val2->intValue(), $alias2->intValue());

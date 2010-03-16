@@ -15,7 +15,7 @@ final class NBoolean
     public static function getFalseString()
     {
         if (self::$falseNString == null)
-            self::$falseNString = new NString("false");
+            self::$falseNString = NString::get("false");
 
         return self::$falseNString;
     }
@@ -23,7 +23,7 @@ final class NBoolean
     public static function getTrueString()
     {
         if (self::$trueNString == null)
-            self::$trueNString = new NString("true");
+            self::$trueNString = NString::get("true");
 
         return self::$trueNString;
     }
@@ -228,7 +228,7 @@ final class NBoolean
      */
     public function toString()
     {
-        return $this->value ? new NString("True") : new NString("False");
+        return $this->value ? NString::get("True") : NString::get("False");
     }
 
 }

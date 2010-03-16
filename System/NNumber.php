@@ -270,7 +270,7 @@ final class NNumber
      */
     public function toString()
     {
-        return new NString($this->stringValue());
+        return NString::get($this->stringValue());
     }
 
     /**

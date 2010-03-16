@@ -10,12 +10,17 @@ final class NString
 
     private $value = null;
 
-    public function __construct($value)
+    private function __construct($value)
+    {        
+        $this->value = $value;
+    }
+
+    public static function get($value)
     {
         if (!is_string($value))
             throw new ArgumentException('$value must be a string', '$value');
 
-        $this->value = $value;
+        return new NString($value);
     }
 
     public function __clone()

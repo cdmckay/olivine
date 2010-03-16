@@ -3,7 +3,6 @@
 use \System\NObject;
 use \System\NBoolean;
 use \System\NNumber;
-use \System\NFloat;
 use \System\NString;
 
 function _bool($var)
@@ -11,24 +10,14 @@ function _bool($var)
     return NBoolean::get($var);
 }
 
-function _true()
-{
-    return NBoolean::get(true);
-}
-
-function _false()
-{
-    return NBoolean::get(false);
-}
-
-function _num($var)
+function _number($var)
 {
     return NNumber::get($var);
 }
 
 function _string($var)
 {
-    return new NString($var);
+    return NString::get($var);
 }
 
 function _object()
@@ -41,14 +30,10 @@ function is($var = null)
     if (is_bool($var))
         return _bool($var);
     if (is_int($var) || is_float($var))
-        return _num($var);
+        return _number($var);
     if (is_string($var))
         return _string($var);    
 
     throw new \System\ArgumentException();
 }
 
-function t($var = null)
-{
-    return is($var);
-}
