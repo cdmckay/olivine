@@ -83,12 +83,7 @@ final class NString
 
     }
 
-    public function toInteger()
-    {
-
-    }
-
-    public function toFloat()
+    public function toNumber()
     {
         
     }

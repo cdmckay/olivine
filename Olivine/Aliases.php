@@ -47,3 +47,8 @@ function is($var = null)
 
     throw new \System\ArgumentException();
 }
+
+function t($var = null)
+{
+    return is($var);
+}

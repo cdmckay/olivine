@@ -98,46 +98,31 @@ final class NNumber
     {
         return NBoolean::get($object instanceof NNumber
                 && bccomp($this->value, $object->stringValue(), self::$scale) === 0);
-    }
+    }    
 
     /**
-     * Checks that a PHP string has a particular number format
-     * expected by NNumber.
+     * Converts the string representation of a number to its NNumber equivalent.
      *
-     * @param string $str
-     * @return string
+     * The <code>$value</code> parameter contains a number of the form:
+     * [ws][sign]integral-digits[.[fractional-digits]][e[sign]exponential-digits][ws]
+     *
+     * where:
+     * 
+     * ws is a series of white space characters.
+     * sign is a negative sign or positive sign symbol. Only a leading sign can be used.
+     * integral-digits is a series of digits ranging from 0 to 9 that specify the integral part of the number.
+     * fractional-digits is a series of digits ranging from 0 to 9 that specify the fractional part of the number.
+     * e is an uppercase or lowercase character 'e', indicating exponential (scientific) notation.
+     * exponential-digits is a series of digits ranging from 0 to 9 that specify an exponent.
+     *
+     * For example: <code>-10.12345e+10</code>
+     *
+     * @param NString $value A string containing a number to convert. 
+     * @return NNumber
+     *
+     * @throws ArgumentNullException if $value is null
+     * @throws FormatException if $value is not the correct format
      */
-    private static function hasNumberFormat($str)
-    {
-        return preg_match(self::$numberPattern, $str) === 1;
-    }
-
-    /**
-     * Expands the exponent in a PHP string if the string has one.     
-     *
-     * For example, "2e2" would become "200".
-     *
-     * If the string does not have an exponent it will be returned unchanged.
-     *
-     * @param string $str
-     * @return string
-     */
-    private static function expandExponent($str)
-    {
-        $ret = $str;
-        if (preg_match(self::$numberPattern, $str, $matches) !== 0)
-        {
-            if (count($matches) > 2)
-            {
-                $number = $matches[1];
-                $exponent = $matches[3];
-                $ret = bcmul($number, bcpow(10, $exponent), self::$scale);
-            }
-        }
-
-        return $ret;
-    }
-
     public static function parse(NString $value = null)
     {
         if ($value == null)
@@ -155,9 +140,45 @@ final class NNumber
         return self::get($str);
     }
 
+    /**
+     * Converts the string representation of a number to its NNumber equivalent.
+     * A return value indicates whether the conversion succeeded or failed.
+     *
+     * The <code>$value</code> parameter contains a number of the form:
+     * [ws][sign]integral-digits[.[fractional-digits]][e[sign]exponential-digits][ws]
+     *
+     * where:
+     *
+     * ws is a series of white space characters.
+     * sign is a negative sign or positive sign symbol. Only a leading sign can be used.
+     * integral-digits is a series of digits ranging from 0 to 9 that specify the integral part of the number.
+     * fractional-digits is a series of digits ranging from 0 to 9 that specify the fractional part of the number.
+     * e is an uppercase or lowercase character 'e', indicating exponential (scientific) notation.
+     * exponential-digits is a series of digits ranging from 0 to 9 that specify an exponent.
+     *
+     * @param NString $value A string containing a number to convert. 
+     * @param NBoolean $result When this method returns, contains the
+     * NNumber equivalent to the $value parameter, if the conversion succeeded,
+     * or zero if the conversion failed. The conversion fails if the $value
+     * parameter is null, is not a number in a valid format, This parameter
+     * is passed uninitialized.
+     * @return NNumber
+     */
     public static function tryParse(NString $value = null, NBoolean &$result = null)
     {
-        
+        $successful = NBoolean::get(false);
+
+        try
+        {
+            $result = self::parse($value);
+            $successful = NBoolean::get(true);
+        }
+        catch (NException $e)
+        {
+            $result = NNumber::get(0);
+        }
+
+        return $successful;
     }
 
     public function negate()
@@ -189,10 +210,16 @@ final class NNumber
     {        
         return self::get(bcmod($this->value, $value->stringValue()));
     }
-       
+
+     /**
+     * Converts the NNumber to a boolean
+     *
+     * @return boolean True if the value of the current instance is zero;
+     * otherwise false.
+     */
     public function boolValue()
     {
-        return (bool) $this->value;
+        return $this->equals(self::get(0));
     }
 
     public function intValue()
@@ -222,19 +249,15 @@ final class NNumber
         return $this->value;
     }
 
+   
     public function toBoolean()
     {
-
+        return NBoolean::get($this->boolValue());
     }
 
-    public function toInteger()
+    public function toNumber()
     {
-
-    }
-
-    public function toFloat()
-    {
-
+        return $this;
     }
 
     /**
@@ -248,6 +271,44 @@ final class NNumber
     public function toString()
     {
         return new NString($this->stringValue());
+    }
+
+    /**
+     * Checks that a PHP string has a particular number format
+     * expected by NNumber.
+     *
+     * @param string $str
+     * @return string
+     */
+    private static function hasNumberFormat($str)
+    {
+        return preg_match(self::$numberPattern, $str) === 1;
+    }
+
+    /**
+     * Expands the exponent in a PHP string if the string has one.
+     *
+     * For example, "2e2" would become "200".
+     *
+     * If the string does not have an exponent it will be returned unchanged.
+     *
+     * @param string $str
+     * @return string
+     */
+    private static function expandExponent($str)
+    {
+        $ret = $str;
+        if (preg_match(self::$numberPattern, $str, $matches) !== 0)
+        {
+            if (count($matches) > 2)
+            {
+                $number = $matches[1];
+                $exponent = $matches[3];
+                $ret = bcmul($number, bcpow(10, $exponent), self::$scale);
+            }
+        }
+
+        return $ret;
     }
 
 }

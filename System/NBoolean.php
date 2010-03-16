@@ -133,6 +133,9 @@ final class NBoolean
      *
      * @param NString $value A string containing the value to convert.
      * @return NBoolean True if value is equivalent to getTrueString(); otherwise, false.
+     *
+     * @throws ArgumentNullException
+     * @throws FormatException
      */
     public static function parse(NString $value = null)
     {
@@ -181,7 +184,7 @@ final class NBoolean
         }
         catch (NException $e)
         {
-            $result = self::$false;;
+            $result = self::$false;
         }
 
         return $successful;
@@ -209,17 +212,12 @@ final class NBoolean
 
     public function toBoolean()
     {
-
+        return $this->value;
     }
 
-    public function toInteger()
+    public function toNumber()
     {
-        
-    }
-
-    public function toFloat()
-    {
-        
+        return NNumber::get($this->intValue());
     }
 
     /**

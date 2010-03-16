@@ -98,6 +98,39 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $this->assertFalse( $int->equals(null)->boolValue() );
     }
 
+    public function testParse()
+    {        
+        $this->assertTrue( is(0)->equals(NNumber::parse(is("0")))->boolValue() ) ;
+        $this->assertTrue( is(-100)->equals(NNumber::parse(is("-100")))->boolValue() );
+        $this->assertTrue( is(42e4)->equals(NNumber::parse(is("42e4")))->boolValue() );
+    }
+
+    public function testParseNull()
+    {
+        $this->setExpectedException('System\ArgumentNullException');
+        NNumber::parse(null);
+    }
+
+    public function testParseWithInvalidFormat()
+    {
+        $this->setExpectedException('System\FormatException');
+        NNumber::parse(is("I love lamp"));
+    }
+
+    public function testTryParse()
+    {
+        $successful = NNumber::tryParse(is("10"), $result);
+        $this->assertTrue(is(true)->equals($successful)->boolValue());
+        $this->assertTrue(is(10)->equals($result)->boolValue());
+    }
+
+    public function testTryParseWithInvalidFormat()
+    {
+        $successful = NNumber::tryParse(is("I hate lamp"), $result);
+        $this->assertTrue(is(false)->equals($successful)->boolValue());
+        $this->assertTrue(is(0)->equals($result)->boolValue());
+    }
+
     public function testNegate()
     {
         $val = is(1);
@@ -137,50 +170,6 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $val1 = is(10);
         $val2 = is(3);
         $this->assertEquals(1, $val1->modulus($val2)->intValue());
-    }   
-
-    public function testIntValueOverflow()
-    {
-        $this->setExpectedException('System\OverflowException');
-
-        $val1 = is(PHP_INT_MAX);
-        $val2 = is(PHP_INT_MAX);
-        $val1->plus($val2)->intValue();
-    }
-
-    public function testIntValueNegativeOverflow()
-    {
-        $this->setExpectedException('System\OverflowException');
-
-        $val1 = is(-10);
-        $val2 = is(PHP_INT_MAX);
-        $val1->minus($val2)->intValue();
-    }
-
-    public function testFloatValueOverflow()
-    {
-        $this->setExpectedException('System\OverflowException');
-        
-        $factor = is(4);
-        $val = is(4);
-        while (true)
-        {
-            $val = $val->times($factor);
-            $val->floatValue();
-        }
-    }
-
-    public function testFloatValueNegativeOverflow()
-    {
-        $this->setExpectedException('System\OverflowException');
-
-        $factor = is(4);
-        $val = is(-4);
-        while (true)
-        {
-            $val = $val->times($factor);
-            $val->floatValue();
-        }
-    }    
+    }      
 
 }
