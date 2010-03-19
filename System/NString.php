@@ -41,19 +41,17 @@ final class NString
         if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
 
         
-    }
-
-    public static function compareOrdinal(NString $strA, NString $strB)
-    {
-
-    }
+    }   
 
     /**
+     * Concatenates this NString with one or more instances of NString, or the NString
+     * representations of the values of one or more instances of IObject.
      *
-     * @param IObject $arg0
-     * @param IObject $arg1
-     * @param IObject $arg2
-     * @return NString
+     * @param IObject $arg0 The first IObject.
+     * @param IObject $arg1 The second IObject.
+     * @param IObject $arg2 The third IObject.
+     * @return NString The concatenated NString representations of the
+     * values of $arg0, $arg1, and $arg2.
      */
     public function concat(IObject $arg0, IObject $arg1 = null, IObject $arg2 = null)
     {
@@ -63,6 +61,17 @@ final class NString
         return self::get($str);
     }
 
+    /**
+     * Concatenates one or more instances of NString, or the NString
+     * representations of the values of one or more instances of IObject.
+     *
+     * @param IObject $arg0 The first IObject.
+     * @param IObject $arg1 The second IObject.
+     * @param IObject $arg2 The third IObject.
+     * @param IObject $arg3 The fourth IObject.
+     * @return NString The concatenated NString representations of the
+     * values of $arg0, $arg1, $arg2, and $arg3.
+     */
     public static function staticConcat(IObject $arg0, IObject $arg1 = null, IObject $arg2 = null, IObject $arg3 = null)
     {
         return $arg0->toString()->concat($arg1, $arg2, $arg3);
@@ -123,6 +132,67 @@ final class NString
             }
         }
         return self::get(vsprintf($format->stringValue(), $fixed_args));
+    }
+
+    public function indexOf(NString $value, NNumber $startIndex = null, NNumber $count = null)
+    {
+        
+    }
+
+    public function indexOfAny()
+    {
+        throw new NotImplementedException();
+    }
+
+    public function inequality(NString $a = null, NString $b = null)
+    {
+        
+    }
+
+    public function insert(NNumber $startIndex, NString $value = null)
+    {
+        
+    }
+
+    public function intern(NString $str = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public function isInterned(NString $str = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public static function isNullOrEmpty(NString $value = null)
+    {
+        
+    }
+
+    public static function isNullOrWhiteSpace(NString $value = null)
+    {
+        
+    }
+
+    public static function join()
+    {
+        // Requires collections support.
+        throw new NotImplementedException();
+    }
+
+    public function lastIndexOf(NString $value, NNumber $startIndex = null, NNumber $count = null)
+    {
+
+    }
+
+    public function padLeft(NNumber $totalWidth, NString $paddingChar)
+    {
+
+    }
+
+    public function padRight(NNumber $totalWidth, NString $paddingChar)
+    {
+
     }
 
     public function toLower()

@@ -22,7 +22,8 @@ final class OlivineInfo
                         "ArgumentNullException" => array()
                     ),
                     "FormatException" => array(),
-                    "InvalidCastException" => array()
+                    "InvalidCastException" => array(),
+                    "NotImplementedException" => array()
                 )
             )
         ),
