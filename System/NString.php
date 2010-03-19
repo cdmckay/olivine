@@ -6,7 +6,15 @@ final class NString
     extends NObject
     implements IComparable, ICloneable, IConvertible, IEnumerable
 {
-    const EMPTY_STRING = "";
+    private static $emptyString;
+    
+    public static function getEmpty()
+    {
+        if (self::$emptyString == null)
+            self::$emptyString = self::get('');
+        
+        return self::$emptyString;
+    }
 
     private $value = null;
 
@@ -31,6 +39,8 @@ final class NString
     public static function compare(NString $strA, NString $strB, NBoolean $ignoreCase = null)
     {
         if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
+
+        
     }
 
     public static function compareOrdinal(NString $strA, NString $strB)
@@ -38,12 +48,18 @@ final class NString
 
     }
 
-    public function concat(IObject $arg0, IObject $arg1 = null, IObject $arg2 = null, IObject $arg3 = null)
+    /**
+     *
+     * @param IObject $arg0
+     * @param IObject $arg1
+     * @param IObject $arg2
+     * @return NString
+     */
+    public function concat(IObject $arg0, IObject $arg1 = null, IObject $arg2 = null)
     {
-        $str = $arg0->toString()->stringValue();
-        if ($arg1 !== null) $str += $arg1;
-        if ($arg2 !== null) $str += $arg2;
-        if ($arg3 !== null) $str += $arg3;
+        $str = $this->value . $arg0;
+        if ($arg1 !== null) $str .= $arg1;
+        if ($arg2 !== null) $str .= $arg2;
         return self::get($str);
     }
 
@@ -169,21 +185,32 @@ final class NString
         return $this;
     }
 
-    // PHP-specific
+    // PHP-specific    
 
-    public function capitalizeFirst()
+    public function toSentenceCase()
     {
-
+        return self::get(ucfirst($this->value));
     }
 
-    public function capitalize()
+    public function toTitleCase()
     {
-        
+        return self::get(ucwords($this->value));
     }
 
-    public function wrap()
+    public function wordWrap(NNumber $width, NString $newLine = null, NBoolean $cut = null)
     {
+        if ($newLine === null) $newLine = Environment::getNewLine();
+        if ($cut === null) $cut = NBoolean::get(false);
 
+        return self::get(wordwrap(
+                $this->value,
+                $width->intValue(),
+                $newLine->stringValue(),
+                $cut->boolValue()));
     }
 
+    public function wordCount()
+    {
+        return NNumber::get(wordcount($this->value));
+    }
 }
