@@ -14,7 +14,7 @@ class NStringTest extends PHPUnit_Framework_TestCase
     {
         $empty = is('');
         $this->assertEquals($empty, NString::getEmpty());
-        $this->assertNotEquals("I love lamp", NString::getEmpty());
+        $this->assertNotEquals("I love lamp", NString::getEmpty()->stringValue());
     }
 
     public function testConstructor()
@@ -29,6 +29,36 @@ class NStringTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('System\ArgumentException');
         NString::get(42);
+    }
+
+    public function testCompare()
+    {
+        $this->assertEquals(0, NString::compare(is('a'), is('a'))->intValue());
+        $this->assertGreaterThan(0, NString::compare(is('b'), is('a'))->intValue());
+        $this->assertLessThan(0, NString::compare(is('a'), is('b'))->intValue());
+    }
+
+    public function testCompareWithIgnoreCase()
+    {
+        $this->assertNotEquals(0, NString::compare(is('a'), is('A'))->intValue());
+        $this->assertEquals(0, NString::compare(is('a'), is('A'), is(true))->intValue());
+    }
+
+    public function testCompareWithNull()
+    {
+        $this->assertEquals(0, NString::compare(null, null)->intValue());
+        $this->assertGreaterThan(0, NString::compare(is('b'), null)->intValue());
+        $this->assertLessThan(0, NString::compare(null, is('b'))->intValue());
+    }
+
+    public function testCompareTo()
+    {
+        $strA = is('a');
+        $strB = is('b');
+
+        $this->assertEquals(0, $strA->compareTo($strA)->intValue());
+        $this->assertGreaterThan(0, $strB->compareTo($strA)->intValue());
+        $this->assertLessThan(0, $strA->compareTo($strB)->intValue());
     }
 
     public function testConcat()

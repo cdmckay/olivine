@@ -36,12 +36,60 @@ final class NString
         
     }
 
-    public static function compare(NString $strA, NString $strB, NBoolean $ignoreCase = null)
+    /**
+     * Compares two specified NString objects, ignoring or honoring their case,
+     * and returns an integer that indicates their relative position in the
+     * sort order.
+     *
+     * Returns less than zero if $strA is less than $strB.
+     *
+     * Returns zero $strA equals $strB.
+     *
+     * Return greater than zero if $strA is greater than $strB.
+     *
+     * @param NString $strA The first string to compare.
+     * @param NString $strB The second string to compare.
+     * @param NBoolean $ignoreCase True to ignore case during comparision; false otherwise.
+     * @return NNumber An NNumber that indicates the lexical relationship
+     * between the two comparands.
+     */
+    public static function compare(NString $strA = null, NString $strB = null, NBoolean $ignoreCase = null)
     {
-        if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
+        if ($ignoreCase === null) $ignoreCase = false;
 
-        
-    }   
+        $a = $strA === null ? null : $strA->stringValue();
+        $b = $strB === null ? null : $strB->stringValue();
+
+        if ($a === null && $b === null) return NNumber::get(0);
+        if ($a === null) return NNumber::get(-1);
+        if ($b === null) return NNumber::get(1);
+
+        return NNumber::get($ignoreCase ? strcasecmp($a, $b) : strcmp($a, $b));
+    }
+
+    /**
+     * Compares this instance with a specified NString object and indicates
+     * whether this instance precedes, follows, or appears in the same position
+     * in the sort order as the specified NString.
+     *
+     * Returns less than zero if $strB precedes this instance.
+     *
+     * Returns zero if this instance has the same position in the sort order
+     * as $strB.
+     *
+     * Returns greater than zero if this instance follows $strB, or $strB is
+     * a null reference.
+     *
+     * @param IObject $strB
+     * @return NNumber An integer that indicates whether this instance precedes,
+     * follows, or appears in the same position in the sort order as the
+     * value parameter.
+     */
+    public function compareTo(IObject $strB = null)
+    {
+        if ($strB === null) return NNumber::get(1);
+        return NNumber::get(strcmp($this->value, $strB->toString()->stringValue()));
+    }
 
     /**
      * Concatenates this NString with one or more instances of NString, or the NString
@@ -76,11 +124,6 @@ final class NString
     {
         return $arg0->toString()->concat($arg1, $arg2, $arg3);
     }   
-
-    public function compareTo(IObject $object = null)
-    {
-        
-    }
 
     public function contains(NString $value)
     {
