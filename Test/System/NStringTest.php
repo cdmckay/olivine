@@ -108,8 +108,11 @@ class NStringTest extends PHPUnit_Framework_TestCase
     {
         $str = is("I am a big string: love me");
 
-        $this->assertTrue( $str->contains(is(""))->boolValue() );
-        $this->assertTrue( $str->contains(is("big"))->boolValue() );
+        $this->assertTrue(  $str->contains(is(""))->boolValue() );
+        $this->assertTrue(  $str->contains(is("big"))->boolValue() );
+        $this->assertTrue(  $str->contains(is("BIG"), is(true))->boolValue() );
+        $this->assertFalse( $str->contains(is("BIG"))->boolValue() );
+        $this->assertFalse( $str->contains(is("BIG"), is(false))->boolValue() );
         $this->assertFalse( $str->contains(is("small"))->boolValue() );
     }
 
@@ -129,5 +132,14 @@ class NStringTest extends PHPUnit_Framework_TestCase
     {
         $num = is(42);
         $this->assertEquals(NString::format(is("%d"), $num), is("42"));
+    }
+
+    public function testSubstring()
+    {
+        $str = is("superman");
+        $this->assertEquals(is("man"), $str->substring(is(5)));
+        $this->assertEquals(is("super"), $str->substring(is(0), is(5)));
+        $this->assertEquals(is("superman"), $str->substring(is(0), is(1000)));
+        $this->assertEquals(NString::getEmpty(), $str->substring(is(5), is(0)));
     }
 }

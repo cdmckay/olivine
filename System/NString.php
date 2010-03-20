@@ -17,10 +17,12 @@ final class NString
     }
 
     private $value = null;
+    private $length = 0;
 
     private function __construct($value)
     {        
         $this->value = $value;
+        $this->length = NNumber::get(strlen($value));
     }
 
     public static function get($value)
@@ -55,7 +57,7 @@ final class NString
      */
     public static function compare(NString $strA = null, NString $strB = null, NBoolean $ignoreCase = null)
     {
-        if ($ignoreCase === null) $ignoreCase = false;
+        if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
 
         $a = $strA === null ? null : $strA->stringValue();
         $b = $strB === null ? null : $strB->stringValue();
@@ -64,7 +66,7 @@ final class NString
         if ($a === null) return NNumber::get(-1);
         if ($b === null) return NNumber::get(1);
 
-        return NNumber::get($ignoreCase ? strcasecmp($a, $b) : strcmp($a, $b));
+        return NNumber::get($ignoreCase->boolValue() ? strcasecmp($a, $b) : strcmp($a, $b));
     }
 
     /**
@@ -135,7 +137,7 @@ final class NString
      *
      * @throws ArgumentNullException if value is a null reference
      */
-    public function contains(NString $value = null)
+    public function contains(NString $value = null, NBoolean $ignoreCase = null)
     {
         if ($value === null)
             throw new ArgumentNullException('$value must not be null', '$value');
@@ -143,7 +145,11 @@ final class NString
         if ($value->stringValue() === '')
             return NBoolean::get(true);
 
-        return NBoolean::get(strpos($this->value, $value->stringValue()) !== false);
+        if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
+
+        return $ignoreCase->boolValue()
+                ? NBoolean::get(stripos($this->value, $value->stringValue()) !== false)
+                : NBoolean::get(strpos($this->value, $value->stringValue()) !== false);
     }
 
     public static function copy(NString $str)
@@ -153,7 +159,17 @@ final class NString
 
     public function endsWith(NString $value, NBoolean $ignoreCase = null)
     {
+        if ($value === null)
+            throw new ArgumentNullException('$value must not be null', '$value');
+
         if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
+
+        $expectedPosition = $this->length
+                ->subtract($value->getLength())
+                ->subtract(1)
+                ->intValue();
+        
+        //return $this->lastIndexOf
     }
 
     public function equals(IObject $object = null)
@@ -191,6 +207,11 @@ final class NString
             }
         }
         return self::get(vsprintf($format->stringValue(), $fixed_args));
+    }
+
+    public function getLength()
+    {
+        return $this->length;
     }
 
     public function indexOf(NString $value, NNumber $startIndex = null, NNumber $count = null)
@@ -239,9 +260,13 @@ final class NString
         throw new NotImplementedException();
     }
 
-    public function lastIndexOf(NString $value, NNumber $startIndex = null, NNumber $count = null)
+    public function lastIndexOf(NString $value = null, 
+            NNumber $startIndex = null, NNumber $count = null,
+            NBoolean $ignoreCase = null)
     {
-
+        if ($startIndex === null) $startIndex = NNumber::get(0);
+        if ($count === null) $count = $this->length->subtract($startIndex);
+        if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
     }
 
     public function padLeft(NNumber $totalWidth, NString $paddingChar)
@@ -252,6 +277,31 @@ final class NString
     public function padRight(NNumber $totalWidth, NString $paddingChar)
     {
 
+    }
+
+    /**
+     * Retrieves a substring from this instance. The substring starts at a
+     * specified character position and has a specified length.
+     *
+     * Note that this method differs from the .NET version in that it will not
+     * throw an exception if the $startIndex + $length position is not within
+     * this instance.
+     *
+     * @param NNumber $startIndex The zero-based starting character position
+     * of a substring in this instance.
+     * @param NNumber $length The number of characters in the substring.
+     * @return NString A string that is equivalent to the substring of
+     * length $length that begins at $startIndex in this instance, or the empty
+     * string if $startIndex is equal to the length of this instance and length
+     * is zero.
+     */
+    public function substring(NNumber $startIndex, NNumber $length = null)
+    {
+        if ($length === null) $length = $this->length;
+
+        return self::get(substr($this->value,
+                $startIndex->intValue(),
+                $length->intValue()));
     }
 
     public function toLower()
