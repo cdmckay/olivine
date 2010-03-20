@@ -104,7 +104,20 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('True4', $true4->stringValue());
     }
 
-    
+    public function testContains()
+    {
+        $str = is("I am a big string: love me");
+
+        $this->assertTrue( $str->contains(is(""))->boolValue() );
+        $this->assertTrue( $str->contains(is("big"))->boolValue() );
+        $this->assertFalse( $str->contains(is("small"))->boolValue() );
+    }
+
+    public function testContainsWithNull()
+    {
+        $this->setExpectedException('System\ArgumentNullException');
+        is("test")->contains(null);
+    }
 
     public function testFormatWithString()
     {

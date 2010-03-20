@@ -125,9 +125,25 @@ final class NString
         return $arg0->toString()->concat($arg1, $arg2, $arg3);
     }   
 
-    public function contains(NString $value)
+    /**
+     * Returns a value indicating whether the specified NString object
+     * occurs within this string.
+     *
+     * @param NString $value
+     * @return NBoolean True if the value parameter occurs within this string,
+     * or if value is the empty string (""); otherwise, false.
+     *
+     * @throws ArgumentNullException if value is a null reference
+     */
+    public function contains(NString $value = null)
     {
+        if ($value === null)
+            throw new ArgumentNullException('$value must not be null', '$value');
 
+        if ($value->stringValue() === '')
+            return NBoolean::get(true);
+
+        return NBoolean::get(strpos($this->value, $value->stringValue()) !== false);
     }
 
     public static function copy(NString $str)
