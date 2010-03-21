@@ -19,7 +19,8 @@ final class OlivineInfo
                         "OverflowException" => array()
                     ),
                     "ArgumentException" => array(
-                        "ArgumentNullException" => array()
+                        "ArgumentNullException" => array(),
+                        "ArgumentOutOfRangeException" => array()
                     ),
                     "FormatException" => array(),
                     "InvalidCastException" => array(),

@@ -170,6 +170,42 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $val1 = is(10);
         $val2 = is(3);
         $this->assertEquals(1, $val1->modulus($val2)->intValue());
-    }      
+    }
+
+    public function testIsLessThan()
+    {
+        $val1 = is(5);
+        $val2 = is(10);
+        $this->assertFalse( $val1->isLessThan($val1)->boolValue() );
+        $this->assertTrue(  $val1->isLessThan($val2)->boolValue() );
+        $this->assertFalse( $val2->isLessThan($val1)->boolValue() );
+    }
+
+    public function testIsLessThanOrEqualTo()
+    {
+        $val1 = is(5);
+        $val2 = is(10);
+        $this->assertTrue(  $val1->isLessThanOrEqualTo($val1)->boolValue() );
+        $this->assertTrue(  $val1->isLessThanOrEqualTo($val2)->boolValue() );
+        $this->assertFalse( $val2->isLessThanOrEqualTo($val1)->boolValue() );
+    }
+
+    public function testIsGreaterThan()
+    {
+        $val1 = is(15);
+        $val2 = is(5);
+        $this->assertFalse( $val1->isGreaterThan($val1)->boolValue() );
+        $this->assertTrue(  $val1->isGreaterThan($val2)->boolValue() );
+        $this->assertFalse( $val2->isGreaterThan($val1)->boolValue() );
+    }
+
+    public function testIsGreaterThanOrEqualTo()
+    {
+        $val1 = is(15);
+        $val2 = is(5);
+        $this->assertTrue(  $val1->isGreaterThanOrEqualTo($val1)->boolValue() );
+        $this->assertTrue(  $val1->isGreaterThanOrEqualTo($val2)->boolValue() );
+        $this->assertFalse( $val2->isGreaterThanOrEqualTo($val1)->boolValue() );
+    }
 
 }

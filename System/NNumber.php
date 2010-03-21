@@ -211,6 +211,30 @@ final class NNumber
         return self::get(bcmod($this->value, $value->stringValue()));
     }
 
+    public function isLessThan(NNumber $value)
+    {
+        $comp = bccomp($this->value, $value->stringValue(), self::$scale);
+        return NBoolean::get($comp === -1);
+    }
+
+    public function isLessThanOrEqualTo(NNumber $value)
+    {
+        $comp = bccomp($this->value, $value->stringValue(), self::$scale);
+        return NBoolean::get($comp === 0 || $comp === -1);
+    }
+
+    public function isGreaterThan(NNumber $value)
+    {
+        $comp = bccomp($this->value, $value->stringValue(), self::$scale);
+        return NBoolean::get($comp === 1);
+    }
+
+    public function isGreaterThanOrEqualTo(NNumber $value)
+    {
+        $comp = bccomp($this->value, $value->stringValue(), self::$scale);
+        return NBoolean::get($comp === 0 || $comp === 1);
+    }
+
      /**
      * Converts the NNumber to a boolean
      *

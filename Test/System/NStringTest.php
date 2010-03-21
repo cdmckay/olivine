@@ -122,6 +122,22 @@ class NStringTest extends PHPUnit_Framework_TestCase
         is("test")->contains(null);
     }
 
+    public function testEndsWith()
+    {
+        $str = is("superman");
+        $this->assertTrue( $str->endsWith(is("man"))->boolValue() );
+        $this->assertFalse( $str->endsWith(is("MAN"))->boolValue() );
+        $this->assertTrue( $str->endsWith(NString::getEmpty())->boolValue() );
+    }
+
+    public function testEndsWithWithIgnoreCase()
+    {
+        $str = is("superman");
+        $this->assertTrue( $str->endsWith(is("man"), is(true))->boolValue() );
+        $this->assertTrue( $str->endsWith(is("MAN"), is(true))->boolValue() );
+        $this->assertTrue( $str->endsWith(NString::getEmpty(), is(true))->boolValue() );
+    }
+
     public function testFormatWithString()
     {
         $str = is("test");
@@ -134,12 +150,60 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(NString::format(is("%d"), $num), is("42"));
     }
 
+    public function testLastIndexOf()
+    {
+        $haystack = is("I am a long, long string");
+        $needle = is("long");        
+
+        $this->assertEquals(is(13), $haystack->lastIndexOf($needle));
+        $this->assertEquals(is(-1), $haystack->lastIndexOf($needle, is(14)));
+        $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, is(0), is(12)));
+        $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, null,  is(12)));
+        
+        $this->assertEquals($haystack->getLength(), $haystack->lastIndexOf(NString::getEmpty()));
+    }
+
+    public function testLastIndexOfWithIgnoreCase()
+    {
+        $haystack = is("I am a long, long string");
+        $needle = is("LONG");
+
+        $this->assertEquals(is(13), $haystack->lastIndexOf($needle, null,   null,   is(true)));
+        $this->assertEquals(is(-1), $haystack->lastIndexOf($needle, is(14), null,   is(true)));
+        $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, is(0),  is(12), is(true)));
+        $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, null,   is(12), is(true)));
+    }
+
+    public function testLastIndexOfWithNull()
+    {
+        $this->setExpectedException('System\ArgumentNullException');
+        $this->assertEquals(is(13), is("poop")->lastIndexOf(null));
+    }
+
+    public function testLastIndexOfWithNegativeStartIndex()
+    {
+        $this->setExpectedException('System\ArgumentOutOfRangeException');
+        $this->assertEquals(is(13), is("poop")->lastIndexOf(is("op"), is(-1)));
+    }
+
+    public function testLastIndexOfWithNegativeCount()
+    {
+        $this->setExpectedException('System\ArgumentOutOfRangeException');
+        $this->assertEquals(is(13), is("poop")->lastIndexOf(is("op"), is(0), is(-1)));
+    }
+
     public function testSubstring()
     {
         $str = is("superman");
-        $this->assertEquals(is("man"), $str->substring(is(5)));
-        $this->assertEquals(is("super"), $str->substring(is(0), is(5)));
-        $this->assertEquals(is("superman"), $str->substring(is(0), is(1000)));
-        $this->assertEquals(NString::getEmpty(), $str->substring(is(5), is(0)));
+        $this->assertEquals(is("man"),           $str->substring(is(5)));
+        $this->assertEquals(is("super"),         $str->substring(is(0), is(5)));
+        $this->assertEquals(is("superman"),      $str->substring(is(0), is(1000)));
+        $this->assertEquals(NString::getEmpty(), $str->substring(is(5), is(0)));        
+    }
+
+    public function testSubstringWithHugeLength()
+    {
+        $this->setExpectedException('System\OverflowException');
+        $this->assertEquals(is("superman"), is("superman")->substring(is(0), _number("10e10")));
     }
 }

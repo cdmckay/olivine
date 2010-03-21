@@ -164,12 +164,8 @@ final class NString
 
         if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
 
-        $expectedPosition = $this->length
-                ->subtract($value->getLength())
-                ->subtract(1)
-                ->intValue();
-        
-        //return $this->lastIndexOf
+        $expected = $this->length->minus($value->getLength());
+        return $this->lastIndexOf($value, null, null, $ignoreCase)->equals($expected);
     }
 
     public function equals(IObject $object = null)
@@ -264,9 +260,34 @@ final class NString
             NNumber $startIndex = null, NNumber $count = null,
             NBoolean $ignoreCase = null)
     {
+        if ($value === null)
+            throw new ArgumentNullException(null, '$value');
+
+        if ($value->getLength()->equals(NNumber::get(0))->boolValue())
+            return $this->length;
+
+        if ($startIndex !== null && $startIndex->isLessThan(NNumber::get(0))->boolValue())
+            throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
+
+        if ($count !== null && $count->isLessThan(NNumber::get(0))->boolValue())
+            throw new ArgumentOutOfRangeException('$count must be nonnegative', '$count');
+
         if ($startIndex === null) $startIndex = NNumber::get(0);
-        if ($count === null) $count = $this->length->subtract($startIndex);
+        if ($count === null) $count = $this->length->minus($startIndex);
         if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
+
+        if (!$count->equals($this->length)->boolValue())        
+            $str = $this->substring($startIndex, $count);
+        else
+            $str = $this;
+
+        $position = $ignoreCase->boolValue()
+                ? strripos($str->stringValue(), $value->stringValue())
+                : strrpos($str->stringValue(), $value->stringValue());
+
+        if ($position === false) return NNumber::get(-1);
+
+        return $startIndex->plus(NNumber::get($position));
     }
 
     public function padLeft(NNumber $totalWidth, NString $paddingChar)
