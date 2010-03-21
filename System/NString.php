@@ -7,7 +7,7 @@ final class NString
     implements IComparable, ICloneable, IConvertible, IEnumerable
 {
     private static $emptyString;
-    
+
     public static function getEmpty()
     {
         if (self::$emptyString == null)
@@ -157,7 +157,18 @@ final class NString
         return self::get($str->stringValue());
     }
 
-    public function endsWith(NString $value, NBoolean $ignoreCase = null)
+    /**
+     * Determines whether the end of this string matches the specified string.
+     *
+     * @param NString $value An NString object to compare to.
+     * @param NBoolean $ignoreCase  True to ignore case when comparing this
+     * instance and value; otherwise, false.
+     * @return NBoolean True if the $value parameter matches the end of this string;
+     * otherwise, false.
+     *
+     * @throws ArgumentNullException if $value is a null reference.
+     */
+    public function endsWith(NString $value = null, NBoolean $ignoreCase = null)
     {
         if ($value === null)
             throw new ArgumentNullException('$value must not be null', '$value');
@@ -170,12 +181,14 @@ final class NString
 
     public function equals(IObject $object = null)
     {
-        
+        return $this->compareTo($object)->equals(NNumber::get(0));
     }
 
     public static function staticEquals(IObject $object1 = null, IObject $object2 = null)
     {
-        
+        if ($object1 === null && $object2 === null) return NBoolean::get(true);
+        if ($object1 !== null) return $object1->toString()->equals($object2);
+        if ($object2 !== null) return $object2->toString()->equals($object1);
     }
 
     public static function format(NString $format /*, $arg0, $arg1, ... */)
@@ -218,12 +231,7 @@ final class NString
     public function indexOfAny()
     {
         throw new NotImplementedException();
-    }
-
-    public function inequality(NString $a = null, NString $b = null)
-    {
-        
-    }
+    }    
 
     public function insert(NNumber $startIndex, NString $value = null)
     {
@@ -240,14 +248,19 @@ final class NString
         throw new NotImplementedException();
     }
 
+    public function isEmpty()
+    {
+        return $this->equals(self::getEmpty());
+    }
+
     public static function isNullOrEmpty(NString $value = null)
     {
-        
+        return NBoolean::get($value === null)->orElse($value->isEmpty());
     }
 
     public static function isNullOrWhiteSpace(NString $value = null)
     {
-        
+        return NBoolean::get($value === null)->orElse($value->trim()->isEmpty());
     }
 
     public static function join()
@@ -290,14 +303,41 @@ final class NString
         return $startIndex->plus(NNumber::get($position));
     }
 
-    public function padLeft(NNumber $totalWidth, NString $paddingChar)
-    {
 
+    public function padBoth(NNumber $totalWidth, NString $paddingChar = null)
+    {
+        if ($paddingChar === null) $paddingChar = self::get(' ');
+
+        $padded = str_pad($this->value,
+                $totalWidth->intValue(),
+                $paddingChar->stringValue(),
+                STR_PAD_BOTH);
+
+        return self::get($padded);
     }
 
-    public function padRight(NNumber $totalWidth, NString $paddingChar)
+    public function padLeft(NNumber $totalWidth, NString $paddingChar = null)
     {
+        if ($paddingChar === null) $paddingChar = self::get(' ');
 
+        $padded = str_pad($this->value,
+                $totalWidth->intValue(),
+                $paddingChar->stringValue(),
+                STR_PAD_LEFT);
+
+        return self::get($padded);
+    }
+
+    public function padRight(NNumber $totalWidth, NString $paddingChar = null)
+    {
+        if ($paddingChar === null) $paddingChar = self::get(' ');
+
+        $padded = str_pad($this->value,
+                $totalWidth->intValue(),
+                $paddingChar->stringValue(),
+                STR_PAD_RIGHT);
+
+        return self::get($padded);
     }
 
     /**

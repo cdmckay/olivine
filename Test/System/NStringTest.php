@@ -44,13 +44,6 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, NString::compare(is('a'), is('A'), is(true))->intValue());
     }
 
-    public function testCompareWithNull()
-    {
-        $this->assertEquals(0, NString::compare(null, null)->intValue());
-        $this->assertGreaterThan(0, NString::compare(is('b'), null)->intValue());
-        $this->assertLessThan(0, NString::compare(null, is('b'))->intValue());
-    }
-
     public function testCompareTo()
     {
         $strA = is('a');
@@ -116,12 +109,6 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $this->assertFalse( $str->contains(is("small"))->boolValue() );
     }
 
-    public function testContainsWithNull()
-    {
-        $this->setExpectedException('System\ArgumentNullException');
-        is("test")->contains(null);
-    }
-
     public function testEndsWith()
     {
         $str = is("superman");
@@ -172,12 +159,6 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(is(-1), $haystack->lastIndexOf($needle, is(14), null,   is(true)));
         $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, is(0),  is(12), is(true)));
         $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, null,   is(12), is(true)));
-    }
-
-    public function testLastIndexOfWithNull()
-    {
-        $this->setExpectedException('System\ArgumentNullException');
-        $this->assertEquals(is(13), is("poop")->lastIndexOf(null));
     }
 
     public function testLastIndexOfWithNegativeStartIndex()

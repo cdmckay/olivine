@@ -121,4 +121,25 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(false, $result->boolValue());
     }
 
+    public function testAndAlso()
+    {
+        $true  = NBoolean::get(true);
+        $false = NBoolean::get(false);
+
+        $this->assertEquals(true,  $true->andAlso($true)->boolValue());
+        $this->assertEquals(false, $true->andAlso($false)->boolValue());
+        $this->assertEquals(false, $false->andAlso($true)->boolValue());
+        $this->assertEquals(false, $false->andAlso($false)->boolValue());
+    }
+
+    public function testOrElse()
+    {
+        $true  = NBoolean::get(true);
+        $false = NBoolean::get(false);
+
+        $this->assertEquals(true,  $true->orElse($true)->boolValue());
+        $this->assertEquals(true,  $true->orElse($false)->boolValue());
+        $this->assertEquals(true,  $false->orElse($true)->boolValue());
+        $this->assertEquals(false, $false->orElse($false)->boolValue());
+    }
 }

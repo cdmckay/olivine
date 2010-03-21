@@ -190,6 +190,16 @@ final class NBoolean
         return $successful;
     }
 
+    public function andAlso(NBoolean $value)
+    {
+        return NBoolean::get($value->boolValue() && $this->value);
+    }
+
+    public function orElse(NBoolean $value)
+    {
+        return NBoolean::get($value->boolValue() || $this->value);
+    }
+
     public function boolValue()
     {
         return $this->value;
