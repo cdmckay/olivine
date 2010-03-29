@@ -303,8 +303,7 @@ final class NString
     }
 
     public static function join()
-    {
-        // Requires collections support.
+    {        
         throw new NotImplementedException();
     }
 
@@ -372,6 +371,16 @@ final class NString
         return self::get($padded);
     }
 
+    public function remove(NNumber $startIndex, NNumber $count = null)
+    {
+        
+    }
+
+    public function replace(NString $oldValue = null, NString $newValue = null)
+    {
+
+    }   
+
     /**
      * Inverts the order of the characters in the string.
      *
@@ -380,7 +389,17 @@ final class NString
      */
     public function reverse()
     {
-        return NString::get(strrev($this->value));
+        return self::get(strrev($this->value));
+    }
+
+    public function split()
+    {
+        throw new NotImplementedException();
+    }
+
+    public function startsWith(NString $value = null, NBoolean $ignoreCase = null)
+    {
+        
     }
 
     /**
@@ -468,7 +487,7 @@ final class NString
         return $this;
     }
 
-    // PHP-specific    
+    // PHP inspired
 
     public function toSentenceCase()
     {
