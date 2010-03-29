@@ -137,17 +137,55 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(NString::format(is("%d"), $num), is("42"));
     }
 
+    public function testIndexOf()
+    {
+        $haystack = is("I am a long, long string");
+        $needle = is("long");
+
+        $this->assertEquals(is(7),  $haystack->indexOf($needle));
+        $this->assertEquals(is(-1), $haystack->indexOf($needle, is(14)));
+        $this->assertEquals(is(13), $haystack->indexOf($needle, is(8), is(10)));
+        $this->assertEquals(is(7),  $haystack->indexOf($needle, null, is(12)));
+        $this->assertEquals(is(0),  $haystack->indexOf(NString::getEmpty()));
+    }
+
+    public function testIndexOfWithIgnoreCase()
+    {
+        $haystack = is("I am a long, long string");
+        $needle = is("LONG");
+
+        $this->assertEquals(is(7),  $haystack->indexOf($needle, null, null, is(true)));
+        $this->assertEquals(is(-1), $haystack->indexOf($needle, is(14), null, is(true)));
+        $this->assertEquals(is(13), $haystack->indexOf($needle, is(8), is(10), is(true)));
+        $this->assertEquals(is(7),  $haystack->indexOf($needle, null, is(12), is(true)));
+        $this->assertEquals(is(0),  $haystack->indexOf(NString::getEmpty(), null, null, is(true)));
+    }
+
+    public function testIndexOfWithNegativeStartIndex()
+    {
+        $this->setExpectedException('System\ArgumentOutOfRangeException');
+        is("poop")->indexOf(is("op"), is(-1));
+    }
+
+    public function testIndexOfWithNegativeCount()
+    {
+        $this->setExpectedException('System\ArgumentOutOfRangeException');
+        is("poop")->indexOf(is("op"), is(0), is(-1));
+    }
+
     public function testLastIndexOf()
     {
         $haystack = is("I am a long, long string");
         $needle = is("long");        
 
         $this->assertEquals(is(13), $haystack->lastIndexOf($needle));
-        $this->assertEquals(is(-1), $haystack->lastIndexOf($needle, is(14)));
-        $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, is(0), is(12)));
-        $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, null,  is(12)));
-        
+        $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, is(13)));
+        $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, is(12), is(12)));
+        $this->assertEquals(is(13), $haystack->lastIndexOf($needle, null,  is(12)));
+
         $this->assertEquals($haystack->getLength(), $haystack->lastIndexOf(NString::getEmpty()));
+        $this->assertEquals(is(4), $haystack->lastIndexOf(NString::getEmpty(), is(4)));
+        $this->assertEquals(is(10), $haystack->lastIndexOf(NString::getEmpty(), is(10), is(6)));
     }
 
     public function testLastIndexOfWithIgnoreCase()
@@ -155,10 +193,14 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $haystack = is("I am a long, long string");
         $needle = is("LONG");
 
-        $this->assertEquals(is(13), $haystack->lastIndexOf($needle, null,   null,   is(true)));
-        $this->assertEquals(is(-1), $haystack->lastIndexOf($needle, is(14), null,   is(true)));
-        $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, is(0),  is(12), is(true)));
-        $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, null,   is(12), is(true)));
+        $this->assertEquals(is(13), $haystack->lastIndexOf($needle, null, null, is(true)));
+        $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, is(13), null, is(true)));
+        $this->assertEquals(is(7),  $haystack->lastIndexOf($needle, is(12), is(12), is(true)));
+        $this->assertEquals(is(13), $haystack->lastIndexOf($needle, null,  is(12), is(true)));
+
+        $this->assertEquals($haystack->getLength(), $haystack->lastIndexOf(NString::getEmpty(), null, null, is(true)));
+        $this->assertEquals(is(4), $haystack->lastIndexOf(NString::getEmpty(), is(4), null, is(true)));
+        $this->assertEquals(is(10), $haystack->lastIndexOf(NString::getEmpty(), is(10), is(6), is(true)));
     }
 
     public function testLastIndexOfWithNegativeStartIndex()

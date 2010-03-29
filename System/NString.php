@@ -223,9 +223,38 @@ final class NString
         return $this->length;
     }
 
-    public function indexOf(NString $value, NNumber $startIndex = null, NNumber $count = null)
+    public function indexOf(NString $value = null,
+            NNumber $startIndex = null, NNumber $count = null,
+            NBoolean $ignoreCase = null)
     {
+        if ($value === null)
+            throw new ArgumentNullException(null, '$value');        
+
+        if ($startIndex !== null && $startIndex->isLessThan(NNumber::get(0))->boolValue())
+            throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
+
+        if ($startIndex !== null && $startIndex->isGreaterThan($this->length)->boolValue())
+            throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this instance', '$startIndex');
+
+        if ($count !== null && $count->isLessThan(NNumber::get(0))->boolValue())
+            throw new ArgumentOutOfRangeException('$count must be nonnegative', '$count');
+
+        if ($startIndex === null) $startIndex = NNumber::get(0);
+        if ($count === null) $count = $this->length->minus($startIndex);
+        if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
+
+        if ($value->getLength()->equals(NNumber::get(0))->boolValue())
+            return $startIndex;
         
+        $str = $this->substring($startIndex, $count);
+
+        $position = $ignoreCase->boolValue()
+                ? stripos($str->stringValue(), $value->stringValue())
+                : strpos($str->stringValue(), $value->stringValue());
+
+        if ($position === false) return NNumber::get(-1);
+
+        return $startIndex->plus(NNumber::get($position));
     }
 
     public function indexOfAny()
@@ -235,6 +264,16 @@ final class NString
 
     public function insert(NNumber $startIndex, NString $value = null)
     {
+        if ($value === null)
+            throw new ArgumentNullException(null, '$value');
+
+        if ($startIndex->isLessThan(NNumber::get(0))->boolValue())
+            throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
+
+        if ($startIndex->isGreaterThan($this->length)->boolValue())
+            throw new ArgumentOutOfRangeException('$startIndex must be less than the length of $value', '$startIndex');
+
+        
         
     }
 
@@ -274,33 +313,26 @@ final class NString
             NBoolean $ignoreCase = null)
     {
         if ($value === null)
-            throw new ArgumentNullException(null, '$value');
-
-        if ($value->getLength()->equals(NNumber::get(0))->boolValue())
-            return $this->length;
+            throw new ArgumentNullException(null, '$value');       
 
         if ($startIndex !== null && $startIndex->isLessThan(NNumber::get(0))->boolValue())
             throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
 
+        if ($startIndex !== null && $startIndex->isGreaterThan($this->length)->boolValue())
+            throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this instance', '$startIndex');
+
         if ($count !== null && $count->isLessThan(NNumber::get(0))->boolValue())
             throw new ArgumentOutOfRangeException('$count must be nonnegative', '$count');
 
-        if ($startIndex === null) $startIndex = NNumber::get(0);
-        if ($count === null) $count = $this->length->minus($startIndex);
+        if ($startIndex === null) $startIndex = $this->length;
+        if ($count === null) $count = $this->length;
         if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
-
-        if (!$count->equals($this->length)->boolValue())        
-            $str = $this->substring($startIndex, $count);
-        else
-            $str = $this;
-
-        $position = $ignoreCase->boolValue()
-                ? strripos($str->stringValue(), $value->stringValue())
-                : strrpos($str->stringValue(), $value->stringValue());
-
-        if ($position === false) return NNumber::get(-1);
-
-        return $startIndex->plus(NNumber::get($position));
+        
+        $str = $this->reverse();
+        $val = $value->reverse();
+        $offset = $this->length->minus($startIndex);
+        $index = $str->indexOf($val, $offset, $count, $ignoreCase);
+        return $this->length->minus($index)->minus($val->getLength());
     }
 
 
@@ -338,6 +370,17 @@ final class NString
                 STR_PAD_RIGHT);
 
         return self::get($padded);
+    }
+
+    /**
+     * Inverts the order of the characters in the string.
+     *
+     * @return NString A string whose characters correspond to those of the
+     * original string but in reverse order.
+     */
+    public function reverse()
+    {
+        return NString::get(strrev($this->value));
     }
 
     /**

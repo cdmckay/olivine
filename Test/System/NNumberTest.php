@@ -197,6 +197,8 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $this->assertFalse( $val1->isGreaterThan($val1)->boolValue() );
         $this->assertTrue(  $val1->isGreaterThan($val2)->boolValue() );
         $this->assertFalse( $val2->isGreaterThan($val1)->boolValue() );
+        $this->assertTrue(  is(0)->isGreaterThan(is(-10))->boolValue() );
+        $this->assertFalse( is(-10)->isGreaterThan(is(0))->boolValue() );
     }
 
     public function testIsGreaterThanOrEqualTo()

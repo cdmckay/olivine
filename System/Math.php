@@ -41,4 +41,16 @@ final class Math
 
     }
 
+    public static function min(NNumber $val1, NNumber $val2)
+    {
+        if ($val1->isLessThan($val2)->boolValue()) return $val1;
+        return $val2;
+    }
+
+    public static function max(NNumber $val1, NNumber $val2)
+    {
+        if ($val1->isGreaterThan($val2)->boolValue()) return $val1;
+        return $val2;
+    }
+
 }
