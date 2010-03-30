@@ -144,7 +144,7 @@ class NStringTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(is(7),  $haystack->indexOf($needle));
         $this->assertEquals(is(-1), $haystack->indexOf($needle, is(14)));
-        $this->assertEquals(is(13), $haystack->indexOf($needle, is(8), is(10)));
+        $this->assertEquals(is(13), $haystack->indexOf($needle, is(8), is(10)));        
         $this->assertEquals(is(7),  $haystack->indexOf($needle, null, is(12)));
         $this->assertEquals(is(0),  $haystack->indexOf(NString::getEmpty()));
     }
@@ -171,6 +171,12 @@ class NStringTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('System\ArgumentOutOfRangeException');
         is("poop")->indexOf(is("op"), is(0), is(-1));
+    }
+
+    public function testIndexOfWithStartIndexPlusCountGreaterThanLength()
+    {
+        $this->setExpectedException('System\ArgumentOutOfRangeException');
+        is("poop")->indexOf(is("op"), is(0), is(1000));
     }
 
     public function testInsert()
@@ -245,15 +251,14 @@ class NStringTest extends PHPUnit_Framework_TestCase
     {
         $str = is("superman");
         $this->assertEquals(is("man"),           $str->substring(is(5)));
-        $this->assertEquals(is("super"),         $str->substring(is(0), is(5)));
-        $this->assertEquals(is("superman"),      $str->substring(is(0), is(1000)));
+        $this->assertEquals(is("super"),         $str->substring(is(0), is(5)));        
         $this->assertEquals(NString::getEmpty(), $str->substring(is(5), is(0)));
         $this->assertEquals(NString::getEmpty(), $str->substring($str->getLength()));
     }
 
-    public function testSubstringWithHugeLength()
+    public function testSubstringWithStartIndexPlusLengthGreaterThanLength()
     {
-        $this->setExpectedException('System\OverflowException');
+        $this->setExpectedException('System\ArgumentOutOfRangeException');
         $this->assertEquals(is("superman"), is("superman")->substring(is(0), _number("10e10")));
     }
 }

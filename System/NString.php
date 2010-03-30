@@ -239,6 +239,10 @@ final class NString
         if ($count !== null && $count->isLessThan(NNumber::get(0))->boolValue())
             throw new ArgumentOutOfRangeException('$count must be nonnegative', '$count');
 
+        if ($startIndex !== null && $count !== null
+                && $startIndex->plus($count)->isGreaterThan($this->length)->boolValue())
+            throw new ArgumentOutOfRangeException('$count must refer to a location within this instance', '$count');
+
         if ($startIndex === null) $startIndex = NNumber::get(0);
         if ($count === null) $count = $this->length->minus($startIndex);
         if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
@@ -323,7 +327,7 @@ final class NString
             throw new ArgumentOutOfRangeException('$count must be nonnegative', '$count');
 
         if ($startIndex === null) $startIndex = $this->length;
-        if ($count === null) $count = $this->length;
+        if ($count === null) $count = $startIndex;
         if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
         
         $str = $this->reverse();
@@ -415,7 +419,10 @@ final class NString
      */
     public function substring(NNumber $startIndex, NNumber $length = null)
     {
-        if ($length === null) $length = $this->length;
+        if ($length !== null && $startIndex->plus($length)->isGreaterThan($this->length)->boolValue())
+                throw new ArgumentOutOfRangeException('$length must refer to a location within this instance', '$length');
+
+        if ($length === null) $length = $this->length->minus($startIndex);
         if ($startIndex->equals($this->length)->boolValue())
                 return self::getEmpty();
 
