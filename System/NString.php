@@ -271,10 +271,9 @@ final class NString
             throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
 
         if ($startIndex->isGreaterThan($this->length)->boolValue())
-            throw new ArgumentOutOfRangeException('$startIndex must be less than the length of $value', '$startIndex');
+            throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this string', '$startIndex');
 
-        
-        
+        return $this->substring(is(0), $startIndex)->concat($value, $this->substring($startIndex));
     }
 
     public function intern(NString $str = null)
@@ -334,19 +333,6 @@ final class NString
         return $this->length->minus($index)->minus($val->getLength());
     }
 
-
-    public function padBoth(NNumber $totalWidth, NString $paddingChar = null)
-    {
-        if ($paddingChar === null) $paddingChar = self::get(' ');
-
-        $padded = str_pad($this->value,
-                $totalWidth->intValue(),
-                $paddingChar->stringValue(),
-                STR_PAD_BOTH);
-
-        return self::get($padded);
-    }
-
     public function padLeft(NNumber $totalWidth, NString $paddingChar = null)
     {
         if ($paddingChar === null) $paddingChar = self::get(' ');
@@ -373,6 +359,15 @@ final class NString
 
     public function remove(NNumber $startIndex, NNumber $count = null)
     {
+        if ($startIndex->isLessThan(NNumber::get(0))->boolValue())
+            throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
+
+        if ($startIndex->isGreaterThan($this->length)->boolValue())
+            throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this string', '$startIndex');
+
+        if ($count !== null && $count->isLessThan(NNumber::get(0))->boolValue())
+            throw new ArgumentOutOfRangeException('$count must be nonnegative', '$count');
+
         
     }
 
@@ -421,6 +416,8 @@ final class NString
     public function substring(NNumber $startIndex, NNumber $length = null)
     {
         if ($length === null) $length = $this->length;
+        if ($startIndex->equals($this->length)->boolValue())
+                return self::getEmpty();
 
         return self::get(substr($this->value,
                 $startIndex->intValue(),
@@ -485,34 +482,5 @@ final class NString
     public function toString()
     {
         return $this;
-    }
-
-    // PHP inspired
-
-    public function toSentenceCase()
-    {
-        return self::get(ucfirst($this->value));
-    }
-
-    public function toTitleCase()
-    {
-        return self::get(ucwords($this->value));
-    }
-
-    public function wordWrap(NNumber $width, NString $newLine = null, NBoolean $cut = null)
-    {
-        if ($newLine === null) $newLine = Environment::getNewLine();
-        if ($cut === null) $cut = NBoolean::get(false);
-
-        return self::get(wordwrap(
-                $this->value,
-                $width->intValue(),
-                $newLine->stringValue(),
-                $cut->boolValue()));
-    }
-
-    public function wordCount()
-    {
-        return NNumber::get(wordcount($this->value));
-    }
+    }    
 }

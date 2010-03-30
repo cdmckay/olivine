@@ -173,6 +173,32 @@ class NStringTest extends PHPUnit_Framework_TestCase
         is("poop")->indexOf(is("op"), is(0), is(-1));
     }
 
+    public function testInsert()
+    {
+        $str = is("supermanisdead");
+        $this->assertEquals(is("supermanisnotdead"), $str->insert(is(10), is("not")));
+        $this->assertEquals(is("supermanisdeader"), $str->insert($str->getLength(), is("er")));
+    }
+
+    public function testInsertWithNull()
+    {
+        $this->setExpectedException('System\ArgumentNullException');
+        is("foo")->insert(is(0), null);
+    }
+
+    public function testInsertWithNegativeStartIndex()
+    {
+        $this->setExpectedException('System\ArgumentOutOfRangeException');
+        is("foo")->insert(is(-20), is("bar"));
+    }
+
+    public function testInsertWithStartIndexGreaterThanLength()
+    {
+        $this->setExpectedException('System\ArgumentOutOfRangeException');
+        $str = is("foo");
+        $str->insert($str->getLength()->plus(is(1)), is("bar"));
+    }
+
     public function testLastIndexOf()
     {
         $haystack = is("I am a long, long string");
@@ -221,7 +247,8 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(is("man"),           $str->substring(is(5)));
         $this->assertEquals(is("super"),         $str->substring(is(0), is(5)));
         $this->assertEquals(is("superman"),      $str->substring(is(0), is(1000)));
-        $this->assertEquals(NString::getEmpty(), $str->substring(is(5), is(0)));        
+        $this->assertEquals(NString::getEmpty(), $str->substring(is(5), is(0)));
+        $this->assertEquals(NString::getEmpty(), $str->substring($str->getLength()));
     }
 
     public function testSubstringWithHugeLength()

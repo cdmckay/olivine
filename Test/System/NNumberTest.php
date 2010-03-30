@@ -210,4 +210,16 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $this->assertFalse( $val2->isGreaterThanOrEqualTo($val1)->boolValue() );
     }
 
+    public function testIntOverflow()
+    {
+        $this->setExpectedException('System\OverflowException');
+        is(1e20)->intValue();
+    }
+
+    public function testFloatOverflow()
+    {
+        $this->setExpectedException('System\OverflowException');
+        _number("1e1000")->floatValue();
+    }
+
 }

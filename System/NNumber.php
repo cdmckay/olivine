@@ -259,8 +259,8 @@ final class NNumber
 
     public function floatValue()
     {
-        $val = $this->value;
-        $ret = (float) $val;        
+        $val = $this->value;        
+        $ret = floatval($val);
 
         if (is_infinite($ret))
             throw new OverflowException("A float is not wide enough to hold: $val");
