@@ -247,6 +247,29 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(is(13), is("poop")->lastIndexOf(is("op"), is(0), is(-1)));
     }
 
+    public function testReplace()
+    {
+        $str1 = _string("superman");
+        $this->assertEquals(is("supergirl"), $str1->replace(is("man"), is("girl")));
+        $this->assertEquals(is("super"), $str1->replace(is("man"), null));
+        $this->assertEquals(is("super"), $str1->replace(is("man"), NString::getEmpty()));
+
+        $str2 = _string("Superman is the man!");
+        $this->assertEquals(is("Supergirl is the girl!"), $str2->replace(is("man"), is("girl")));
+    }
+
+    public function testReplaceWithOldValueAsNull()
+    {
+        $this->setExpectedException('System\ArgumentNullException');
+        _string("foo")->replace(null, is("bar"));
+    }
+
+    public function testReplaceWithOldValueAsEmptyString()
+    {
+        $this->setExpectedException('System\ArgumentException');
+        _string("foo")->replace(NString::getEmpty(), is("bar"));
+    }
+
     public function testSubstring()
     {
         $str = is("superman");

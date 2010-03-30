@@ -375,9 +375,37 @@ final class NString
         
     }
 
+    /**
+     * Returns a new string in which all occurrences of a specified string in
+     * the current instance are replaced with another specified string.
+     * 
+     * If $newValue is null, all occurrences of $oldValue are removed.
+     * 
+     * Because this method replaces left to right, it might replace a
+     * previously inserted value when doing multiple replacements.
+     *
+     * @param NString $oldValue The string to be replaced.
+     * @param NString $newValue The string to replace all occurrences of $oldValue.
+     * @return NString A string that is equivalent to the current string except
+     * that all instances of $oldValue are replaced with $newValue.
+     *
+     * @throws ArgumentNullException if $oldValue is a null reference.
+     * @throws ArgumentException if $oldValue is the empty string.
+     */
     public function replace(NString $oldValue = null, NString $newValue = null)
     {
+        if ($oldValue === null)
+            throw new ArgumentNullException(null, '$oldValue');
 
+        if ($oldValue->isEmpty()->boolValue())
+            throw new ArgumentException('$oldValue cannot be the empty string', '$oldValue');
+
+        if ($newValue === null) $newValue = self::getEmpty();
+
+        return self::get(str_replace(
+                $oldValue->stringValue(),
+                $newValue->stringValue(),
+                $this->value));
     }   
 
     /**
