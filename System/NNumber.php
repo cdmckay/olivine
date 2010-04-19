@@ -32,6 +32,9 @@ final class NNumber
      */
     public static function get($value)
     {
+        if ($value instanceof self)
+            return $value;
+
         $str = null;
 
         if (is_int($value) || is_float($value))
@@ -72,7 +75,7 @@ final class NNumber
      * @return NNumber A signed number indicating the relative values of
      * this instance and value.
      */
-    public function compareTo(IObject $object = null)
+    public function compareTo($object)
     {
         if ($object === null)
             return self::get(1);
@@ -94,7 +97,7 @@ final class NNumber
      * @return NBoolean True if obj is an instance of NNumber and equals
      * the value of this instance; otherwise, false.
      */
-    public function equals(IObject $object = null)
+    public function equals($object)
     {
         return NBoolean::get($object instanceof NNumber
                 && bccomp($this->value, $object->stringValue(), self::$scale) === 0);
@@ -181,31 +184,66 @@ final class NNumber
         return $successful;
     }
 
+    /**
+     * Returns a number that is negation of <code>this</code>.
+     *
+     * @return NNumber
+     */
     public function negate()
     {
         return self::get(bcmul($this->value, '-1', self::$scale));
     }
 
+    /**
+     * Returns a number that is the sum of <code>this + value</code>.
+     *
+     * @param NNumber $value The value to be added.
+     * @return NNumber The sum.
+     */
     public function plus(NNumber $value)
     {        
         return self::get(bcadd($this->value, $value->stringValue(), self::$scale));
     }
 
+    /**
+     * Returns a number that is the difference of <code>this - value</code>.
+     *
+     * @param NNumber $value The value to be subtracted.
+     * @return NNumber The difference.
+     */
     public function minus(NNumber $value)
     {        
         return self::get(bcsub($this->value, $value->stringValue(), self::$scale));
     }
 
+    /**
+     * Returns a number that is the product of <code>this * value</code>.
+     *
+     * @param NNumber $value The value to be multiplied.
+     * @return NNumber The product.
+     */
     public function times(NNumber $value)
     {        
         return self::get(bcmul($this->value, $value->stringValue(), self::$scale));
     }
 
+    /**
+     * Returns a number that is the quotient of <code>this / value</code>.
+     *
+     * @param NNumber $value The value to be divided.
+     * @return NNumber The quotient.
+     */
     public function divide(NNumber $value)
     {       
         return self::get(bcdiv($this->value, $value->stringValue(), self::$scale));
     }
 
+    /**
+     * Returns a number that is the result of <code>this % value</code>.
+     *
+     * @param NNumber $value
+     * @return NNumber
+     */
     public function modulus(NNumber $value)
     {        
         return self::get(bcmod($this->value, $value->stringValue()));

@@ -47,6 +47,14 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(12e12, $val4->floatValue(), '', self::DELTA);
     }
 
+    public function testConstructorUsingNNumber()
+    {
+        $val1 = NNumber::get(0);
+        $val2 = NNumber::get($val1);
+
+        $this->assertEquals($val1, $val2);
+    }
+
     public function testAlias()
     {
         $val1 = NNumber::get(0);

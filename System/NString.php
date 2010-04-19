@@ -27,6 +27,9 @@ final class NString
 
     public static function get($value)
     {
+        if ($value instanceof self)
+            return $value;
+
         if (!is_string($value))
             throw new ArgumentException('$value must be a string', '$value');
 
@@ -87,7 +90,7 @@ final class NString
      * follows, or appears in the same position in the sort order as the
      * value parameter.
      */
-    public function compareTo(IObject $strB = null)
+    public function compareTo($strB)
     {
         if ($strB === null) return NNumber::get(1);
         return NNumber::get(strcmp($this->value, $strB->toString()->stringValue()));
@@ -179,12 +182,12 @@ final class NString
         return $this->lastIndexOf($value, null, null, $ignoreCase)->equals($expected);
     }
 
-    public function equals(IObject $object = null)
+    public function equals($object)
     {
         return $this->compareTo($object)->equals(NNumber::get(0));
     }
 
-    public static function staticEquals(IObject $object1 = null, IObject $object2 = null)
+    public static function staticEquals($object1, $object2)
     {
         if ($object1 === null && $object2 === null) return NBoolean::get(true);
         if ($object1 !== null) return $object1->toString()->equals($object2);
@@ -506,12 +509,12 @@ final class NString
 
     public function toBoolean()
     {
-
+        return NBoolean::parse($this);
     }
 
     public function toNumber()
     {
-        
+        return NNumber::parse($this);
     }
 
     public function toString()

@@ -18,17 +18,23 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $false = NBoolean::get(false);
+        $false = is(false);
         $this->assertFalse($false->boolValue());
 
-        $true = NBoolean::get(true);
+        $true = is(true);
         $this->assertTrue($true->boolValue());
-    }       
+    }
+
+    public function testConstructorWithNull()
+    {
+        $this->setExpectedException('System\ArgumentException');
+        is(null);
+    }
 
     public function testCompareTo()
     {
-        $true  = NBoolean::get(true);
-        $false = NBoolean::get(false);
+        $true  = is(true);
+        $false = is(false);
 
         $this->assertEquals(-1, $false->compareTo($true)->intValue());
         $this->assertEquals(1, $true->compareTo($false)->intValue());
@@ -36,16 +42,27 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, $true->compareTo($true)->intValue());
     }
 
+    public function testCompareToWithAutoBoxing()
+    {
+        $true  = is(true);
+        $false = is(false);
+
+        $this->assertEquals(-1, $false->compareTo(true)->intValue());
+        $this->assertEquals(1, $true->compareTo(false)->intValue());
+        $this->assertEquals(0, $false->compareTo(false)->intValue());
+        $this->assertEquals(0, $true->compareTo(true)->intValue());
+    }
+
     public function testCompareToNull()
     {
-        $false = NBoolean::get(false);
+        $false = is(false);
         $this->assertEquals(1, $false->compareTo(null)->intValue());
     }
 
     public function testGetHashCode()
     {
-        $false = NBoolean::get(false);
-        $true  = NBoolean::get(true);
+        $false = is(false);
+        $true  = is(true);
 
         $this->assertEquals(0, $false->getHashCode()->intValue());
         $this->assertEquals(1, $true->getHashCode()->intValue());
@@ -53,30 +70,37 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
 
     public function testEquals()
     {
-        $true1 = NBoolean::get(true);
-        $true2 = NBoolean::get(true);
-        $false = NBoolean::get(false);
+        $true1 = is(true);
+        $true2 = is(true);
+        $false = is(false);
         $this->assertTrue( $true1->equals($true2)->boolValue() );
         $this->assertFalse( $true1->equals($false)->boolValue() );
     }
 
+    public function testEqualsWithAutoBoxing()
+    {
+        $true = is(true);       
+        $this->assertTrue( $true->equals(true)->boolValue() );
+        $this->assertFalse( $true->equals(false)->boolValue() );
+    }
+
     public function testEqualsNull()
     {
-        $true = NBoolean::get(true);
+        $true = is(true);
         $this->assertFalse( $true->equals(null)->boolValue() );
     }
 
     public function testParseWithValidNStrings()
     {
-        $true  = NBoolean::get(true);
-        $false = NBoolean::get(false);
+        $true  = is(true);
+        $false = is(false);
 
-        $val1 = NBoolean::parse(NString::get("true"));
-        $val2 = NBoolean::parse(NString::get("false"));
-        $val3 = NBoolean::parse(NString::get(" true "));
-        $val4 = NBoolean::parse(NString::get(" false "));
-        $val5 = NBoolean::parse(NString::get("TRUE"));
-        $val6 = NBoolean::parse(NString::get("FALSE"));
+        $val1 = NBoolean::parse(is("true"));
+        $val2 = NBoolean::parse(is("false"));
+        $val3 = NBoolean::parse(is(" true "));
+        $val4 = NBoolean::parse(is(" false "));
+        $val5 = NBoolean::parse(is("TRUE"));
+        $val6 = NBoolean::parse(is("FALSE"));
 
         $this->assertEquals(0, $val1->compareTo($true)->intValue());
         $this->assertEquals(0, $val2->compareTo($false)->intValue());
@@ -89,13 +113,22 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
     public function testParseWithInvalidNString()
     {
         $this->setExpectedException('System\FormatException');
-        NBoolean::parse(NString::get("ture"));
-    }   
+        NBoolean::parse(is("ture"));
+    }
+
+    public function testParseWithAutoBoxing()
+    {               
+        $val1 = NBoolean::parse("true");
+        $val2 = NBoolean::parse("false");
+
+        $this->assertEquals(0, $val1->compareTo(true)->intValue());
+        $this->assertEquals(0, $val2->compareTo(false)->intValue());        
+    }    
 
     public function testToString()
     {
-        $trueStr = NBoolean::get(true)->toString();
-        $falseStr = NBoolean::get(false)->toString();
+        $trueStr = is(true)->toString();
+        $falseStr = is(false)->toString();
 
         $this->assertEquals("True", $trueStr->stringValue());
         $this->assertEquals("False", $falseStr->stringValue());
@@ -103,28 +136,35 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
 
     public function testTryParseWithValidNString()
     {
-        $true  = NBoolean::get(true);
-        $false = NBoolean::get(false);
+        $true  = is(true);
+        $false = is(false);
 
-        $successful = NBoolean::tryParse(NString::get("true"), $result);
+        $successful = NBoolean::tryParse(is("true"), $result);
         $this->assertEquals(true, $successful->boolValue());
         $this->assertEquals(true, $result->boolValue());
     }
 
     public function testTryParseWithInvalidNString()
     {
-        $true  = NBoolean::get(true);
-        $false = NBoolean::get(false);
+        $true  = is(true);
+        $false = is(false);
 
-        $successful = NBoolean::tryParse(NString::get("ture"), $result);
-        $this->assertEquals(false, $successful->boolValue());
-        $this->assertEquals(false, $result->boolValue());
+        $successful = NBoolean::tryParse(is("ture"), $result);
+        $this->assertFalse($successful->boolValue());
+        $this->assertFalse($result->boolValue());
+    }
+
+    public function testTryParseWithAutoBoxing()
+    {
+        $successful = NBoolean::tryParse("ture", $result);
+        $this->assertFalse($successful->boolValue());
+        $this->assertFalse($result->boolValue());
     }
 
     public function testAndAlso()
     {
-        $true  = NBoolean::get(true);
-        $false = NBoolean::get(false);
+        $true  = is(true);
+        $false = is(false);
 
         $this->assertEquals(true,  $true->andAlso($true)->boolValue());
         $this->assertEquals(false, $true->andAlso($false)->boolValue());
@@ -132,14 +172,48 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(false, $false->andAlso($false)->boolValue());
     }
 
+    public function testAndAlsoWithShortCircuit()
+    {
+        $false = is(false);
+        $this->assertEquals(false, $false->andAlso("monkey")->boolValue());
+    }
+
+    public function testAndAlsoWithAutoBoxing()
+    {
+        $true  = is(true);
+        $false = is(false);
+
+        $this->assertEquals(true,  $true->andAlso(true)->boolValue());
+        $this->assertEquals(false, $true->andAlso(false)->boolValue());
+        $this->assertEquals(false, $false->andAlso(true)->boolValue());
+        $this->assertEquals(false, $false->andAlso(false)->boolValue());
+    }
+
     public function testOrElse()
     {
-        $true  = NBoolean::get(true);
-        $false = NBoolean::get(false);
+        $true  = is(true);
+        $false = is(false);
 
         $this->assertEquals(true,  $true->orElse($true)->boolValue());
         $this->assertEquals(true,  $true->orElse($false)->boolValue());
         $this->assertEquals(true,  $false->orElse($true)->boolValue());
         $this->assertEquals(false, $false->orElse($false)->boolValue());
+    }
+
+    public function testOrElseShortCircuit()
+    {
+        $true = is(true);
+        $this->assertEquals(true, $true->orElse("monkey")->boolValue());
+    }
+
+    public function testOrElseWithAutoBoxing()
+    {
+        $true  = is(true);
+        $false = is(false);
+
+        $this->assertEquals(true,  $true->orElse(true)->boolValue());
+        $this->assertEquals(true,  $true->orElse(false)->boolValue());
+        $this->assertEquals(true,  $false->orElse(true)->boolValue());
+        $this->assertEquals(false, $false->orElse(false)->boolValue());
     }
 }

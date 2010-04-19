@@ -39,8 +39,18 @@ final class NBoolean
         $this->value = $value;
     }
 
+    /**
+     * Returns a new instance of NBoolean for a given boolean.
+     * If an NBoolean is passed in, it is returned untouched.
+     *
+     * @param bool|NBoolean $value
+     * @return NBoolean
+     */
     public static function get($value)
     {
+        if ($value instanceof self)
+            return $value;
+
         if (!is_bool($value))
             throw new ArgumentException('$value must be a bool', '$value');
 
@@ -72,18 +82,20 @@ final class NBoolean
      * This method returns greater than 0 when the instance is true and
      * $object is false, or if $object is null.
      *
-     * @param NObject $object
+     * @param bool|NBoolean $object
      * @return NNumber
      */
-    public function compareTo(IObject $object = null)
+    public function compareTo($object)
     {                
         if ($object === null)
             return NNumber::get(1);
 
-        if (!($object instanceof NBoolean))
-            throw new ArgumentException('$object is not an NBoolean', '$object');
+        if (!is_bool($object) && !($object instanceof self))
+            throw new ArgumentException('$object is not a bool or NBoolean', '$object');
 
-        $o1 = $this->boolValue();
+        $object = self::get($object);
+
+        $o1 = $this->value;
         $o2 = $object->boolValue();
             
         if ($o1 === false && $o2 === true)
@@ -99,14 +111,15 @@ final class NBoolean
      * Returns a value indicating whether this instance is equal to a 
      * specified object.
      *
-     * @param IObject $object An object to compare to this instance.
+     * @param mixed $object An object to compare to this instance.
      * @return NBoolean True if obj is a Boolean and has the same value as
      * this instance; otherwise, false.
      */
-    public function equals(IObject $object = null)
+    public function equals($object)
     {
-        return self::get($object instanceof NBoolean
-                && $this->boolValue() === $object->boolValue());
+        return self::get(
+                (is_bool($object) || ($object instanceof NBoolean))
+                && $this->value === self::get($object)->boolValue());
     }
 
     /**
@@ -131,17 +144,18 @@ final class NBoolean
      * must contain either getTrueString() or getFalseString(); otherwise, an exception
      * is thrown. The comparison is case-insensitive.
      *
-     * @param NString $value A string containing the value to convert.
+     * @param string|NString $value A string containing the value to convert.
      * @return NBoolean True if value is equivalent to getTrueString(); otherwise, false.
      *
      * @throws ArgumentNullException
      * @throws FormatException
      */
-    public static function parse(NString $value = null)
+    public static function parse($value)
     {
         if ($value == null)
-            throw new ArgumentNullException(null, '$value');      
-
+            throw new ArgumentNullException(null, '$value');
+        
+        $value = NString::get($value);        
         $str = $value->trim()->toLower()->stringValue();
 
         if ($str === self::$trueString)
@@ -164,17 +178,19 @@ final class NBoolean
      * The value parameter can be preceded or followed by white space. 
      * The comparison is case-insensitive.
      *
-     * @param NString $value A string containing the value to convert.
+     * @param string|NString $value A string containing the value to convert.
      * @param NBoolean $result When this method returns, if the conversion
      * succeeded, contains true if value is equivalent to TrueString or false
      * if value is equivalent to FalseString. If the conversion failed,
      * contains false. The conversion fails if $value is null or is not
      * equivalent to either getTrueString() or getFalseString().
      * This parameter is passed uninitialized.
-     * @return NBoolean  True if value was converted successfully; otherwise, false.
+     * @return NBoolean True if value was converted successfully; otherwise, false.
      */
-    public static function tryParse(NString $value = null, NBoolean &$result = null)
+    public static function tryParse($value, &$result)
     {
+        // Boxing.
+        $value = NString::get($value);
         $successful = self::$false;
         
         try
@@ -190,55 +206,99 @@ final class NBoolean
         return $successful;
     }
 
-    public function andAlso(NBoolean $value)
+    /**
+     * Returns the conjunction of <code>this && value</code>.
+     *
+     * @param boolean|NBoolean $value
+     * @return NBoolean
+     */
+    public function andAlso($value)
     {
-        return NBoolean::get($value->boolValue() && $this->value);
+        return self::get($this->value && self::get($value)->boolValue());
     }
 
-    public function orElse(NBoolean $value)
+    /**
+     * Returns the disjunction of <code>this || value</code>.
+     *
+     * @param boolean|NBoolean $value
+     * @return NBoolean
+     */
+    public function orElse($value)
     {
-        return NBoolean::get($value->boolValue() || $this->value);
+        return self::get($this->value || self::get($value)->boolValue());
     }
 
+    /**
+     * Returns the underlying bool value.
+     *
+     * @return bool
+     */
     public function boolValue()
     {
         return $this->value;
     }
 
+    /**
+     * Returns 1 if this instance is true, or 0 if it is false.
+     *
+     * @return int
+     */
     public function intValue()
     {
         return $this->value ? 1 : 0;
     }
 
+    /**
+     * Returns 1.0 if this instance is true, or 0.0 if it is false.
+     *
+     * @return float
+     */
     public function floatValue()
     {
         return (float) $this->value ? 1 : 0;
-    }
-
-    public function stringValue()
-    {
-        return (string) $this->value;
-    }
-
-    public function toBoolean()
-    {
-        return $this->value;
-    }
-
-    public function toNumber()
-    {
-        return NNumber::get($this->intValue());
     }
 
     /**
      * Converts the value of this instance to its equivalent string
      * representation (either "True" or "False").
      *
+     * @return string
+     */
+    public function stringValue()
+    {
+        return $this->value ? "True" : "False";
+    }
+
+    /**
+     * Returns this instance.
+     *
+     * @return NBoolean
+     */
+    public function toBoolean()
+    {
+        return $this->value;
+    }
+
+    /**
+     * Converts the value of this instance to its equivalent number
+     * representation (either 1 for true or 0 for false).
+     *
+     * @return NNumber
+     */
+    public function toNumber()
+    {
+        return NNumber::get($this->intValue());
+    }
+
+    /**
+     * Converts the value of this instance to its equivalent NString
+     * representation (either "True" or "False").
+     *
      * @return NString
      */
     public function toString()
     {
-        return $this->value ? NString::get("True") : NString::get("False");
+        return NString::get($this->stringValue());
     }
 
 }

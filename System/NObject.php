@@ -5,17 +5,17 @@ namespace System;
 class NObject
     implements IObject
 {
-    public static function staticEquals(IObject $object1 = null, IObject $object2 = null)
+    public static function staticEquals($object1, $object2)
     {
         return $object1->equals($object2);
     }
 
-    public static function referenceEquals(IObject $object1 = null, IObject $object2 = null)
+    public static function referenceEquals($object1, $object2)
     {
         return NBoolean::get($object1 === $object2);
     }
 
-    public function equals(IObject $object = null)
+    public function equals($object)
     {
         return NBoolean::get($this === $object);
     }
