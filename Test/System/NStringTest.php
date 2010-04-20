@@ -14,15 +14,15 @@ class NStringTest extends PHPUnit_Framework_TestCase
     {
         $empty = is('');
         $this->assertEquals($empty, NString::getEmpty());
-        $this->assertNotEquals("I love lamp", NString::getEmpty()->stringValue());
+        $this->assertNotEquals("I love lamp", NString::getEmpty()->string());
     }
 
     public function testConstructor()
     {
         $str1 = NString::get("one");
         $str2 = NString::get("two");
-        $this->assertEquals("one", $str1->stringValue());
-        $this->assertEquals("two", $str2->stringValue());
+        $this->assertEquals("one", $str1->string());
+        $this->assertEquals("two", $str2->string());
     }
 
     public function testConstructorWithNonString()
@@ -33,15 +33,28 @@ class NStringTest extends PHPUnit_Framework_TestCase
 
     public function testCompare()
     {
-        $this->assertEquals(0, NString::compare(is('a'), is('a'))->intValue());
-        $this->assertGreaterThan(0, NString::compare(is('b'), is('a'))->intValue());
-        $this->assertLessThan(0, NString::compare(is('a'), is('b'))->intValue());
+        $this->assertEquals(0, NString::compare(is('a'), is('a'))->int());
+        $this->assertGreaterThan(0, NString::compare(is('b'), is('a'))->int());
+        $this->assertLessThan(0, NString::compare(is('a'), is('b'))->int());
+    }
+
+    public function testCompareWithAutoBoxing()
+    {
+        $this->assertEquals(0, NString::compare('a', 'a')->int());
+        $this->assertGreaterThan(0, NString::compare('b', 'a')->int());
+        $this->assertLessThan(0, NString::compare('a', 'b')->int());
     }
 
     public function testCompareWithIgnoreCase()
     {
-        $this->assertNotEquals(0, NString::compare(is('a'), is('A'))->intValue());
-        $this->assertEquals(0, NString::compare(is('a'), is('A'), is(true))->intValue());
+        $this->assertNotEquals(0, NString::compare(is('a'), is('A'))->int());
+        $this->assertEquals(0, NString::compare(is('a'), is('A'), is(true))->int());
+    }
+
+    public function testCompareWithIgnoreCaseAndAutoBoxing()
+    {
+        $this->assertNotEquals(0, NString::compare('a', 'A')->int());
+        $this->assertEquals(0, NString::compare('a', 'A', true)->int());
     }
 
     public function testCompareTo()
@@ -49,9 +62,19 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $strA = is('a');
         $strB = is('b');
 
-        $this->assertEquals(0, $strA->compareTo($strA)->intValue());
-        $this->assertGreaterThan(0, $strB->compareTo($strA)->intValue());
-        $this->assertLessThan(0, $strA->compareTo($strB)->intValue());
+        $this->assertEquals(0, $strA->compareTo($strA)->int());
+        $this->assertGreaterThan(0, $strB->compareTo($strA)->int());
+        $this->assertLessThan(0, $strA->compareTo($strB)->int());
+    }
+
+    public function testCompareToWithAutoBoxing()
+    {
+        $strA = is('a');
+        $strB = is('b');
+
+        $this->assertEquals(0, $strA->compareTo('a')->int());
+        $this->assertGreaterThan(0, $strB->compareTo('a')->int());
+        $this->assertLessThan(0, $strA->compareTo('b')->int());
     }
 
     public function testConcat()
@@ -59,13 +82,13 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $str = is('a');
 
         $ab = $str->concat(is('b'));
-        $this->assertEquals('ab', $ab->stringValue());
+        $this->assertEquals('ab', $ab->string());
 
         $abc = $str->concat(is('b'), is('c'));
-        $this->assertEquals('abc', $abc->stringValue());
+        $this->assertEquals('abc', $abc->string());
 
         $abcd = $str->concat(is('b'), is('c'), is('d'));
-        $this->assertEquals('abcd', $abcd->stringValue());
+        $this->assertEquals('abcd', $abcd->string());
     }
 
     public function testConcatWithNonStrings()
@@ -73,19 +96,19 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $str = is('foo');
 
         $foo4 = $str->concat(is(4));
-        $this->assertEquals('foo4', $foo4->stringValue());
+        $this->assertEquals('foo4', $foo4->string());
     }
 
     public function testStaticConcat()
     {
         $ab = NString::staticConcat(is('a'), is('b'));
-        $this->assertEquals('ab', $ab->stringValue());
+        $this->assertEquals('ab', $ab->string());
 
         $abc = NString::staticConcat(is('a'), is('b'), is('c'));
-        $this->assertEquals('abc', $abc->stringValue());
+        $this->assertEquals('abc', $abc->string());
 
         $abcd = NString::staticConcat(is('a'), is('b'), is('c'), is('d'));
-        $this->assertEquals('abcd', $abcd->stringValue());
+        $this->assertEquals('abcd', $abcd->string());
     }
 
     public function testStaticConcatWithNonStrings()
@@ -94,35 +117,35 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $num = is(4);
 
         $true4 = NString::staticConcat($bool, $num);
-        $this->assertEquals('True4', $true4->stringValue());
+        $this->assertEquals('True4', $true4->string());
     }
 
     public function testContains()
     {
         $str = is("I am a big string: love me");
 
-        $this->assertTrue(  $str->contains(is(""))->boolValue() );
-        $this->assertTrue(  $str->contains(is("big"))->boolValue() );
-        $this->assertTrue(  $str->contains(is("BIG"), is(true))->boolValue() );
-        $this->assertFalse( $str->contains(is("BIG"))->boolValue() );
-        $this->assertFalse( $str->contains(is("BIG"), is(false))->boolValue() );
-        $this->assertFalse( $str->contains(is("small"))->boolValue() );
+        $this->assertTrue(  $str->contains(is(""))->bool() );
+        $this->assertTrue(  $str->contains(is("big"))->bool() );
+        $this->assertTrue(  $str->contains(is("BIG"), is(true))->bool() );
+        $this->assertFalse( $str->contains(is("BIG"))->bool() );
+        $this->assertFalse( $str->contains(is("BIG"), is(false))->bool() );
+        $this->assertFalse( $str->contains(is("small"))->bool() );
     }
 
     public function testEndsWith()
     {
         $str = is("superman");
-        $this->assertTrue( $str->endsWith(is("man"))->boolValue() );
-        $this->assertFalse( $str->endsWith(is("MAN"))->boolValue() );
-        $this->assertTrue( $str->endsWith(NString::getEmpty())->boolValue() );
+        $this->assertTrue( $str->endsWith(is("man"))->bool() );
+        $this->assertFalse( $str->endsWith(is("MAN"))->bool() );
+        $this->assertTrue( $str->endsWith(NString::getEmpty())->bool() );
     }
 
     public function testEndsWithWithIgnoreCase()
     {
         $str = is("superman");
-        $this->assertTrue( $str->endsWith(is("man"), is(true))->boolValue() );
-        $this->assertTrue( $str->endsWith(is("MAN"), is(true))->boolValue() );
-        $this->assertTrue( $str->endsWith(NString::getEmpty(), is(true))->boolValue() );
+        $this->assertTrue( $str->endsWith(is("man"), is(true))->bool() );
+        $this->assertTrue( $str->endsWith(is("MAN"), is(true))->bool() );
+        $this->assertTrue( $str->endsWith(NString::getEmpty(), is(true))->bool() );
     }
 
     public function testFormatWithString()

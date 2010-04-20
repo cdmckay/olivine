@@ -12,12 +12,12 @@ final class Console
 
     public static function write(IObject $value)
     {
-        echo $value->toString()->stringValue();
+        echo $value->toString()->string();
     }
 
     public static function writeLine(IObject $value)
     {
-        echo $value->toString()->concat(Environment::getNewLine())->stringValue();
+        echo $value->toString()->concat(Environment::getNewLine())->string();
     }
 
     public static function writeFormat(NString $format /*, $arg0, $arg1, ... */)

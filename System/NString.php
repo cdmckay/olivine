@@ -52,24 +52,24 @@ final class NString
      *
      * Return greater than zero if $strA is greater than $strB.
      *
-     * @param NString $strA The first string to compare.
-     * @param NString $strB The second string to compare.
-     * @param NBoolean $ignoreCase True to ignore case during comparision; false otherwise.
+     * @param string|NString $strA The first string to compare.
+     * @param string|NString $strB The second string to compare.
+     * @param bool|NBoolean $ignoreCase True to ignore case during comparision; false otherwise.
      * @return NNumber An NNumber that indicates the lexical relationship
      * between the two comparands.
      */
-    public static function compare(NString $strA = null, NString $strB = null, NBoolean $ignoreCase = null)
+    public static function compare($strA, $strB, $ignoreCase = false)
     {
-        if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
+        $ignoreCase = NBoolean::get($ignoreCase)->bool();
 
-        $a = $strA === null ? null : $strA->stringValue();
-        $b = $strB === null ? null : $strB->stringValue();
+        $a = $strA === null ? null : self::get($strA)->string();
+        $b = $strB === null ? null : self::get($strB)->string();
 
         if ($a === null && $b === null) return NNumber::get(0);
         if ($a === null) return NNumber::get(-1);
         if ($b === null) return NNumber::get(1);
 
-        return NNumber::get($ignoreCase->boolValue() ? strcasecmp($a, $b) : strcmp($a, $b));
+        return NNumber::get($ignoreCase ? strcasecmp($a, $b) : strcmp($a, $b));
     }
 
     /**
@@ -77,23 +77,24 @@ final class NString
      * whether this instance precedes, follows, or appears in the same position
      * in the sort order as the specified NString.
      *
-     * Returns less than zero if $strB precedes this instance.
+     * Returns less than zero if $str precedes this instance.
      *
      * Returns zero if this instance has the same position in the sort order
-     * as $strB.
+     * as $str.
      *
      * Returns greater than zero if this instance follows $strB, or $strB is
      * a null reference.
      *
-     * @param IObject $strB
+     * @param string|NString $str
      * @return NNumber An integer that indicates whether this instance precedes,
      * follows, or appears in the same position in the sort order as the
      * value parameter.
      */
-    public function compareTo($strB)
+    public function compareTo($str)
     {
-        if ($strB === null) return NNumber::get(1);
-        return NNumber::get(strcmp($this->value, $strB->toString()->stringValue()));
+        if ($str === null) return NNumber::get(1);
+        $str = self::get($str);
+        return NNumber::get(strcmp($this->value, $str->string()));
     }
 
     /**
@@ -145,19 +146,19 @@ final class NString
         if ($value === null)
             throw new ArgumentNullException('$value must not be null', '$value');
 
-        if ($value->stringValue() === '')
+        if ($value->string() === '')
             return NBoolean::get(true);
 
         if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
 
-        return $ignoreCase->boolValue()
-                ? NBoolean::get(stripos($this->value, $value->stringValue()) !== false)
-                : NBoolean::get(strpos($this->value, $value->stringValue()) !== false);
+        return $ignoreCase->bool()
+                ? NBoolean::get(stripos($this->value, $value->string()) !== false)
+                : NBoolean::get(strpos($this->value, $value->string()) !== false);
     }
 
     public static function copy(NString $str)
     {
-        return self::get($str->stringValue());
+        return self::get($str->string());
     }
 
     /**
@@ -207,18 +208,18 @@ final class NString
             if (false);
             else if ($arg instanceof NString)
             {
-                $fixed_args[] = $arg->stringValue();
+                $fixed_args[] = $arg->string();
             }
             else if ($arg instanceof NNumber)
             {
-                $fixed_args[] = $arg->floatValue();
+                $fixed_args[] = $arg->float();
             }
             else
             {
-                $fixed_args[] = $arg->toString()->stringValue();
+                $fixed_args[] = $arg->toString()->string();
             }
         }
-        return self::get(vsprintf($format->stringValue(), $fixed_args));
+        return self::get(vsprintf($format->string(), $fixed_args));
     }
 
     public function getLength()
@@ -233,31 +234,31 @@ final class NString
         if ($value === null)
             throw new ArgumentNullException(null, '$value');        
 
-        if ($startIndex !== null && $startIndex->isLessThan(NNumber::get(0))->boolValue())
+        if ($startIndex !== null && $startIndex->isLessThan(NNumber::get(0))->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
 
-        if ($startIndex !== null && $startIndex->isGreaterThan($this->length)->boolValue())
+        if ($startIndex !== null && $startIndex->isGreaterThan($this->length)->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this instance', '$startIndex');
 
-        if ($count !== null && $count->isLessThan(NNumber::get(0))->boolValue())
+        if ($count !== null && $count->isLessThan(NNumber::get(0))->bool())
             throw new ArgumentOutOfRangeException('$count must be nonnegative', '$count');
 
         if ($startIndex !== null && $count !== null
-                && $startIndex->plus($count)->isGreaterThan($this->length)->boolValue())
+                && $startIndex->plus($count)->isGreaterThan($this->length)->bool())
             throw new ArgumentOutOfRangeException('$count must refer to a location within this instance', '$count');
 
         if ($startIndex === null) $startIndex = NNumber::get(0);
         if ($count === null) $count = $this->length->minus($startIndex);
         if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
 
-        if ($value->getLength()->equals(NNumber::get(0))->boolValue())
+        if ($value->getLength()->equals(NNumber::get(0))->bool())
             return $startIndex;
         
         $str = $this->substring($startIndex, $count);
 
-        $position = $ignoreCase->boolValue()
-                ? stripos($str->stringValue(), $value->stringValue())
-                : strpos($str->stringValue(), $value->stringValue());
+        $position = $ignoreCase->bool()
+                ? stripos($str->string(), $value->string())
+                : strpos($str->string(), $value->string());
 
         if ($position === false) return NNumber::get(-1);
 
@@ -274,10 +275,10 @@ final class NString
         if ($value === null)
             throw new ArgumentNullException(null, '$value');
 
-        if ($startIndex->isLessThan(NNumber::get(0))->boolValue())
+        if ($startIndex->isLessThan(NNumber::get(0))->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
 
-        if ($startIndex->isGreaterThan($this->length)->boolValue())
+        if ($startIndex->isGreaterThan($this->length)->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this string', '$startIndex');
 
         return $this->substring(is(0), $startIndex)->concat($value, $this->substring($startIndex));
@@ -320,13 +321,13 @@ final class NString
         if ($value === null)
             throw new ArgumentNullException(null, '$value');       
 
-        if ($startIndex !== null && $startIndex->isLessThan(NNumber::get(0))->boolValue())
+        if ($startIndex !== null && $startIndex->isLessThan(NNumber::get(0))->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
 
-        if ($startIndex !== null && $startIndex->isGreaterThan($this->length)->boolValue())
+        if ($startIndex !== null && $startIndex->isGreaterThan($this->length)->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this instance', '$startIndex');
 
-        if ($count !== null && $count->isLessThan(NNumber::get(0))->boolValue())
+        if ($count !== null && $count->isLessThan(NNumber::get(0))->bool())
             throw new ArgumentOutOfRangeException('$count must be nonnegative', '$count');
 
         if ($startIndex === null) $startIndex = $this->length;
@@ -345,8 +346,8 @@ final class NString
         if ($paddingChar === null) $paddingChar = self::get(' ');
 
         $padded = str_pad($this->value,
-                $totalWidth->intValue(),
-                $paddingChar->stringValue(),
+                $totalWidth->int(),
+                $paddingChar->string(),
                 STR_PAD_LEFT);
 
         return self::get($padded);
@@ -357,8 +358,8 @@ final class NString
         if ($paddingChar === null) $paddingChar = self::get(' ');
 
         $padded = str_pad($this->value,
-                $totalWidth->intValue(),
-                $paddingChar->stringValue(),
+                $totalWidth->int(),
+                $paddingChar->string(),
                 STR_PAD_RIGHT);
 
         return self::get($padded);
@@ -366,13 +367,13 @@ final class NString
 
     public function remove(NNumber $startIndex, NNumber $count = null)
     {
-        if ($startIndex->isLessThan(NNumber::get(0))->boolValue())
+        if ($startIndex->isLessThan(NNumber::get(0))->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
 
-        if ($startIndex->isGreaterThan($this->length)->boolValue())
+        if ($startIndex->isGreaterThan($this->length)->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this string', '$startIndex');
 
-        if ($count !== null && $count->isLessThan(NNumber::get(0))->boolValue())
+        if ($count !== null && $count->isLessThan(NNumber::get(0))->bool())
             throw new ArgumentOutOfRangeException('$count must be nonnegative', '$count');
 
         
@@ -400,14 +401,14 @@ final class NString
         if ($oldValue === null)
             throw new ArgumentNullException(null, '$oldValue');
 
-        if ($oldValue->isEmpty()->boolValue())
+        if ($oldValue->isEmpty()->bool())
             throw new ArgumentException('$oldValue cannot be the empty string', '$oldValue');
 
         if ($newValue === null) $newValue = self::getEmpty();
 
         return self::get(str_replace(
-                $oldValue->stringValue(),
-                $newValue->stringValue(),
+                $oldValue->string(),
+                $newValue->string(),
                 $this->value));
     }   
 
@@ -450,16 +451,16 @@ final class NString
      */
     public function substring(NNumber $startIndex, NNumber $length = null)
     {
-        if ($length !== null && $startIndex->plus($length)->isGreaterThan($this->length)->boolValue())
+        if ($length !== null && $startIndex->plus($length)->isGreaterThan($this->length)->bool())
                 throw new ArgumentOutOfRangeException('$length must refer to a location within this instance', '$length');
 
         if ($length === null) $length = $this->length->minus($startIndex);
-        if ($startIndex->equals($this->length)->boolValue())
+        if ($startIndex->equals($this->length)->bool())
                 return self::getEmpty();
 
         return self::get(substr($this->value,
-                $startIndex->intValue(),
-                $length->intValue()));
+                $startIndex->int(),
+                $length->int()));
     }
 
     public function toLower()
@@ -487,22 +488,22 @@ final class NString
         return self::get(rtrim($this->value));
     }
 
-    public function boolValue()
+    public function bool()
     {
         return (bool) $this->value;
     }
 
-    public function intValue()
+    public function int()
     {
         return (int) $this->value;
     }
 
-    public function floatValue()
+    public function float()
     {
         return (float) $this->value;
     }
 
-    public function stringValue()
+    public function string()
     {
         return $this->value;
     }

@@ -13,8 +13,8 @@ class NObjectTest extends PHPUnit_Framework_TestCase
     {
         $o1 = new NObject();
         $o2 = new NObject();
-        $this->assertTrue($o1->equals($o1)->boolValue());
-        $this->assertFalse($o1->equals($o2)->boolValue());
+        $this->assertTrue($o1->equals($o1)->bool());
+        $this->assertFalse($o1->equals($o2)->bool());
     }
 
     public function testGetHashCode()
@@ -28,8 +28,8 @@ class NObjectTest extends PHPUnit_Framework_TestCase
     public function testGetType()
     {
         $o = new NObject();
-        $this->assertEquals("System\NObject", $o->getType()->stringValue());
-        $this->assertNotEquals("System\NString", $o->getType()->stringValue());
+        $this->assertEquals("System\NObject", $o->getType()->string());
+        $this->assertNotEquals("System\NString", $o->getType()->string());
     }
 
     public function testMemberwiseClone()
@@ -43,8 +43,8 @@ class NObjectTest extends PHPUnit_Framework_TestCase
     public function testToString()
     {
         $o = new NObject();
-        $this->assertEquals($o->getType()->stringValue(), $o->toString()->stringValue());
-        $this->assertNotEquals("Foo", $o->toString()->stringValue());
+        $this->assertEquals($o->getType()->string(), $o->toString()->string());
+        $this->assertNotEquals("Foo", $o->toString()->string());
     }
 
     public function testToStringMagicMethod()
@@ -52,6 +52,5 @@ class NObjectTest extends PHPUnit_Framework_TestCase
         $o = new NObject();
         $this->assertEquals($o->__toString(), sprintf("%s", $o));
         $this->assertNotEquals("Foo", sprintf("%s", $o));
-    }
-    
+    }    
 }

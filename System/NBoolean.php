@@ -82,21 +82,21 @@ final class NBoolean
      * This method returns greater than 0 when the instance is true and
      * $object is false, or if $object is null.
      *
-     * @param bool|NBoolean $object
+     * @param bool|NBoolean $value
      * @return NNumber
      */
-    public function compareTo($object)
+    public function compareTo($value)
     {                
-        if ($object === null)
+        if ($value === null)
             return NNumber::get(1);
 
-        if (!is_bool($object) && !($object instanceof self))
+        if (!is_bool($value) && !($value instanceof self))
             throw new ArgumentException('$object is not a bool or NBoolean', '$object');
 
-        $object = self::get($object);
+        $value = self::get($value);
 
         $o1 = $this->value;
-        $o2 = $object->boolValue();
+        $o2 = $value->bool();
             
         if ($o1 === false && $o2 === true)
             return NNumber::get(-1);
@@ -119,7 +119,7 @@ final class NBoolean
     {
         return self::get(
                 (is_bool($object) || ($object instanceof NBoolean))
-                && $this->value === self::get($object)->boolValue());
+                && $this->value === self::get($object)->bool());
     }
 
     /**
@@ -156,7 +156,7 @@ final class NBoolean
             throw new ArgumentNullException(null, '$value');
         
         $value = NString::get($value);        
-        $str = $value->trim()->toLower()->stringValue();
+        $str = $value->trim()->toLower()->string();
 
         if ($str === self::$trueString)
             return self::$true;
@@ -213,7 +213,7 @@ final class NBoolean
      */
     public function andAlso($value)
     {
-        return self::get($this->value && self::get($value)->boolValue());
+        return self::get($this->value && self::get($value)->bool());
     }
 
     /**
@@ -224,7 +224,7 @@ final class NBoolean
      */
     public function orElse($value)
     {
-        return self::get($this->value || self::get($value)->boolValue());
+        return self::get($this->value || self::get($value)->bool());
     }
 
     /**
@@ -232,7 +232,7 @@ final class NBoolean
      *
      * @return bool
      */
-    public function boolValue()
+    public function bool()
     {
         return $this->value;
     }
@@ -242,7 +242,7 @@ final class NBoolean
      *
      * @return int
      */
-    public function intValue()
+    public function int()
     {
         return $this->value ? 1 : 0;
     }
@@ -252,7 +252,7 @@ final class NBoolean
      *
      * @return float
      */
-    public function floatValue()
+    public function float()
     {
         return (float) $this->value ? 1 : 0;
     }
@@ -263,7 +263,7 @@ final class NBoolean
      *
      * @return string
      */
-    public function stringValue()
+    public function string()
     {
         return $this->value ? "True" : "False";
     }
@@ -286,7 +286,7 @@ final class NBoolean
      */
     public function toNumber()
     {
-        return NNumber::get($this->intValue());
+        return NNumber::get($this->int());
     }
 
     /**
@@ -297,7 +297,7 @@ final class NBoolean
      */
     public function toString()
     {
-        return NString::get($this->stringValue());
+        return NString::get($this->string());
     }
 
 }

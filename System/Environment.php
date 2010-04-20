@@ -26,6 +26,6 @@ final class Environment
      */
     public static function terminate(NNumber $exitCode)
     {
-        exit($exitCode->intValue());
+        exit($exitCode->int());
     }
 }

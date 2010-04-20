@@ -71,22 +71,22 @@ final class NNumber
      * This method returns greater than 0 if this instance is greater than
      * $object, or $object is null.
      *
-     * @param int|float|NNumber $object
+     * @param int|float|NNumber $value
      * @return NNumber A signed number indicating the relative values of
      * this instance and value.
      */
-    public function compareTo($object)
+    public function compareTo($value)
     {
-        if ($object === null)
+        if ($value === null)
             return self::get(1);
 
-        if (!is_int($object) && !is_float($object) && !($object instanceof NNumber))
+        if (!is_int($value) && !is_float($value) && !($value instanceof NNumber))
             throw new ArgumentException('$object is not an int or float or NNumber', '$object');
          
-        $object = self::get($object);
+        $value = self::get($value);
 
         $o1 = $this->value;
-        $o2 = $object->stringValue();
+        $o2 = $value->string();
 
         return self::get(bccomp($o1, $o2, self::$scale));
     }
@@ -103,7 +103,7 @@ final class NNumber
     {
         return NBoolean::get(
                 (is_int($object) || is_float($object) || $object instanceof NNumber)
-                && bccomp($this->value, self::get($object)->stringValue(), self::$scale) === 0);
+                && bccomp($this->value, self::get($object)->string(), self::$scale) === 0);
     }    
 
     /**
@@ -137,7 +137,7 @@ final class NNumber
         }
 
         $value = NString::get($value);
-        $str = $value->trim()->stringValue();
+        $str = $value->trim()->string();
 
         if (!self::hasNumberFormat($str))
         {
@@ -215,7 +215,7 @@ final class NNumber
         }
 
         $value = self::get($value);
-        return self::get(bcadd($this->value, $value->stringValue(), self::$scale));
+        return self::get(bcadd($this->value, $value->string(), self::$scale));
     }
 
     /**
@@ -234,7 +234,7 @@ final class NNumber
         }
 
         $value = self::get($value);
-        return self::get(bcsub($this->value, $value->stringValue(), self::$scale));
+        return self::get(bcsub($this->value, $value->string(), self::$scale));
     }
 
     /**
@@ -253,7 +253,7 @@ final class NNumber
         }
 
         $value = self::get($value);
-        return self::get(bcmul($this->value, $value->stringValue(), self::$scale));
+        return self::get(bcmul($this->value, $value->string(), self::$scale));
     }
 
     /**
@@ -272,7 +272,7 @@ final class NNumber
         }
 
         $value = self::get($value);
-        return self::get(bcdiv($this->value, $value->stringValue(), self::$scale));
+        return self::get(bcdiv($this->value, $value->string(), self::$scale));
     }
 
     /**
@@ -291,7 +291,7 @@ final class NNumber
         }
 
         $value = self::get($value);
-        return self::get(bcmod($this->value, $value->stringValue()));
+        return self::get(bcmod($this->value, $value->string()));
     }
 
     /**
@@ -310,7 +310,7 @@ final class NNumber
         }
 
         $value = self::get($value);
-        $comp = bccomp($this->value, $value->stringValue(), self::$scale);
+        $comp = bccomp($this->value, $value->string(), self::$scale);
         return NBoolean::get($comp === -1);
     }
 
@@ -330,7 +330,7 @@ final class NNumber
         }
 
         $value = self::get($value);
-        $comp = bccomp($this->value, $value->stringValue(), self::$scale);
+        $comp = bccomp($this->value, $value->string(), self::$scale);
         return NBoolean::get($comp === 0 || $comp === -1);
     }
 
@@ -350,7 +350,7 @@ final class NNumber
         }
 
         $value = self::get($value);
-        $comp = bccomp($this->value, $value->stringValue(), self::$scale);
+        $comp = bccomp($this->value, $value->string(), self::$scale);
         return NBoolean::get($comp === 1);
     }
 
@@ -370,7 +370,7 @@ final class NNumber
         }
 
         $value = self::get($value);
-        $comp = bccomp($this->value, $value->stringValue(), self::$scale);
+        $comp = bccomp($this->value, $value->string(), self::$scale);
         return NBoolean::get($comp === 0 || $comp === 1);
     }
 
@@ -380,7 +380,7 @@ final class NNumber
      * @return boolean True if the value of the current instance is zero;
      * otherwise false.
      */
-    public function boolValue()
+    public function bool()
     {
         return $this->equals(self::get(0));
     }
@@ -392,9 +392,9 @@ final class NNumber
      *
      * @throws OverflowException if this NNumber is too wide for int
      */
-    public function intValue()
+    public function int()
     {
-        $val = Math::floor($this)->stringValue();
+        $val = Math::floor($this)->string();
         $ret = (int) $val;
 
         if (strcmp(((string) $ret), $val) !== 0)
@@ -410,7 +410,7 @@ final class NNumber
      *
      * @throws OverflowException if this NNumber is too wide for float
      */
-    public function floatValue()
+    public function float()
     {
         $val = $this->value;        
         $ret = floatval($val);
@@ -427,7 +427,7 @@ final class NNumber
      *
      * @return string
      */
-    public function stringValue()
+    public function string()
     {
         return $this->value;
     }
@@ -440,7 +440,7 @@ final class NNumber
      */
     public function toBoolean()
     {
-        return NBoolean::get($this->boolValue());
+        return NBoolean::get($this->bool());
     }
 
     /**
@@ -463,7 +463,7 @@ final class NNumber
      */
     public function toString()
     {
-        return NString::get($this->stringValue());
+        return NString::get($this->string());
     }
 
     /**

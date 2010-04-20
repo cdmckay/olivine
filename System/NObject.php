@@ -65,7 +65,7 @@ class NObject
     public function __toString()
     {
         // This wraps the magic __toString to our toString method.
-        return $this->toString()->stringValue();
+        return $this->toString()->string();
     }
 
 }
