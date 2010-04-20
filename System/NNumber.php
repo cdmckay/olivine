@@ -27,7 +27,7 @@ final class NNumber
      * 
      * The number string may have an exponent, i.e. "2.0e2".
      *
-     * @param mixed $value An int, float or string containing a number.
+     * @param int|float|string|NNumber $value An int, float or string containing a number.
      * @return NNumber
      */
     public static function get($value)
@@ -58,7 +58,7 @@ final class NNumber
         }
 
         return new NNumber(self::expandExponent($str));
-    }
+    }    
 
     /**
      * Compares this instance to a specified object and returns an indication
@@ -71,7 +71,7 @@ final class NNumber
      * This method returns greater than 0 if this instance is greater than
      * $object, or $object is null.
      *
-     * @param IObject $object
+     * @param int|float|NNumber $object
      * @return NNumber A signed number indicating the relative values of
      * this instance and value.
      */
@@ -80,10 +80,12 @@ final class NNumber
         if ($object === null)
             return self::get(1);
 
-        if (!($object instanceof NNumber))
-            throw new ArgumentException('$object is not an NNumber', '$object');
+        if (!is_int($object) && !is_float($object) && !($object instanceof NNumber))
+            throw new ArgumentException('$object is not an int or float or NNumber', '$object');
+         
+        $object = self::get($object);
 
-        $o1 = $this->stringValue();
+        $o1 = $this->value;
         $o2 = $object->stringValue();
 
         return self::get(bccomp($o1, $o2, self::$scale));
@@ -93,14 +95,15 @@ final class NNumber
      * Returns a value indicating whether this instance is equal to a
      * specified object.
      *
-     * @param IObject $object An object to compare with this instance.
+     * @param mixed $object An object to compare with this instance.
      * @return NBoolean True if obj is an instance of NNumber and equals
      * the value of this instance; otherwise, false.
      */
     public function equals($object)
     {
-        return NBoolean::get($object instanceof NNumber
-                && bccomp($this->value, $object->stringValue(), self::$scale) === 0);
+        return NBoolean::get(
+                (is_int($object) || is_float($object) || $object instanceof NNumber)
+                && bccomp($this->value, self::get($object)->stringValue(), self::$scale) === 0);
     }    
 
     /**
@@ -120,19 +123,20 @@ final class NNumber
      *
      * For example: <code>-10.12345e+10</code>
      *
-     * @param NString $value A string containing a number to convert. 
+     * @param string|NString $value A string containing a number to convert.
      * @return NNumber
      *
      * @throws ArgumentNullException if $value is null
      * @throws FormatException if $value is not the correct format
      */
-    public static function parse(NString $value = null)
+    public static function parse($value)
     {
-        if ($value == null)
+        if ($value === null)
         {
             throw new ArgumentNullException(null, '$value');
         }
 
+        $value = NString::get($value);
         $str = $value->trim()->stringValue();
 
         if (!self::hasNumberFormat($str))
@@ -159,29 +163,30 @@ final class NNumber
      * e is an uppercase or lowercase character 'e', indicating exponential (scientific) notation.
      * exponential-digits is a series of digits ranging from 0 to 9 that specify an exponent.
      *
-     * @param NString $value A string containing a number to convert. 
-     * @param NNumber $result When this method returns, contains the
+     * @param string|NString $value A string containing a number to convert.
+     * @param mixed $result When this method returns, contains the
      * NNumber equivalent to the $value parameter, if the conversion succeeded,
      * or zero if the conversion failed. The conversion fails if the $value
      * parameter is null, is not a number in a valid format, This parameter
      * is passed uninitialized.
      * @return NBoolean
      */
-    public static function tryParse(NString $value = null, NNumber &$result = null)
+    public static function tryParse($value, &$result)
     {
-        $successful = NBoolean::get(false);
+        $successful = false;
 
         try
         {
+            $value = NString::get($value);
             $result = self::parse($value);
-            $successful = NBoolean::get(true);
+            $successful = true;
         }
         catch (NException $e)
         {
             $result = NNumber::get(0);
         }
 
-        return $successful;
+        return NBoolean::get($successful);
     }
 
     /**
@@ -197,84 +202,180 @@ final class NNumber
     /**
      * Returns a number that is the sum of <code>this + value</code>.
      *
-     * @param NNumber $value The value to be added.
+     * @param int|float|string|NNumber $value The value to be added.
      * @return NNumber The sum.
+     *
+     * @throws ArgumentNullException if $value is null
      */
-    public function plus(NNumber $value)
-    {        
+    public function plus($value)
+    {
+        if ($value === null)
+        {
+            throw new ArgumentNullException(null, '$value');
+        }
+
+        $value = self::get($value);
         return self::get(bcadd($this->value, $value->stringValue(), self::$scale));
     }
 
     /**
      * Returns a number that is the difference of <code>this - value</code>.
      *
-     * @param NNumber $value The value to be subtracted.
+     * @param int|float|string|NNumber $value The value to be subtracted.
      * @return NNumber The difference.
+     *
+     * @throws ArgumentNullException if $value is null
      */
-    public function minus(NNumber $value)
-    {        
+    public function minus($value)
+    {
+        if ($value === null)
+        {
+            throw new ArgumentNullException(null, '$value');
+        }
+
+        $value = self::get($value);
         return self::get(bcsub($this->value, $value->stringValue(), self::$scale));
     }
 
     /**
      * Returns a number that is the product of <code>this * value</code>.
      *
-     * @param NNumber $value The value to be multiplied.
+     * @param int|float|string|NNumber $value The value to be multiplied.
      * @return NNumber The product.
+     *
+     * @throws ArgumentNullException if $value is null
      */
-    public function times(NNumber $value)
-    {        
+    public function times($value)
+    {
+        if ($value === null)
+        {
+            throw new ArgumentNullException(null, '$value');
+        }
+
+        $value = self::get($value);
         return self::get(bcmul($this->value, $value->stringValue(), self::$scale));
     }
 
     /**
      * Returns a number that is the quotient of <code>this / value</code>.
      *
-     * @param NNumber $value The value to be divided.
+     * @param int|float|string|NNumber $value The value to be divided.
      * @return NNumber The quotient.
+     *
+     * @throws ArgumentNullException if $value is null
      */
-    public function divide(NNumber $value)
-    {       
+    public function divide($value)
+    {
+        if ($value === null)
+        {
+            throw new ArgumentNullException(null, '$value');
+        }
+
+        $value = self::get($value);
         return self::get(bcdiv($this->value, $value->stringValue(), self::$scale));
     }
 
     /**
      * Returns a number that is the result of <code>this % value</code>.
      *
-     * @param NNumber $value
+     * @param int|float|string|NNumber $value
      * @return NNumber
+     *
+     * @throws ArgumentNullException if $value is null
      */
-    public function modulus(NNumber $value)
-    {        
+    public function modulus($value)
+    {
+        if ($value === null)
+        {
+            throw new ArgumentNullException(null, '$value');
+        }
+
+        $value = self::get($value);
         return self::get(bcmod($this->value, $value->stringValue()));
     }
 
-    public function isLessThan(NNumber $value)
+    /**
+     * Returns a NBoolean that is the result of <code>this < value</code>.
+     *
+     * @param int|float|string|NNumber $value
+     * @return NBoolean
+     *
+     * @throws ArgumentNullException if $value is null
+     */
+    public function isLessThan($value)
     {
+        if ($value === null)
+        {
+            throw new ArgumentNullException(null, '$value');
+        }
+
+        $value = self::get($value);
         $comp = bccomp($this->value, $value->stringValue(), self::$scale);
         return NBoolean::get($comp === -1);
     }
 
-    public function isLessThanOrEqualTo(NNumber $value)
+    /**
+     * Returns a NBoolean that is the result of <code>this <= value</code>.
+     *
+     * @param int|float|string|NNumber $value
+     * @return NBoolean
+     *
+     * @throws ArgumentNullException if $value is null
+     */
+    public function isLessThanOrEqualTo($value)
     {
+        if ($value === null)
+        {
+            throw new ArgumentNullException(null, '$value');
+        }
+
+        $value = self::get($value);
         $comp = bccomp($this->value, $value->stringValue(), self::$scale);
         return NBoolean::get($comp === 0 || $comp === -1);
     }
 
-    public function isGreaterThan(NNumber $value)
+    /**
+     * Returns a NBoolean that is the result of <code>this > value</code>.
+     *
+     * @param int|float|string|NNumber $value
+     * @return NBoolean
+     *
+     * @throws ArgumentNullException if $value is null
+     */
+    public function isGreaterThan($value)
     {
+        if ($value === null)
+        {
+            throw new ArgumentNullException(null, '$value');
+        }
+
+        $value = self::get($value);
         $comp = bccomp($this->value, $value->stringValue(), self::$scale);
         return NBoolean::get($comp === 1);
     }
 
-    public function isGreaterThanOrEqualTo(NNumber $value)
+    /**
+     * Returns a NBoolean that is the result of <code>this >= value</code>.
+     *
+     * @param int|float|string|NNumber $value
+     * @return NBoolean
+     *
+     * @throws ArgumentNullException if $value is null
+     */
+    public function isGreaterThanOrEqualTo($value)
     {
+        if ($value === null)
+        {
+            throw new ArgumentNullException(null, '$value');
+        }
+
+        $value = self::get($value);
         $comp = bccomp($this->value, $value->stringValue(), self::$scale);
         return NBoolean::get($comp === 0 || $comp === 1);
     }
 
-     /**
-     * Converts the NNumber to a boolean
+    /**
+     * Converts this NNumber to a boolean primitive.
      *
      * @return boolean True if the value of the current instance is zero;
      * otherwise false.
@@ -284,6 +385,13 @@ final class NNumber
         return $this->equals(self::get(0));
     }
 
+    /**
+     * Returns the int value of this NNumber, if it is small enough.
+     *
+     * @return int
+     *
+     * @throws OverflowException if this NNumber is too wide for int
+     */
     public function intValue()
     {
         $val = Math::floor($this)->stringValue();
@@ -295,6 +403,13 @@ final class NNumber
         return $ret;
     }
 
+    /**
+     * Returns the float value of this NNumber, if it is small enough.
+     *
+     * @return float
+     *
+     * @throws OverflowException if this NNumber is too wide for float
+     */
     public function floatValue()
     {
         $val = $this->value;        
@@ -306,17 +421,33 @@ final class NNumber
         return $ret;
     }
 
+    /**
+     * Returns the string value of this NNumber.
+     * For example, if the value 42 then this would return "42".
+     *
+     * @return string
+     */
     public function stringValue()
     {
         return $this->value;
     }
 
-   
+    /**
+     * Converts this NNumber to an NBoolean instance.
+     *
+     * @return NBoolean True if the value of the current instance is zero;
+     * otherwise false.
+     */
     public function toBoolean()
     {
         return NBoolean::get($this->boolValue());
     }
 
+    /**
+     * Returns this instance untouched.
+     * 
+     * @return NNumber
+     */
     public function toNumber()
     {
         return $this;
@@ -372,5 +503,4 @@ final class NNumber
 
         return $ret;
     }
-
 }

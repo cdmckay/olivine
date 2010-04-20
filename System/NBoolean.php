@@ -179,7 +179,7 @@ final class NBoolean
      * The comparison is case-insensitive.
      *
      * @param string|NString $value A string containing the value to convert.
-     * @param NBoolean $result When this method returns, if the conversion
+     * @param mixed $result When this method returns, if the conversion
      * succeeded, contains true if value is equivalent to TrueString or false
      * if value is equivalent to FalseString. If the conversion failed,
      * contains false. The conversion fails if $value is null or is not
@@ -189,12 +189,11 @@ final class NBoolean
      */
     public static function tryParse($value, &$result)
     {
-        // Boxing.
-        $value = NString::get($value);
         $successful = self::$false;
         
         try
         {
+            $value = NString::get($value);
             $result = self::parse($value);
             $successful = self::$true;
         }

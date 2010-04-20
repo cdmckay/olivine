@@ -84,10 +84,21 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $this->assertGreaterThan(0, $pos->compareTo($zero)->intValue());
     }
 
-    public function testCompareToNull()
+    public function testCompareToWithNull()
     {
         $num = is(42);
         $this->assertGreaterThan(0, $num->compareTo(null)->intValue());
+    }
+
+    public function testCompareToWithAutoBoxing()
+    {
+        $neg  = is(-12);
+        $zero = is(0);
+        $pos  = is(553);
+
+        $this->assertLessThan(0, $neg->compareTo(0)->intValue());
+        $this->assertEquals(0, $zero->compareTo(0)->intValue());
+        $this->assertGreaterThan(0, $pos->compareTo(0)->intValue());
     }
 
     public function testEquals()
@@ -100,7 +111,14 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $this->assertFalse( $int1->equals($int3)->boolValue() );
     }
 
-    public function testEqualsNull()
+    public function testEqualsWithAutoBoxing()
+    {
+        $int1 = is(10);
+        $this->assertTrue( $int1->equals(10)->boolValue() );
+        $this->assertFalse( $int1->equals(11)->boolValue() );
+    }
+
+    public function testEqualsWithNull()
     {
         $int = is(444);
         $this->assertFalse( $int->equals(null)->boolValue() );
@@ -111,6 +129,13 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $this->assertTrue( is(0)->equals(NNumber::parse(is("0")))->boolValue() ) ;
         $this->assertTrue( is(-100)->equals(NNumber::parse(is("-100")))->boolValue() );
         $this->assertTrue( is(42e4)->equals(NNumber::parse(is("42e4")))->boolValue() );
+    }
+
+    public function testParseWithAutoBoxing()
+    {
+        $this->assertTrue( is(0)->equals(NNumber::parse("0"))->boolValue() ) ;
+        $this->assertTrue( is(-100)->equals(NNumber::parse("-100"))->boolValue() );
+        $this->assertTrue( is(42e4)->equals(NNumber::parse("42e4"))->boolValue() );
     }
 
     public function testParseNull()
@@ -128,6 +153,13 @@ class NNumberTest extends PHPUnit_Framework_TestCase
     public function testTryParse()
     {
         $successful = NNumber::tryParse(is("10"), $result);
+        $this->assertTrue(is(true)->equals($successful)->boolValue());
+        $this->assertTrue(is(10)->equals($result)->boolValue());
+    }
+
+    public function testTryParseWithAutoBoxing()
+    {
+        $successful = NNumber::tryParse("10", $result);
         $this->assertTrue(is(true)->equals($successful)->boolValue());
         $this->assertTrue(is(10)->equals($result)->boolValue());
     }
@@ -150,6 +182,7 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $val1 = is(1);
         $val2 = is(2);
         $this->assertEquals(3, $val1->plus($val2)->intValue());
+        $this->assertEquals(3, $val1->plus(2)->intValue());
     }   
 
     public function testMinus()
@@ -157,6 +190,7 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $val1 = is(1);
         $val2 = is(2);
         $this->assertEquals(-1, $val1->minus($val2)->intValue());
+        $this->assertEquals(-1, $val1->minus(2)->intValue());
     }
 
     public function testTimes()
@@ -164,6 +198,7 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $val1 = is(10);
         $val2 = is(2);
         $this->assertEquals(20, $val1->times($val2)->intValue());
+        $this->assertEquals(20, $val1->times(2)->intValue());
     }
 
     public function testDivide()
@@ -171,6 +206,7 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $val1 = is(10);
         $val2 = is(2);
         $this->assertEquals(5, $val1->divide($val2)->intValue());
+        $this->assertEquals(5, $val1->divide(2)->intValue());
     }
 
     public function testModulus()
@@ -178,44 +214,73 @@ class NNumberTest extends PHPUnit_Framework_TestCase
         $val1 = is(10);
         $val2 = is(3);
         $this->assertEquals(1, $val1->modulus($val2)->intValue());
+        $this->assertEquals(1, $val1->modulus(3)->intValue());
     }
 
     public function testIsLessThan()
     {
         $val1 = is(5);
         $val2 = is(10);
+        
         $this->assertFalse( $val1->isLessThan($val1)->boolValue() );
+        $this->assertFalse( $val1->isLessThan(5)->boolValue() );
+
         $this->assertTrue(  $val1->isLessThan($val2)->boolValue() );
-        $this->assertFalse( $val2->isLessThan($val1)->boolValue() );
+        $this->assertTrue(  $val1->isLessThan(10)->boolValue() );
+
+        $this->assertFalse( $val2->isLessThan($val1)->boolValue() );                
+        $this->assertFalse( $val2->isLessThan(5)->boolValue() );
     }
 
     public function testIsLessThanOrEqualTo()
     {
         $val1 = is(5);
         $val2 = is(10);
+
         $this->assertTrue(  $val1->isLessThanOrEqualTo($val1)->boolValue() );
+        $this->assertTrue(  $val1->isLessThanOrEqualTo(5)->boolValue() );
+
         $this->assertTrue(  $val1->isLessThanOrEqualTo($val2)->boolValue() );
+        $this->assertTrue(  $val1->isLessThanOrEqualTo(10)->boolValue() );
+
         $this->assertFalse( $val2->isLessThanOrEqualTo($val1)->boolValue() );
+        $this->assertFalse( $val2->isLessThanOrEqualTo(5)->boolValue() );
     }
 
     public function testIsGreaterThan()
     {
         $val1 = is(15);
         $val2 = is(5);
+
         $this->assertFalse( $val1->isGreaterThan($val1)->boolValue() );
+        $this->assertFalse( $val1->isGreaterThan(15)->boolValue() );
+
         $this->assertTrue(  $val1->isGreaterThan($val2)->boolValue() );
+        $this->assertTrue(  $val1->isGreaterThan(5)->boolValue() );
+
         $this->assertFalse( $val2->isGreaterThan($val1)->boolValue() );
+        $this->assertFalse( $val2->isGreaterThan(15)->boolValue() );
+
         $this->assertTrue(  is(0)->isGreaterThan(is(-10))->boolValue() );
+        $this->assertTrue(  is(0)->isGreaterThan(-10)->boolValue() );
+
         $this->assertFalse( is(-10)->isGreaterThan(is(0))->boolValue() );
+        $this->assertFalse( is(-10)->isGreaterThan(0)->boolValue() );
     }
 
     public function testIsGreaterThanOrEqualTo()
     {
         $val1 = is(15);
         $val2 = is(5);
+
         $this->assertTrue(  $val1->isGreaterThanOrEqualTo($val1)->boolValue() );
+        $this->assertTrue(  $val1->isGreaterThanOrEqualTo(15)->boolValue() );
+
         $this->assertTrue(  $val1->isGreaterThanOrEqualTo($val2)->boolValue() );
+        $this->assertTrue(  $val1->isGreaterThanOrEqualTo(5)->boolValue() );
+
         $this->assertFalse( $val2->isGreaterThanOrEqualTo($val1)->boolValue() );
+        $this->assertFalse( $val2->isGreaterThanOrEqualTo(15)->boolValue() );
     }
 
     public function testIntOverflow()

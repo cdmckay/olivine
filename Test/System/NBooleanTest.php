@@ -159,7 +159,7 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
         $successful = NBoolean::tryParse("ture", $result);
         $this->assertFalse($successful->boolValue());
         $this->assertFalse($result->boolValue());
-    }
+    }   
 
     public function testAndAlso()
     {
