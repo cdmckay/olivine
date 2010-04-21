@@ -8,6 +8,11 @@ final class NString
 {
     private static $emptyString;
 
+    /**
+     * Represents the empty string.
+     *
+     * @return NString
+     */
     public static function getEmpty()
     {
         if (self::$emptyString == null)
@@ -25,6 +30,12 @@ final class NString
         $this->length = NNumber::get(strlen($value));
     }
 
+    /**
+     * Returns an NString instance for a given string.
+     *
+     * @param string $value
+     * @return NString
+     */
     public static function get($value)
     {
         if ($value instanceof self)
@@ -101,17 +112,35 @@ final class NString
      * Concatenates this NString with one or more instances of NString, or the NString
      * representations of the values of one or more instances of IObject.
      *
-     * @param IObject $arg0 The first IObject.
-     * @param IObject $arg1 The second IObject.
-     * @param IObject $arg2 The third IObject.
+     * @param bool|int|float|string|IObject $arg0 The first object.
+     * @param bool|int|float|string|IObject $arg1 The second object.
+     * @param bool|int|float|string|IObject $arg2 The third object.
      * @return NString The concatenated NString representations of the
      * values of $arg0, $arg1, and $arg2.
+     *
+     * @throws ArgumentNullException if $arg0 is null.
+     * @throws ArgumentException if any argument is an array or an object
+     * that does not implement IObject.
      */
-    public function concat(IObject $arg0, IObject $arg1 = null, IObject $arg2 = null)
+    public function concat($arg0, $arg1 = '', $arg2 = '')
     {
-        $str = $this->value . $arg0;
-        if ($arg1 !== null) $str .= $arg1;
-        if ($arg2 !== null) $str .= $arg2;
+        if ($arg0 === null)        
+            throw new ArgumentNullException(null, '$arg0');        
+
+        if (!($arg0 instanceof IObject) && (is_object($arg0) || is_array($arg0)))
+            throw new ArgumentException("Cannot concatenate primitive objects or arrays", '$arg0');
+
+        if (!($arg1 instanceof IObject) && (is_object($arg1) || is_array($arg1)))
+            throw new ArgumentException("Cannot concatenate primitive objects or arrays", '$arg1');
+
+        if (!($arg2 instanceof IObject) && (is_object($arg2) || is_array($arg2)))
+            throw new ArgumentException("Cannot concatenate primitive objects or arrays", '$arg2');
+
+        $str = $this->value;
+        $str .= $arg0;
+        $str .= $arg1;
+        $str .= $arg2;
+        
         return self::get($str);
     }
 

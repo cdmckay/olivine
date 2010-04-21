@@ -91,12 +91,44 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('abcd', $abcd->string());
     }
 
+    public function testConcatWithAutoBoxing()
+    {
+        $str = is('a');
+
+        $ab = $str->concat('b');
+        $this->assertEquals('ab', $ab->string());
+
+        $abc = $str->concat('b', 'c');
+        $this->assertEquals('abc', $abc->string());
+
+        $abcd = $str->concat('b', 'c', 'd');
+        $this->assertEquals('abcd', $abcd->string());
+    }
+
     public function testConcatWithNonStrings()
     {
         $str = is('foo');
 
-        $foo4 = $str->concat(is(4));
-        $this->assertEquals('foo4', $foo4->string());
+        $t1 = $str->concat(is(4));
+        $this->assertEquals('foo4', $t1->string());
+
+        $t2 = $str->concat(1, 2, 3);
+        $this->assertEquals('foo123', $t2->string());
+        
+        $t3 = $str->concat(true, 0.0);
+        $this->assertEquals('foo10', $t3->string());
+    }
+
+    public function testConcatWithArrays()
+    {
+        $this->setExpectedException('System\ArgumentException');
+        is("foo")->concat(array());
+    }
+
+    public function testConcatWithPHPObjects()
+    {
+        $this->setExpectedException('System\ArgumentException');
+        is("foo")->concat(new stdClass());
     }
 
     public function testStaticConcat()
