@@ -118,22 +118,28 @@ final class NString
      * @return NString The concatenated NString representations of the
      * values of $arg0, $arg1, and $arg2.
      *
-     * @throws ArgumentNullException if $arg0 is null.
+     * @throws ArgumentNullException if any argument is null.
      * @throws ArgumentException if any argument is an array or an object
      * that does not implement IObject.
      */
     public function concat($arg0, $arg1 = '', $arg2 = '')
     {
         if ($arg0 === null)        
-            throw new ArgumentNullException(null, '$arg0');        
+            throw new ArgumentNullException(null, '$arg0');
 
-        if (!($arg0 instanceof IObject) && (is_object($arg0) || is_array($arg0)))
+        if ($arg1 === null)
+            throw new ArgumentNullException(null, '$arg1');
+
+        if ($arg2 === null)
+            throw new ArgumentNullException(null, '$arg2');
+
+        if (is_array($arg0) || (is_object($arg0) && !($arg0 instanceof IObject)))
             throw new ArgumentException("Cannot concatenate primitive objects or arrays", '$arg0');
 
-        if (!($arg1 instanceof IObject) && (is_object($arg1) || is_array($arg1)))
+        if (is_array($arg1) || (is_object($arg1) && !($arg1 instanceof IObject)))
             throw new ArgumentException("Cannot concatenate primitive objects or arrays", '$arg1');
 
-        if (!($arg2 instanceof IObject) && (is_object($arg2) || is_array($arg2)))
+        if (is_array($arg2) || (is_object($arg2) && !($arg2 instanceof IObject)))
             throw new ArgumentException("Cannot concatenate primitive objects or arrays", '$arg2');
 
         $str = $this->value;
@@ -148,16 +154,44 @@ final class NString
      * Concatenates one or more instances of NString, or the NString
      * representations of the values of one or more instances of IObject.
      *
-     * @param IObject $arg0 The first IObject.
-     * @param IObject $arg1 The second IObject.
-     * @param IObject $arg2 The third IObject.
-     * @param IObject $arg3 The fourth IObject.
+     * @param bool|int|float|string|IObject $arg0 The first IObject.
+     * @param bool|int|float|string|IObject $arg1 The second IObject.
+     * @param bool|int|float|string|IObject $arg2 The third IObject.
+     * @param bool|int|float|string|IObject $arg3 The fourth IObject.
      * @return NString The concatenated NString representations of the
      * values of $arg0, $arg1, $arg2, and $arg3.
+     *
+     * @throws ArgumentNullException if any argument is null.
+     * @throws ArgumentException if any argument is an array or an object
+     * that does not implement IObject.
      */
-    public static function staticConcat(IObject $arg0, IObject $arg1 = null, IObject $arg2 = null, IObject $arg3 = null)
+    public static function staticConcat($arg0, $arg1 = '', $arg2 = '', $arg3 = '')
     {
-        return $arg0->toString()->concat($arg1, $arg2, $arg3);
+        if ($arg0 === null)
+            throw new ArgumentNullException(null, '$arg0');
+
+        if ($arg1 === null)
+            throw new ArgumentNullException(null, '$arg1');
+
+        if ($arg2 === null)
+            throw new ArgumentNullException(null, '$arg2');
+
+        if ($arg3 === null)
+            throw new ArgumentNullException(null, '$arg3');
+
+        if (is_array($arg0) || (is_object($arg0) && !($arg0 instanceof IObject)))
+            throw new ArgumentException("Cannot concatenate primitive objects or arrays", '$arg0');
+
+        if (is_array($arg1) || (is_object($arg1) && !($arg1 instanceof IObject)))
+            throw new ArgumentException("Cannot concatenate primitive objects or arrays", '$arg1');
+
+        if (is_array($arg2) || (is_object($arg2) && !($arg2 instanceof IObject)))
+            throw new ArgumentException("Cannot concatenate primitive objects or arrays", '$arg2');
+
+        if (is_array($arg3) || (is_object($arg3) && !($arg3 instanceof IObject)))
+            throw new ArgumentException("Cannot concatenate primitive objects or arrays", '$arg3');
+
+        return self::get((string) $arg0)->toString()->concat($arg1, $arg2, $arg3);
     }   
 
     /**
