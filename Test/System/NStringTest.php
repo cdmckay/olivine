@@ -164,6 +164,24 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $this->assertFalse( $str->contains(is("small"))->bool() );
     }
 
+    public function testContainsWithAutoBoxing()
+    {
+        $str = is("I am a big string: love me");
+
+        $this->assertTrue(  $str->contains("")->bool() );
+        $this->assertTrue(  $str->contains("big")->bool() );
+        $this->assertTrue(  $str->contains("BIG", true)->bool() );
+        $this->assertFalse( $str->contains("BIG")->bool() );
+        $this->assertFalse( $str->contains("BIG", false)->bool() );
+        $this->assertFalse( $str->contains("small")->bool() );
+    }
+
+    public function testContainsWithNull()
+    {
+        $this->setExpectedException('System\ArgumentNullException');
+        is("foo")->contains(null);
+    }    
+
     public function testEndsWith()
     {
         $str = is("superman");
@@ -172,12 +190,69 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $this->assertTrue( $str->endsWith(NString::getEmpty())->bool() );
     }
 
+    public function testEndsWithWithAutoBoxing()
+    {
+        $str = is("superman");
+        $this->assertTrue( $str->endsWith("man")->bool() );
+        $this->assertFalse( $str->endsWith("MAN")->bool() );
+        $this->assertTrue( $str->endsWith(NString::getEmpty()->string())->bool() );
+    }
+
     public function testEndsWithWithIgnoreCase()
     {
         $str = is("superman");
         $this->assertTrue( $str->endsWith(is("man"), is(true))->bool() );
         $this->assertTrue( $str->endsWith(is("MAN"), is(true))->bool() );
         $this->assertTrue( $str->endsWith(NString::getEmpty(), is(true))->bool() );
+    }
+
+    public function testEndsWithWithIgnoreCaseAndAutoBoxing()
+    {
+        $str = is("superman");
+        $this->assertTrue( $str->endsWith("man", true)->bool() );
+        $this->assertTrue( $str->endsWith("MAN", true)->bool() );
+        $this->assertTrue( $str->endsWith(NString::getEmpty()->string(), true)->bool() );
+    }
+
+    public function testEquals()
+    {
+        $str1 = is("super");
+        $str2 = is("super");
+        $this->assertTrue( $str1->equals($str2)->bool() );
+        $this->assertTrue( $str1->equals($str2->toUpper(), is(true))->bool() );
+        $this->assertFalse( $str1->equals(is("foo"))->bool() );
+        $this->assertFalse( $str1->equals(null)->bool() );
+    }
+
+    public function testEqualsWithAutoBoxing()
+    {
+        $str = is("super");        
+        $this->assertTrue( $str->equals("super", true)->bool() );
+        $this->assertTrue( $str->equals("SUPER", true)->bool() );
+        $this->assertFalse( $str->equals("foo")->bool() );
+    }
+
+    public function testEqualsWithNonStrings()
+    {
+        $str = is("super");
+        $this->assertFalse( $str->equals(22)->bool() );
+        $this->assertFalse( is("22")->equals(22)->bool() );
+        $this->assertFalse( $str->equals(new stdClass())->bool() );
+    }
+
+    public function testStaticEquals()
+    {
+        $str1 = is("super");
+        $str2 = is("super");
+        $this->assertTrue( NString::staticEquals($str1, $str2)->bool() );
+        $this->assertFalse( NString::staticEquals($str1, is("foo"))->bool() );
+        $this->assertFalse( NString::staticEquals($str1, null)->bool() );
+    }
+
+    public function testStaticEqualsWithNonStrings()
+    {
+        $this->setExpectedException('System\ArgumentException');
+        NString::staticEquals(22, "22");
     }
 
     public function testFormatWithString()

@@ -53,7 +53,7 @@ final class NNumber
 
         if ($str === null)
         {
-            $message = "Argument must be an int, float or a string containing a number: $value";
+            $message = "Argument must be an int, float, a string containing a number or a NString: $value";
             throw new ArgumentException($message, '$value');
         }
 

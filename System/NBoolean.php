@@ -52,7 +52,7 @@ final class NBoolean
             return $value;
 
         if (!is_bool($value))
-            throw new ArgumentException('$value must be a bool', '$value');
+            throw new ArgumentException('$value must be a bool or an NBoolean', '$value');
 
         if ($value)
         {

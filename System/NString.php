@@ -42,7 +42,7 @@ final class NString
             return $value;
 
         if (!is_string($value))
-            throw new ArgumentException('$value must be a string', '$value');
+            throw new ArgumentException('$value must be a string or an NString', '$value');
 
         return new NString($value);
     }    
@@ -97,15 +97,18 @@ final class NString
      * a null reference.
      *
      * @param string|NString $str
+     * @param bool|NBoolean $ignoreCase True to ignore case during comparision; false otherwise.
      * @return NNumber An integer that indicates whether this instance precedes,
      * follows, or appears in the same position in the sort order as the
      * value parameter.
      */
-    public function compareTo($str)
+    public function compareTo($str, $ignoreCase = false)
     {
         if ($str === null) return NNumber::get(1);
-        $str = self::get($str);
-        return NNumber::get(strcmp($this->value, $str->string()));
+        $a = $this->value;
+        $b = self::get($str)->string();
+        $ignoreCase = NBoolean::get($ignoreCase)->bool();
+        return NNumber::get($ignoreCase ? strcasecmp($a, $b) : strcmp($a, $b));
     }
 
     /**
@@ -198,64 +201,86 @@ final class NString
      * Returns a value indicating whether the specified NString object
      * occurs within this string.
      *
-     * @param NString $value
-     * @return NBoolean True if the value parameter occurs within this string,
+     * @param string|NString $value
+     * @return bool|NBoolean True if the value parameter occurs within this string,
      * or if value is the empty string (""); otherwise, false.
      *
      * @throws ArgumentNullException if value is a null reference
      */
-    public function contains(NString $value = null, NBoolean $ignoreCase = null)
+    public function contains($value, $ignoreCase = false)
     {
         if ($value === null)
             throw new ArgumentNullException('$value must not be null', '$value');
 
-        if ($value->string() === '')
-            return NBoolean::get(true);
+        $value = self::get($value);
+        $ignoreCase = NBoolean::get($ignoreCase);
 
-        if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
+        if ($value->string() === '')
+            return NBoolean::get(true);        
 
         return $ignoreCase->bool()
                 ? NBoolean::get(stripos($this->value, $value->string()) !== false)
                 : NBoolean::get(strpos($this->value, $value->string()) !== false);
-    }
-
-    public static function copy(NString $str)
-    {
-        return self::get($str->string());
-    }
+    }   
 
     /**
      * Determines whether the end of this string matches the specified string.
      *
-     * @param NString $value An NString object to compare to.
-     * @param NBoolean $ignoreCase  True to ignore case when comparing this
+     * @param string|NString $value A string object to compare to.
+     * @param bool|NBoolean $ignoreCase  True to ignore case when comparing this
      * instance and value; otherwise, false.
      * @return NBoolean True if the $value parameter matches the end of this string;
      * otherwise, false.
      *
      * @throws ArgumentNullException if $value is a null reference.
      */
-    public function endsWith(NString $value = null, NBoolean $ignoreCase = null)
+    public function endsWith($value, $ignoreCase = false)
     {
         if ($value === null)
             throw new ArgumentNullException('$value must not be null', '$value');
 
-        if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
+        $value = self::get($value);
+        $ignoreCase = NBoolean::get($ignoreCase);
 
         $expected = $this->length->minus($value->getLength());
         return $this->lastIndexOf($value, null, null, $ignoreCase)->equals($expected);
     }
 
-    public function equals($object)
+    /**
+     * Determines whether this instance and a specified object, which must
+     * also be a string or NString object, have the same value.
+     *
+     * @param mixed $value The string to compare to this instance.
+     * @param bool|NBoolean $ignoreCase
+     * @return NBoolean True if $value is a string and its value is the same as
+     * this instance; otherwise, false.
+     */
+    public function equals($value, $ignoreCase = false)
     {
-        return $this->compareTo($object)->equals(NNumber::get(0));
+        if ($value === null || (!is_string($value) && !($value instanceof self)))
+            return NBoolean::get(false);
+
+        $value = self::get($value);
+        return $this->compareTo($value, $ignoreCase)->equals(0);
     }
 
-    public static function staticEquals($object1, $object2)
+    /**
+     * Determines whether two specified strings have the same value.
+     *
+     * @param string|NString $str1 The first string to compare, or null.
+     * @param string|NString $str2 The second string to compare, or null.
+     * @param bool|NBoolean $ignoreCase
+     * @return NBoolean True if the value of the $str1 parameter is equal to the
+     * value of the $str2 parameter; otherwise, false.
+     */
+    public static function staticEquals($str1, $str2, $ignoreCase = false)
     {
-        if ($object1 === null && $object2 === null) return NBoolean::get(true);
-        if ($object1 !== null) return $object1->toString()->equals($object2);
-        if ($object2 !== null) return $object2->toString()->equals($object1);
+        $str1 = $str1 !== null ? self::get($str1) : null;
+        $str2 = $str2 !== null ? self::get($str2) : null;
+
+        if ($str1 === null && $str2 === null) return NBoolean::get(true);               
+        if ($str1 !== null) return $str1->equals($str2, $ignoreCase);
+        if ($str2 !== null) return $str2->equals($str1, $ignoreCase);
     }
 
     public static function format(NString $format /*, $arg0, $arg1, ... */)
