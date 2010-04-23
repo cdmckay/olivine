@@ -283,16 +283,24 @@ final class NString
         if ($str2 !== null) return $str2->equals($str1, $ignoreCase);
     }
 
-    public static function format(NString $format /*, $arg0, $arg1, ... */)
+    /**
+     * Replaces the format item in a specified string with the string 
+     * representation of a corresponding object in a specified array.
+     *
+     * @param string|NString $format A format string as defined by the PHP printf
+     * function.
+     * @param mixed $arg,... Zero or more objects to format.
+     * @return NString A copy of $format in which the format items have been replaced by
+     * the string representation of the corresponding $arg objects.
+     */
+    public static function format($format /*, $arg0, $arg1, ... */)
     {
+        $format = self::get($format);
         $args = func_get_args();
         $args_slice = array_slice($args, 1);
         $fixed_args = array();
         foreach ($args_slice as $arg)
-        {
-            if (!($arg instanceof IObject))
-                throw new ArgumentException("Argument must be an IObject");
-
+        {            
             if (false);
             else if ($arg instanceof NString)
             {
@@ -302,9 +310,13 @@ final class NString
             {
                 $fixed_args[] = $arg->float();
             }
-            else
+            else if ($arg instanceof IObject)
             {
                 $fixed_args[] = $arg->toString()->string();
+            }
+            else
+            {
+                $fixed_args[] = $arg;
             }
         }
         return self::get(vsprintf($format->string(), $fixed_args));

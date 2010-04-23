@@ -259,12 +259,14 @@ class NStringTest extends PHPUnit_Framework_TestCase
     {
         $str = is("test");
         $this->assertEquals(NString::format(is("%s"), $str), $str);
+        $this->assertEquals(NString::format(is("%s"), "test"), $str);
     }
 
     public function testFormatWithNumber()
     {
         $num = is(42);
         $this->assertEquals(NString::format(is("%d"), $num), is("42"));
+        $this->assertEquals(NString::format(is("%d"), 42), is("42"));
     }
 
     public function testIndexOf()
