@@ -6,6 +6,7 @@ final class NString
     extends NObject
     implements IComparable, ICloneable, IConvertible, IEnumerable
 {
+    private static $internPool = array();
     private static $emptyString;
 
     /**
@@ -382,17 +383,7 @@ final class NString
             throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this string', '$startIndex');
 
         return $this->substring(is(0), $startIndex)->concat($value, $this->substring($startIndex));
-    }
-
-    public function intern(NString $str = null)
-    {
-        throw new NotImplementedException();
-    }
-
-    public function isInterned(NString $str = null)
-    {
-        throw new NotImplementedException();
-    }
+    }   
 
     public function isEmpty()
     {
