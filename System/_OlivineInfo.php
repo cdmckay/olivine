@@ -4,7 +4,7 @@ namespace System;
 
 final class OlivineInfo
 {
-    private static $tree = array(
+    private static $tree = array(        
         "IObject" => array(
             "NObject" => array(                
                 "NBoolean" => array(),                
@@ -33,7 +33,7 @@ final class OlivineInfo
         "IConvertible" => array(),
         "IEnumerable" => array(),        
         "IFormattable" => array(),        
-        "Math" => array(),
+        "Math" => array()        
     );
 
     public static function import()

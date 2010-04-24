@@ -2,13 +2,17 @@
 
 namespace System;
 
-//require_once dirname(__FILE__) . '/IObject.php';
-
 class NException extends \Exception implements IObject
-{    
+{
+    protected $message = null;
+
     public function __construct($message = null, $errorCode = 0, NException $innerException = null)
-    {
-        parent::__construct($message, $errorCode, $innerException);              
+    {                
+        parent::__construct($message, $errorCode, $innerException);
+
+        // Overwrite message with an NString.
+        if ($message !== null)
+            $this->message = NString::get($message);
     }
 
     public static function referenceEquals($object1, $object2)
@@ -19,7 +23,7 @@ class NException extends \Exception implements IObject
     public static function staticEquals($object1, $object2)
     {
         NObject::staticEquals($object1, $object2);
-    }
+    }    
 
     public function getInnerException()
     {
@@ -56,4 +60,13 @@ class NException extends \Exception implements IObject
         return $this->toString();
     }
 
+    public function __call($name, $arguments)
+    {
+        return NObject::methodDispatcher($this, $name, $arguments);
+    }
+
+    public static function addMethod($methodName, $method)
+    {
+        NObject::addMethod($methodName, $method, get_called_class());
+    }
 }

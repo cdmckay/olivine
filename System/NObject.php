@@ -68,6 +68,54 @@ class NObject
         return $this->toString()->string();
     }
 
+    public function __call($name, $arguments)
+    {
+        return self::methodDispatcher($this, $name, $arguments);
+    }
+
+    private static $methodTable = array();
+
+    /**
+     *
+     * @param mixed $instance
+     * @param string $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public static function methodDispatcher($instance, $name, $arguments)
+    {        
+        $table =& self::$methodTable;        
+        $class = get_class($instance);
+        do
+        {
+            if (array_key_exists($class, $table) && array_key_exists($name, $table[$class]))
+                break;
+
+            $class = get_parent_class($class);
+        }
+        while ($class !== false);
+
+        if ($class === false)
+            throw new NException("Method not found");
+
+        $func = $table[$class][$name];
+        array_unshift($arguments, $instance);
+
+        return call_user_func_array($func, $arguments);
+    }
+
+    public static function addMethod($methodName, $method, $class = null)
+    {
+        if (!$class) $class = get_called_class();
+                
+        $table =& self::$methodTable;
+        if (!array_key_exists($class, $table))
+        {
+            $table[$class] = array();
+        }
+
+        $table[$class][$methodName] = $method;
+    }        
 }
 
 

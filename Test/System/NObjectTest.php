@@ -4,6 +4,7 @@ require_once 'PHPUnit/Framework.php';
 require_once dirname(__FILE__) . '/../../Olivine/Framework.php';
 
 use \System\NObject;
+use \System\NString;
 
 Olivine::import("System");
 
@@ -52,5 +53,23 @@ class NObjectTest extends PHPUnit_Framework_TestCase
         $o = new NObject();
         $this->assertEquals($o->__toString(), sprintf("%s", $o));
         $this->assertNotEquals("Foo", sprintf("%s", $o));
-    }    
+    }
+
+    public function testAddMethod()
+    {
+        NString::addMethod("customFunc", function($str){
+            return strtoupper($str->string());
+        });
+
+        $this->assertEquals("STR", NString::get("str")->customFunc());
+    }
+
+    public function testAddMethodWithInheritance()
+    {
+        NObject::addMethod("testFunc", function($object){
+            return get_class($object);
+        });
+
+        $this->assertEquals("System\NString", NString::get("str")->testFunc());
+    }
 }
