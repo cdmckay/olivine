@@ -72,4 +72,11 @@ class NObjectTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals("System\NString", NString::get("str")->testFunc());
     }
+
+    public function testMissingMethod()
+    {
+        $this->setExpectedException('System\MissingMethodException');
+        $o = new NObject();
+        $o->notExistantMethod();
+    }
 }

@@ -24,6 +24,11 @@ final class OlivineInfo
                     ),
                     "FormatException" => array(),
                     "InvalidCastException" => array(),
+                    'MemberAccessException' => array(
+                        'MissingMemberException' => array(
+                            'MissingMethodException' => array()
+                        )
+                    ),
                     "NotImplementedException" => array()
                 )
             )

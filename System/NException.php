@@ -3,16 +3,16 @@
 namespace System;
 
 class NException extends \Exception implements IObject
-{
-    protected $message = null;
-
+{    
     public function __construct($message = null, $errorCode = 0, NException $innerException = null)
-    {                
-        parent::__construct($message, $errorCode, $innerException);
+    {
+        parent::__construct(null, 0, $innerException);
 
         // Overwrite message with an NString.
         if ($message !== null)
             $this->message = NString::get($message);
+
+        $this->code = NNumber::get($errorCode);
     }
 
     public static function referenceEquals($object1, $object2)

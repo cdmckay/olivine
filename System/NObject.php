@@ -76,11 +76,17 @@ class NObject
     private static $methodTable = array();
 
     /**
+     * Dispatches an extension method for $instance with the given $name and $arguments.
+     *
+     * This method will examine the entire inheritance chain for a suitable
+     * method.
      *
      * @param mixed $instance
      * @param string $name
      * @param array $arguments
-     * @return mixed
+     * @return mixed The result of the extension method.
+     *
+     * @throws MissingMethodException if no extension method exists.
      */
     public static function methodDispatcher($instance, $name, $arguments)
     {        
@@ -96,7 +102,7 @@ class NObject
         while ($class !== false);
 
         if ($class === false)
-            throw new NException("Method not found");
+            throw new MissingMethodException();
 
         $func = $table[$class][$name];
         array_unshift($arguments, $instance);
@@ -104,6 +110,15 @@ class NObject
         return call_user_func_array($func, $arguments);
     }
 
+    /**
+     * Dynamically add a method to this class.  All instances will immediately
+     * be able to call it.
+     *
+     * @param string $methodName
+     * @param string $method
+     * @param string $class Optional class override.  If this is passed, the
+     * method will be attached to this class instead of the called class.
+     */
     public static function addMethod($methodName, $method, $class = null)
     {
         if (!$class) $class = get_called_class();
