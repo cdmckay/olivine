@@ -281,6 +281,18 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(is(0),  $haystack->indexOf(NString::getEmpty()));
     }
 
+    public function testIndexOfWithAutoBoxing()
+    {
+        $haystack = is("I am a long, long string");
+        $needle = "long";
+
+        $this->assertEquals(is(7),  $haystack->indexOf($needle));
+        $this->assertEquals(is(-1), $haystack->indexOf($needle, 14));
+        $this->assertEquals(is(13), $haystack->indexOf($needle, 8, 10));
+        $this->assertEquals(is(7),  $haystack->indexOf($needle, null, 12));
+        $this->assertEquals(is(0),  $haystack->indexOf(""));
+    }
+
     public function testIndexOfWithIgnoreCase()
     {
         $haystack = is("I am a long, long string");
@@ -291,6 +303,18 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(is(13), $haystack->indexOf($needle, is(8), is(10), is(true)));
         $this->assertEquals(is(7),  $haystack->indexOf($needle, null, is(12), is(true)));
         $this->assertEquals(is(0),  $haystack->indexOf(NString::getEmpty(), null, null, is(true)));
+    }
+
+    public function testIndexOfWithIgnoreCaseAndAutoBoxing()
+    {
+        $haystack = is("I am a long, long string");
+        $needle = "LONG";
+
+        $this->assertEquals(is(7),  $haystack->indexOf($needle, null, null, true));
+        $this->assertEquals(is(-1), $haystack->indexOf($needle, 14, null, true));
+        $this->assertEquals(is(13), $haystack->indexOf($needle, 8, 10, true));
+        $this->assertEquals(is(7),  $haystack->indexOf($needle, null, 12, true));
+        $this->assertEquals(is(0),  $haystack->indexOf("", null, null, true));
     }
 
     public function testIndexOfWithNegativeStartIndex()
@@ -316,6 +340,13 @@ class NStringTest extends PHPUnit_Framework_TestCase
         $str = is("supermanisdead");
         $this->assertEquals(is("supermanisnotdead"), $str->insert(is(10), is("not")));
         $this->assertEquals(is("supermanisdeader"), $str->insert($str->getLength(), is("er")));
+    }
+
+    public function testInsertWithAutoBoxing()
+    {
+        $str = is("supermanisdead");
+        $this->assertEquals(is("supermanisnotdead"), $str->insert(10, "not"));
+        $this->assertEquals(is("supermanisdeader"), $str->insert($str->getLength()->int(), "er"));
     }
 
     public function testInsertWithNull()

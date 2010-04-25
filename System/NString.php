@@ -323,35 +323,54 @@ final class NString
         return self::get(vsprintf($format->string(), $fixed_args));
     }
 
+    /**
+     * Gets the number of characters in this string object.
+     *
+     * @return NNumber
+     */
     public function getLength()
     {
         return $this->length;
     }
 
-    public function indexOf(NString $value = null,
-            NNumber $startIndex = null, NNumber $count = null,
-            NBoolean $ignoreCase = null)
+    /**
+     * Reports the index of the first occurrence of the specified string in
+     * this instance. The search starts at a specified character position and
+     * examines a specified number of character positions.
+     *
+     * @param string|NString $value The string to seek.
+     * @param int|float|NNumber $startIndex The search starting position.
+     * @param int|float|NNumber $count The number of character positions to examine. 
+     * @param bool|NBoolean $ignoreCase
+     * @return NNumber The zero-based index position of $value if that string is
+     * found, or -1 if it is not. If $value is the empty string, the return
+     * value is $startIndex.
+     */
+    public function indexOf($value, $startIndex = 0, $count = null, $ignoreCase = false)
     {
         if ($value === null)
             throw new ArgumentNullException(null, '$value');        
 
-        if ($startIndex !== null && $startIndex->isLessThan(NNumber::get(0))->bool())
+        if ($startIndex === null) $startIndex = 0;
+        if ($count === null) $count = $this->length->minus($startIndex);
+
+        $value = self::get($value);
+        $startIndex = NNumber::get($startIndex);
+        $count = NNumber::get($count);
+        $ignoreCase = NBoolean::get($ignoreCase);
+
+        if ($startIndex->isLessThan(NNumber::get(0))->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
 
-        if ($startIndex !== null && $startIndex->isGreaterThan($this->length)->bool())
+        if ($startIndex->isGreaterThan($this->length)->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this instance', '$startIndex');
 
-        if ($count !== null && $count->isLessThan(NNumber::get(0))->bool())
+        if ($count->isLessThan(NNumber::get(0))->bool())
             throw new ArgumentOutOfRangeException('$count must be nonnegative', '$count');
 
-        if ($startIndex !== null && $count !== null
-                && $startIndex->plus($count)->isGreaterThan($this->length)->bool())
+        if ($startIndex->plus($count)->isGreaterThan($this->length)->bool())
             throw new ArgumentOutOfRangeException('$count must refer to a location within this instance', '$count');
-
-        if ($startIndex === null) $startIndex = NNumber::get(0);
-        if ($count === null) $count = $this->length->minus($startIndex);
-        if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
-
+                       
         if ($value->getLength()->equals(NNumber::get(0))->bool())
             return $startIndex;
         
@@ -366,15 +385,27 @@ final class NString
         return $startIndex->plus(NNumber::get($position));
     }
 
-    public function indexOfAny()
-    {
-        throw new NotImplementedException();
-    }    
+//    public function indexOfAny()
+//    {
+//        throw new NotImplementedException();
+//    }
 
-    public function insert(NNumber $startIndex, NString $value = null)
+    /**
+     * Inserts a specified instance of a string at a specified index position
+     * in this instance.
+     *
+     * @param int|float|NNumber $startIndex The index position of the insertion.
+     * @param string|NString $value The string to insert.
+     * @return NString A new string that is equivalent to this instance,
+     * but with $value inserted at position $startIndex.
+     */
+    public function insert($startIndex, $value)
     {
         if ($value === null)
             throw new ArgumentNullException(null, '$value');
+
+        $startIndex = NNumber::get($startIndex);
+        $value = self::get($value);
 
         if ($startIndex->isLessThan(NNumber::get(0))->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
@@ -382,7 +413,7 @@ final class NString
         if ($startIndex->isGreaterThan($this->length)->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this string', '$startIndex');
 
-        return $this->substring(is(0), $startIndex)->concat($value, $this->substring($startIndex));
+        return $this->substring(NNumber::get(0), $startIndex)->concat($value, $this->substring($startIndex));
     }   
 
     public function isEmpty()
