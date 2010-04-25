@@ -71,6 +71,24 @@ final class NBoolean
     }
 
     /**
+     * Returns a bool primitive for a given bool or NBoolean.
+     * If an bool primitive is passed in, it is returned untouched.
+     *
+     * @param bool|NBoolean $value
+     * @return bool
+     */
+    public static function primitive($value)
+    {
+        if (is_bool($value))
+            return $value;
+
+        if ($value instanceof self)
+            return $value->bool();
+
+        throw new ArgumentException('$value must be a bool or an NBoolean', '$value');
+    }
+
+    /**
      * Compares this instance to a specified object and returns an integer
      * that indicates their relationship to one another.
      *
@@ -88,15 +106,10 @@ final class NBoolean
     public function compareTo($value)
     {                
         if ($value === null)
-            return NNumber::get(1);
-
-        if (!is_bool($value) && !($value instanceof self))
-            throw new ArgumentException('$object is not a bool or NBoolean', '$object');
-
-        $value = self::get($value);
+            return NNumber::get(1);                
 
         $o1 = $this->value;
-        $o2 = $value->bool();
+        $o2 = self::primitive($value);
             
         if ($o1 === false && $o2 === true)
             return NNumber::get(-1);
@@ -119,7 +132,7 @@ final class NBoolean
     {
         return self::get(
                 (is_bool($object) || ($object instanceof NBoolean))
-                && $this->value === self::get($object)->bool());
+                && $this->value === self::primitive($object));
     }
 
     /**
@@ -213,7 +226,7 @@ final class NBoolean
      */
     public function andAlso($value)
     {
-        return self::get($this->value && self::get($value)->bool());
+        return self::get($this->value && self::primitive($value));
     }
 
     /**
@@ -224,7 +237,7 @@ final class NBoolean
      */
     public function orElse($value)
     {
-        return self::get($this->value || self::get($value)->bool());
+        return self::get($this->value || self::primitive($value));
     }
 
     /**

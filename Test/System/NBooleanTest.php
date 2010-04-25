@@ -31,6 +31,14 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
         is(null);
     }
 
+    public function testPrimitiveFunction()
+    {
+        $this->assertTrue( NBoolean::primitive(true) );
+        $this->assertFalse( NBoolean::primitive(false) );
+        $this->assertTrue( NBoolean::primitive(is(true)) );
+        $this->assertFalse( NBoolean::primitive(is(false)) );
+    }
+
     public function testCompareTo()
     {
         $true  = is(true);

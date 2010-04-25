@@ -36,6 +36,8 @@ final class NString
      *
      * @param string $value
      * @return NString
+     *
+     * @throws ArgumentException if the argument is not a string type.
      */
     public static function get($value)
     {
@@ -46,7 +48,26 @@ final class NString
             throw new ArgumentException('$value must be a string or an NString', '$value');
 
         return new NString($value);
-    }    
+    }
+
+    /**
+     * Returns a string for a given NString or string.
+     *
+     * @param string|NString $value
+     * @return string
+     *
+     * @throws ArgumentException if the argument is not a string type.
+     */
+    public static function primitive($value)
+    {
+        if (is_string($value))
+            return $value;
+
+        if ($value instanceof self)
+            return $value->string();
+
+        throw new ArgumentException('$value must be a string or an NString', '$value');
+    }
 
     public function __clone()
     {
@@ -107,7 +128,7 @@ final class NString
     {
         if ($str === null) return NNumber::get(1);
         $a = $this->value;
-        $b = self::get($str)->string();
+        $b = self::primitive($str);
         $ignoreCase = NBoolean::get($ignoreCase)->bool();
         return NNumber::get($ignoreCase ? strcasecmp($a, $b) : strcmp($a, $b));
     }
