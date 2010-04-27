@@ -1,5 +1,24 @@
 <?php
 
+/*
+ * (c) Copyright 2010 Cameron McKay
+ *
+ * This file is part of Olivine.
+ *
+ * Olivine is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Olivine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Olivine.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace System;
 
 final class NInt
@@ -73,12 +92,12 @@ final class NInt
      * specified object.
      *
      * @param mixed $object An object to compare with this instance.
-     * @return NBoolean True if $object is an instance of NInt and equals
+     * @return NBool True if $object is an instance of NInt and equals
      * the value of this instance; otherwise, false.
      */
     public function equals($object)
     {
-        return NBoolean::get(
+        return NBool::get(
                 (is_int($object) || $object instanceof NInt)
                 && $this->value === self::primitive($object));
     }
@@ -97,28 +116,29 @@ final class NInt
      *
      * For example: <code>-42</code>
      *
-     * @param string|NString $str A string containing a number to convert.
+     * @param string|NString $value A string containing a number to convert.
      * @return NInt
      *
      * @throws ArgumentNullException if $value is null
      * @throws FormatException if $value is not the correct format
      * @throws OverflowException
      */
-    public static function parse($str)
+    public static function parse($value)
     {
-        if ($str === null)
+        if ($value === null)
             throw new ArgumentNullException(null, '$value');        
 
         $pattern = "#^([-+]?[0-9]+)$#";
-        $str = trim(NString::primitive($str));
+        $value = trim(NString::primitive($value));
 
-        if (!(preg_match($pattern, $str) === 1))
+        if (!(preg_match($pattern, $value) === 1))
             throw new FormatException();
 
-        if (bccomp($str, (string) PHP_INT_MAX) === 1)
-            throw new OverflowException("Value in string is too large for an NInt: " . $str);
+        if (bccomp($value, (string) PHP_INT_MAX) === 1
+                || bccomp($value, (string) -PHP_INT_MAX - 1) === -1)
+            throw new OverflowException("Value in string is too wide for an NInt: " . $value);
 
-        return self::get(intval($str));
+        return self::get((int) $value);
     }
 
     /**
@@ -140,7 +160,7 @@ final class NInt
      * or zero if the conversion failed. The conversion fails if the $value
      * parameter is null, is not a number in a valid format, This parameter
      * is passed uninitialized.
-     * @return NBoolean
+     * @return NBool
      */
     public static function tryParse($value, &$result)
     {
@@ -157,7 +177,7 @@ final class NInt
             $result = NInt::get(0);
         }
 
-        return NBoolean::get($successful);
+        return NBool::get($successful);
     }
 
     /**
@@ -276,10 +296,10 @@ final class NInt
     }
 
     /**
-     * Returns a NBoolean that is the result of <code>this < value</code>.
+     * Returns a NBool that is the result of <code>this < value</code>.
      *
      * @param int|NInt $value
-     * @return NBoolean
+     * @return NBool
      *
      * @throws ArgumentNullException if $value is null
      */
@@ -290,14 +310,14 @@ final class NInt
             throw new ArgumentNullException(null, '$value');
         }
 
-        return NBoolean::get($this->value < self::primitive($value));
+        return NBool::get($this->value < self::primitive($value));
     }
 
     /**
-     * Returns a NBoolean that is the result of <code>this <= value</code>.
+     * Returns a NBool that is the result of <code>this <= value</code>.
      *
      * @param int|NInt $value
-     * @return NBoolean
+     * @return NBool
      *
      * @throws ArgumentNullException if $value is null
      */
@@ -308,14 +328,14 @@ final class NInt
             throw new ArgumentNullException(null, '$value');
         }
 
-        return NBoolean::get($this->value <= self::primitive($value));
+        return NBool::get($this->value <= self::primitive($value));
     }
 
     /**
-     * Returns a NBoolean that is the result of <code>this > value</code>.
+     * Returns a NBool that is the result of <code>this > value</code>.
      *
      * @param int|NInt $value
-     * @return NBoolean
+     * @return NBool
      *
      * @throws ArgumentNullException if $value is null
      */
@@ -324,14 +344,14 @@ final class NInt
         if ($value === null)
             throw new ArgumentNullException(null, '$value');        
 
-        return NBoolean::get($this->value > self::primitive($value));
+        return NBool::get($this->value > self::primitive($value));
     }
 
     /**
-     * Returns a NBoolean that is the result of <code>this >= value</code>.
+     * Returns a NBool that is the result of <code>this >= value</code>.
      *
      * @param int|NInt $value
-     * @return NBoolean
+     * @return NBool
      *
      * @throws ArgumentNullException if $value is null
      */
@@ -340,7 +360,7 @@ final class NInt
         if ($value === null)        
             throw new ArgumentNullException(null, '$value');
         
-        return NBoolean::get($this->value >= self::primitive($value));
+        return NBool::get($this->value >= self::primitive($value));
     }
 
     /**
@@ -386,14 +406,14 @@ final class NInt
     }
 
     /**
-     * Converts this NInt to an NBoolean instance.
+     * Converts this NInt to an NBool instance.
      *
-     * @return NBoolean True if the value of the current instance is zero;
+     * @return NBool True if the value of the current instance is zero;
      * otherwise false.
      */
     public function toBoolean()
     {
-        return NBoolean::get($this->bool());
+        return NBool::get($this->bool());
     }
 
     /**

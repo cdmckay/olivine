@@ -1,19 +1,38 @@
 <?php
 
+/*
+ * (c) Copyright 2010 Cameron McKay
+ *
+ * This file is part of Olivine.
+ *
+ * Olivine is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Olivine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Olivine.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 require_once 'PHPUnit/Framework.php';
 require_once dirname(__FILE__) . '/../../Olivine/Framework.php';
 
-use \System\NBoolean;
+use \System\NBool;
 use \System\NString;
 
 Olivine::import("System");
 
-class NBooleanTest extends PHPUnit_Framework_TestCase
+class NBoolTest extends PHPUnit_Framework_TestCase
 {
     public function testBooleanStrings()
     {
-        $this->assertEquals("false", NBoolean::getFalseString()->string());
-        $this->assertEquals("true", NBoolean::getTrueString()->string());
+        $this->assertEquals("false", NBool::getFalseString()->string());
+        $this->assertEquals("true", NBool::getTrueString()->string());
     }
 
     public function testConstructor()
@@ -33,10 +52,10 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
 
     public function testPrimitiveFunction()
     {
-        $this->assertTrue( NBoolean::primitive(true) );
-        $this->assertFalse( NBoolean::primitive(false) );
-        $this->assertTrue( NBoolean::primitive(is(true)) );
-        $this->assertFalse( NBoolean::primitive(is(false)) );
+        $this->assertTrue( NBool::primitive(true) );
+        $this->assertFalse( NBool::primitive(false) );
+        $this->assertTrue( NBool::primitive(is(true)) );
+        $this->assertFalse( NBool::primitive(is(false)) );
     }
 
     public function testCompareTo()
@@ -103,12 +122,12 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
         $true  = is(true);
         $false = is(false);
 
-        $val1 = NBoolean::parse(is("true"));
-        $val2 = NBoolean::parse(is("false"));
-        $val3 = NBoolean::parse(is(" true "));
-        $val4 = NBoolean::parse(is(" false "));
-        $val5 = NBoolean::parse(is("TRUE"));
-        $val6 = NBoolean::parse(is("FALSE"));
+        $val1 = NBool::parse(is("true"));
+        $val2 = NBool::parse(is("false"));
+        $val3 = NBool::parse(is(" true "));
+        $val4 = NBool::parse(is(" false "));
+        $val5 = NBool::parse(is("TRUE"));
+        $val6 = NBool::parse(is("FALSE"));
 
         $this->assertEquals(0, $val1->compareTo($true)->int());
         $this->assertEquals(0, $val2->compareTo($false)->int());
@@ -121,13 +140,13 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
     public function testParseWithInvalidNString()
     {
         $this->setExpectedException('System\FormatException');
-        NBoolean::parse(is("ture"));
+        NBool::parse(is("ture"));
     }
 
     public function testParseWithAutoBoxing()
     {               
-        $val1 = NBoolean::parse("true");
-        $val2 = NBoolean::parse("false");
+        $val1 = NBool::parse("true");
+        $val2 = NBool::parse("false");
 
         $this->assertEquals(0, $val1->compareTo(true)->int());
         $this->assertEquals(0, $val2->compareTo(false)->int());        
@@ -147,7 +166,7 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
         $true  = is(true);
         $false = is(false);
 
-        $successful = NBoolean::tryParse(is("true"), $result);
+        $successful = NBool::tryParse(is("true"), $result);
         $this->assertEquals(true, $successful->bool());
         $this->assertEquals(true, $result->bool());
     }
@@ -157,14 +176,14 @@ class NBooleanTest extends PHPUnit_Framework_TestCase
         $true  = is(true);
         $false = is(false);
 
-        $successful = NBoolean::tryParse(is("ture"), $result);
+        $successful = NBool::tryParse(is("ture"), $result);
         $this->assertFalse($successful->bool());
         $this->assertFalse($result->bool());
     }
 
     public function testTryParseWithAutoBoxing()
     {
-        $successful = NBoolean::tryParse("ture", $result);
+        $successful = NBool::tryParse("ture", $result);
         $this->assertFalse($successful->bool());
         $this->assertFalse($result->bool());
     }   

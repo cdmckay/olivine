@@ -7,7 +7,7 @@ final class OlivineInfo
     private static $tree = array(        
         "IObject" => array(
             "NObject" => array(                
-                "NBoolean" => array(),                                
+                "NBool" => array(),                                
                 "NInt" => array(),
                 "NFloat" => array(),
                 "NString" => array(),

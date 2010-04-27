@@ -1,8 +1,27 @@
 <?php
 
+/*
+ * (c) Copyright 2010 Cameron McKay
+ *
+ * This file is part of Olivine.
+ *
+ * Olivine is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Olivine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Olivine.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace System;
 
-final class NBoolean
+final class NBool
     extends NObject
     implements IComparable, IConvertible
 {
@@ -40,11 +59,11 @@ final class NBoolean
     }
 
     /**
-     * Returns a new instance of NBoolean for a given boolean.
-     * If an NBoolean is passed in, it is returned untouched.
+     * Returns a new instance of NBool for a given boolean.
+     * If an NBool is passed in, it is returned untouched.
      *
-     * @param bool|NBoolean $value
-     * @return NBoolean
+     * @param bool|NBool $value
+     * @return NBool
      */
     public static function get($value)
     {
@@ -52,29 +71,29 @@ final class NBoolean
             return $value;
 
         if (!is_bool($value))
-            throw new ArgumentException('$value must be a bool or an NBoolean', '$value');
+            throw new ArgumentException('$value must be a bool or an NBool', '$value');
 
         if ($value)
         {
             if (!isset(self::$true))
-                self::$true = new NBoolean(true);
+                self::$true = new NBool(true);
 
             return self::$true;
         }
         else
         {
             if (!isset(self::$false))
-                self::$false = new NBoolean(false);
+                self::$false = new NBool(false);
 
             return self::$false;
         }
     }
 
     /**
-     * Returns a bool primitive for a given bool or NBoolean.
+     * Returns a bool primitive for a given bool or NBool.
      * If an bool primitive is passed in, it is returned untouched.
      *
-     * @param bool|NBoolean $value
+     * @param bool|NBool $value
      * @return bool
      */
     public static function primitive($value)
@@ -85,7 +104,7 @@ final class NBoolean
         if ($value instanceof self)
             return $value->bool();
 
-        throw new ArgumentException('$value must be a bool or an NBoolean', '$value');
+        throw new ArgumentException('$value must be a bool or an NBool', '$value');
     }
 
     /**
@@ -100,7 +119,7 @@ final class NBoolean
      * This method returns greater than 0 when the instance is true and
      * $object is false, or if $object is null.
      *
-     * @param bool|NBoolean $value
+     * @param bool|NBool $value
      * @return NInt
      */
     public function compareTo($value)
@@ -125,20 +144,20 @@ final class NBoolean
      * specified object.
      *
      * @param mixed $object An object to compare to this instance.
-     * @return NBoolean True if obj is a Boolean and has the same value as
+     * @return NBool True if obj is a Boolean and has the same value as
      * this instance; otherwise, false.
      */
     public function equals($object)
     {
         return self::get(
-                (is_bool($object) || ($object instanceof NBoolean))
+                (is_bool($object) || ($object instanceof NBool))
                 && $this->value === self::primitive($object));
     }
 
     /**
      * Returns the hash code for this instance.
      *
-     * The NBoolean class implements true as the integer, 1, and false as
+     * The NBool class implements true as the integer, 1, and false as
      * the integer, 0. However, a particular programming language might
      * represent true and false with other values.
      *
@@ -151,14 +170,14 @@ final class NBoolean
 
     /**
      * Converts the specified string representation of a logical value to
-     * its NBoolean equivalent.
+     * its NBool equivalent.
      *
      * The value parameter, optionally preceded or trailed by white space,
      * must contain either getTrueString() or getFalseString(); otherwise, an exception
      * is thrown. The comparison is case-insensitive.
      *
      * @param string|NString $value A string containing the value to convert.
-     * @return NBoolean True if value is equivalent to getTrueString(); otherwise, false.
+     * @return NBool True if value is equivalent to getTrueString(); otherwise, false.
      *
      * @throws ArgumentNullException
      * @throws FormatException
@@ -182,7 +201,7 @@ final class NBoolean
 
     /**
      * Converts the specified string representation of a logical value to its
-     * NBoolean equivalent. A return value indicates whether the conversion 
+     * NBool equivalent. A return value indicates whether the conversion 
      * succeeded or failed.
      * 
      * The TryParse method is like the Parse method, except the TryParse method 
@@ -198,7 +217,7 @@ final class NBoolean
      * contains false. The conversion fails if $value is null or is not
      * equivalent to either getTrueString() or getFalseString().
      * This parameter is passed uninitialized.
-     * @return NBoolean True if value was converted successfully; otherwise, false.
+     * @return NBool True if value was converted successfully; otherwise, false.
      */
     public static function tryParse($value, &$result)
     {
@@ -221,8 +240,8 @@ final class NBoolean
     /**
      * Returns the conjunction of <code>this && value</code>.
      *
-     * @param boolean|NBoolean $value
-     * @return NBoolean
+     * @param boolean|NBool $value
+     * @return NBool
      */
     public function andAlso($value)
     {
@@ -232,8 +251,8 @@ final class NBoolean
     /**
      * Returns the disjunction of <code>this || value</code>.
      *
-     * @param boolean|NBoolean $value
-     * @return NBoolean
+     * @param boolean|NBool $value
+     * @return NBool
      */
     public function orElse($value)
     {
@@ -284,7 +303,7 @@ final class NBoolean
     /**
      * Returns this instance.
      *
-     * @return NBoolean
+     * @return NBool
      */
     public function toBoolean()
     {

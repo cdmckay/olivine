@@ -1,5 +1,24 @@
 <?php
 
+/*
+ * (c) Copyright 2010 Cameron McKay
+ *
+ * This file is part of Olivine.
+ *
+ * Olivine is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Olivine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Olivine.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace System;
 
 final class NFloat
@@ -73,12 +92,12 @@ final class NFloat
      * specified object.
      *
      * @param mixed $object An object to compare with this instance.
-     * @return NBoolean True if $object is an instance of NFloat and equals
+     * @return NBool True if $object is an instance of NFloat and equals
      * the value of this instance; otherwise, false.
      */
     public function equals($object)
     {
-        return NBoolean::get(
+        return NBool::get(
                 (is_int($object) || is_float($object) || $object instanceof NFloat)
                 && $this->value === self::primitive($object));
     }
@@ -144,7 +163,7 @@ final class NFloat
      * or zero if the conversion failed. The conversion fails if the $value
      * parameter is null, is not a number in a valid format, This parameter
      * is passed uninitialized.
-     * @return NBoolean
+     * @return NBool
      */
     public static function tryParse($value, &$result)
     {
@@ -161,7 +180,7 @@ final class NFloat
             $result = NFloat::get(0);
         }
 
-        return NBoolean::get($successful);
+        return NBool::get($successful);
     }
 
     /**
@@ -280,10 +299,10 @@ final class NFloat
     }
 
     /**
-     * Returns a NBoolean that is the result of <code>this < value</code>.
+     * Returns a NBool that is the result of <code>this < value</code>.
      *
      * @param int|float|NFloat $value
-     * @return NBoolean
+     * @return NBool
      *
      * @throws ArgumentNullException if $value is null
      */
@@ -294,14 +313,14 @@ final class NFloat
             throw new ArgumentNullException(null, '$value');
         }
 
-        return NBoolean::get($this->value < self::primitive($value));
+        return NBool::get($this->value < self::primitive($value));
     }
 
     /**
-     * Returns a NBoolean that is the result of <code>this <= value</code>.
+     * Returns a NBool that is the result of <code>this <= value</code>.
      *
      * @param int|float|NFloat $value
-     * @return NBoolean
+     * @return NBool
      *
      * @throws ArgumentNullException if $value is null
      */
@@ -312,14 +331,14 @@ final class NFloat
             throw new ArgumentNullException(null, '$value');
         }
 
-        return NBoolean::get($this->value <= self::primitive($value));
+        return NBool::get($this->value <= self::primitive($value));
     }
 
     /**
-     * Returns a NBoolean that is the result of <code>this > value</code>.
+     * Returns a NBool that is the result of <code>this > value</code>.
      *
      * @param int|float|NFloat $value
-     * @return NBoolean
+     * @return NBool
      *
      * @throws ArgumentNullException if $value is null
      */
@@ -328,14 +347,14 @@ final class NFloat
         if ($value === null)
             throw new ArgumentNullException(null, '$value');
 
-        return NBoolean::get($this->value > self::primitive($value));
+        return NBool::get($this->value > self::primitive($value));
     }
 
     /**
-     * Returns a NBoolean that is the result of <code>this >= value</code>.
+     * Returns a NBool that is the result of <code>this >= value</code>.
      *
      * @param int|float|NFloat $value
-     * @return NBoolean
+     * @return NBool
      *
      * @throws ArgumentNullException if $value is null
      */
@@ -344,7 +363,7 @@ final class NFloat
         if ($value === null)
             throw new ArgumentNullException(null, '$value');
 
-        return NBoolean::get($this->value >= self::primitive($value));
+        return NBool::get($this->value >= self::primitive($value));
     }
 
     /**
@@ -395,14 +414,14 @@ final class NFloat
     }
 
     /**
-     * Converts this NFloat to an NBoolean instance.
+     * Converts this NFloat to an NBool instance.
      *
-     * @return NBoolean True if the value of the current instance is zero;
+     * @return NBool True if the value of the current instance is zero;
      * otherwise false.
      */
     public function toBoolean()
     {
-        return NBoolean::get($this->bool());
+        return NBool::get($this->bool());
     }
 
     /**

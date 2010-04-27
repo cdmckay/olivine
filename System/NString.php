@@ -1,5 +1,24 @@
 <?php
 
+/*
+ * (c) Copyright 2010 Cameron McKay
+ *
+ * This file is part of Olivine.
+ *
+ * Olivine is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Olivine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Olivine.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace System;
 
 final class NString
@@ -87,13 +106,13 @@ final class NString
      *
      * @param string|NString $strA The first string to compare.
      * @param string|NString $strB The second string to compare.
-     * @param bool|NBoolean $ignoreCase True to ignore case during comparision; false otherwise.
+     * @param bool|NBool $ignoreCase True to ignore case during comparision; false otherwise.
      * @return NInt An NInt that indicates the lexical relationship
      * between the two comparands.
      */
     public static function compare($strA, $strB, $ignoreCase = false)
     {
-        $ignoreCase = NBoolean::get($ignoreCase)->bool();
+        $ignoreCase = NBool::get($ignoreCase)->bool();
 
         $a = $strA === null ? null : self::get($strA)->string();
         $b = $strB === null ? null : self::get($strB)->string();
@@ -119,7 +138,7 @@ final class NString
      * a null reference.
      *
      * @param string|NString $str
-     * @param bool|NBoolean $ignoreCase True to ignore case during comparision; false otherwise.
+     * @param bool|NBool $ignoreCase True to ignore case during comparision; false otherwise.
      * @return NInt An integer that indicates whether this instance precedes,
      * follows, or appears in the same position in the sort order as the
      * value parameter.
@@ -129,7 +148,7 @@ final class NString
         if ($str === null) return NInt::get(1);
         $a = $this->value;
         $b = self::primitive($str);
-        $ignoreCase = NBoolean::get($ignoreCase)->bool();
+        $ignoreCase = NBool::get($ignoreCase)->bool();
         return NInt::get($ignoreCase ? strcasecmp($a, $b) : strcmp($a, $b));
     }
 
@@ -224,7 +243,7 @@ final class NString
      * occurs within this string.
      *
      * @param string|NString $value
-     * @return bool|NBoolean True if the value parameter occurs within this string,
+     * @return bool|NBool True if the value parameter occurs within this string,
      * or if value is the empty string (""); otherwise, false.
      *
      * @throws ArgumentNullException if value is a null reference
@@ -235,23 +254,23 @@ final class NString
             throw new ArgumentNullException('$value must not be null', '$value');
 
         $value = self::get($value);
-        $ignoreCase = NBoolean::get($ignoreCase);
+        $ignoreCase = NBool::get($ignoreCase);
 
         if ($value->string() === '')
-            return NBoolean::get(true);        
+            return NBool::get(true);        
 
         return $ignoreCase->bool()
-                ? NBoolean::get(stripos($this->value, $value->string()) !== false)
-                : NBoolean::get(strpos($this->value, $value->string()) !== false);
+                ? NBool::get(stripos($this->value, $value->string()) !== false)
+                : NBool::get(strpos($this->value, $value->string()) !== false);
     }   
 
     /**
      * Determines whether the end of this string matches the specified string.
      *
      * @param string|NString $value A string object to compare to.
-     * @param bool|NBoolean $ignoreCase  True to ignore case when comparing this
+     * @param bool|NBool $ignoreCase  True to ignore case when comparing this
      * instance and value; otherwise, false.
-     * @return NBoolean True if the $value parameter matches the end of this string;
+     * @return NBool True if the $value parameter matches the end of this string;
      * otherwise, false.
      *
      * @throws ArgumentNullException if $value is a null reference.
@@ -262,7 +281,7 @@ final class NString
             throw new ArgumentNullException('$value must not be null', '$value');
 
         $value = self::get($value);
-        $ignoreCase = NBoolean::get($ignoreCase);
+        $ignoreCase = NBool::get($ignoreCase);
 
         $expected = $this->length->minus($value->getLength());
         return $this->lastIndexOf($value, null, null, $ignoreCase)->equals($expected);
@@ -273,14 +292,14 @@ final class NString
      * also be a string or NString object, have the same value.
      *
      * @param mixed $value The string to compare to this instance.
-     * @param bool|NBoolean $ignoreCase
-     * @return NBoolean True if $value is a string and its value is the same as
+     * @param bool|NBool $ignoreCase
+     * @return NBool True if $value is a string and its value is the same as
      * this instance; otherwise, false.
      */
     public function equals($value, $ignoreCase = false)
     {
         if ($value === null || (!is_string($value) && !($value instanceof self)))
-            return NBoolean::get(false);
+            return NBool::get(false);
 
         $value = self::get($value);
         return $this->compareTo($value, $ignoreCase)->equals(0);
@@ -291,8 +310,8 @@ final class NString
      *
      * @param string|NString $str1 The first string to compare, or null.
      * @param string|NString $str2 The second string to compare, or null.
-     * @param bool|NBoolean $ignoreCase
-     * @return NBoolean True if the value of the $str1 parameter is equal to the
+     * @param bool|NBool $ignoreCase
+     * @return NBool True if the value of the $str1 parameter is equal to the
      * value of the $str2 parameter; otherwise, false.
      */
     public static function staticEquals($str1, $str2, $ignoreCase = false)
@@ -300,7 +319,7 @@ final class NString
         $str1 = $str1 !== null ? self::get($str1) : null;
         $str2 = $str2 !== null ? self::get($str2) : null;
 
-        if ($str1 === null && $str2 === null) return NBoolean::get(true);               
+        if ($str1 === null && $str2 === null) return NBool::get(true);               
         if ($str1 !== null) return $str1->equals($str2, $ignoreCase);
         if ($str2 !== null) return $str2->equals($str1, $ignoreCase);
     }
@@ -362,7 +381,7 @@ final class NString
      * @param string|NString $value The string to seek.
      * @param int|float|NInt $startIndex The search starting position.
      * @param int|float|NInt $count The number of character positions to examine.
-     * @param bool|NBoolean $ignoreCase
+     * @param bool|NBool $ignoreCase
      * @return NInt The zero-based index position of $value if that string is
      * found, or -1 if it is not. If $value is the empty string, the return
      * value is $startIndex.
@@ -378,7 +397,7 @@ final class NString
         $value = self::get($value);
         $startIndex = NInt::get($startIndex);
         $count = NInt::get($count);
-        $ignoreCase = NBoolean::get($ignoreCase);
+        $ignoreCase = NBool::get($ignoreCase);
 
         if ($startIndex->isLessThan(NInt::get(0))->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
@@ -444,12 +463,12 @@ final class NString
 
     public static function isNullOrEmpty(NString $value = null)
     {
-        return NBoolean::get($value === null)->orElse($value->isEmpty());
+        return NBool::get($value === null)->orElse($value->isEmpty());
     }
 
     public static function isNullOrWhiteSpace(NString $value = null)
     {
-        return NBoolean::get($value === null)->orElse($value->trim()->isEmpty());
+        return NBool::get($value === null)->orElse($value->trim()->isEmpty());
     }
 
     public static function join()
@@ -459,7 +478,7 @@ final class NString
 
     public function lastIndexOf(NString $value = null, 
             NInt $startIndex = null, NInt $count = null,
-            NBoolean $ignoreCase = null)
+            NBool $ignoreCase = null)
     {
         if ($value === null)
             throw new ArgumentNullException(null, '$value');       
@@ -475,7 +494,7 @@ final class NString
 
         if ($startIndex === null) $startIndex = $this->length;
         if ($count === null) $count = $startIndex;
-        if ($ignoreCase === null) $ignoreCase = NBoolean::get(false);
+        if ($ignoreCase === null) $ignoreCase = NBool::get(false);
         
         $str = $this->reverse();
         $val = $value->reverse();
@@ -571,7 +590,7 @@ final class NString
         throw new NotImplementedException();
     }
 
-    public function startsWith(NString $value = null, NBoolean $ignoreCase = null)
+    public function startsWith(NString $value = null, NBool $ignoreCase = null)
     {
         
     }
@@ -653,7 +672,7 @@ final class NString
 
     public function toBoolean()
     {
-        return NBoolean::parse($this);
+        return NBool::parse($this);
     }
 
     public function toInteger()
