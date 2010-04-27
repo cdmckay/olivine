@@ -28,7 +28,7 @@ final class NString
     private function __construct($value)
     {        
         $this->value = $value;
-        $this->length = NNumber::get(strlen($value));
+        $this->length = NInt::get(strlen($value));
     }
 
     /**
@@ -88,7 +88,7 @@ final class NString
      * @param string|NString $strA The first string to compare.
      * @param string|NString $strB The second string to compare.
      * @param bool|NBoolean $ignoreCase True to ignore case during comparision; false otherwise.
-     * @return NNumber An NNumber that indicates the lexical relationship
+     * @return NInt An NInt that indicates the lexical relationship
      * between the two comparands.
      */
     public static function compare($strA, $strB, $ignoreCase = false)
@@ -98,11 +98,11 @@ final class NString
         $a = $strA === null ? null : self::get($strA)->string();
         $b = $strB === null ? null : self::get($strB)->string();
 
-        if ($a === null && $b === null) return NNumber::get(0);
-        if ($a === null) return NNumber::get(-1);
-        if ($b === null) return NNumber::get(1);
+        if ($a === null && $b === null) return NInt::get(0);
+        if ($a === null) return NInt::get(-1);
+        if ($b === null) return NInt::get(1);
 
-        return NNumber::get($ignoreCase ? strcasecmp($a, $b) : strcmp($a, $b));
+        return NInt::get($ignoreCase ? strcasecmp($a, $b) : strcmp($a, $b));
     }
 
     /**
@@ -120,17 +120,17 @@ final class NString
      *
      * @param string|NString $str
      * @param bool|NBoolean $ignoreCase True to ignore case during comparision; false otherwise.
-     * @return NNumber An integer that indicates whether this instance precedes,
+     * @return NInt An integer that indicates whether this instance precedes,
      * follows, or appears in the same position in the sort order as the
      * value parameter.
      */
     public function compareTo($str, $ignoreCase = false)
     {
-        if ($str === null) return NNumber::get(1);
+        if ($str === null) return NInt::get(1);
         $a = $this->value;
         $b = self::primitive($str);
         $ignoreCase = NBoolean::get($ignoreCase)->bool();
-        return NNumber::get($ignoreCase ? strcasecmp($a, $b) : strcmp($a, $b));
+        return NInt::get($ignoreCase ? strcasecmp($a, $b) : strcmp($a, $b));
     }
 
     /**
@@ -328,7 +328,7 @@ final class NString
             {
                 $fixed_args[] = $arg->string();
             }
-            else if ($arg instanceof NNumber)
+            else if ($arg instanceof NInt)
             {
                 $fixed_args[] = $arg->float();
             }
@@ -347,7 +347,7 @@ final class NString
     /**
      * Gets the number of characters in this string object.
      *
-     * @return NNumber
+     * @return NInt
      */
     public function getLength()
     {
@@ -360,10 +360,10 @@ final class NString
      * examines a specified number of character positions.
      *
      * @param string|NString $value The string to seek.
-     * @param int|float|NNumber $startIndex The search starting position.
-     * @param int|float|NNumber $count The number of character positions to examine. 
+     * @param int|float|NInt $startIndex The search starting position.
+     * @param int|float|NInt $count The number of character positions to examine.
      * @param bool|NBoolean $ignoreCase
-     * @return NNumber The zero-based index position of $value if that string is
+     * @return NInt The zero-based index position of $value if that string is
      * found, or -1 if it is not. If $value is the empty string, the return
      * value is $startIndex.
      */
@@ -376,23 +376,23 @@ final class NString
         if ($count === null) $count = $this->length->minus($startIndex);
 
         $value = self::get($value);
-        $startIndex = NNumber::get($startIndex);
-        $count = NNumber::get($count);
+        $startIndex = NInt::get($startIndex);
+        $count = NInt::get($count);
         $ignoreCase = NBoolean::get($ignoreCase);
 
-        if ($startIndex->isLessThan(NNumber::get(0))->bool())
+        if ($startIndex->isLessThan(NInt::get(0))->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
 
         if ($startIndex->isGreaterThan($this->length)->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this instance', '$startIndex');
 
-        if ($count->isLessThan(NNumber::get(0))->bool())
+        if ($count->isLessThan(NInt::get(0))->bool())
             throw new ArgumentOutOfRangeException('$count must be nonnegative', '$count');
 
         if ($startIndex->plus($count)->isGreaterThan($this->length)->bool())
             throw new ArgumentOutOfRangeException('$count must refer to a location within this instance', '$count');
                        
-        if ($value->getLength()->equals(NNumber::get(0))->bool())
+        if ($value->getLength()->equals(NInt::get(0))->bool())
             return $startIndex;
         
         $str = $this->substring($startIndex, $count);
@@ -401,9 +401,9 @@ final class NString
                 ? stripos($str->string(), $value->string())
                 : strpos($str->string(), $value->string());
 
-        if ($position === false) return NNumber::get(-1);
+        if ($position === false) return NInt::get(-1);
 
-        return $startIndex->plus(NNumber::get($position));
+        return $startIndex->plus(NInt::get($position));
     }
 
 //    public function indexOfAny()
@@ -415,7 +415,7 @@ final class NString
      * Inserts a specified instance of a string at a specified index position
      * in this instance.
      *
-     * @param int|float|NNumber $startIndex The index position of the insertion.
+     * @param int|float|NInt $startIndex The index position of the insertion.
      * @param string|NString $value The string to insert.
      * @return NString A new string that is equivalent to this instance,
      * but with $value inserted at position $startIndex.
@@ -425,16 +425,16 @@ final class NString
         if ($value === null)
             throw new ArgumentNullException(null, '$value');
 
-        $startIndex = NNumber::get($startIndex);
+        $startIndex = NInt::get($startIndex);
         $value = self::get($value);
 
-        if ($startIndex->isLessThan(NNumber::get(0))->bool())
+        if ($startIndex->isLessThan(NInt::get(0))->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
 
         if ($startIndex->isGreaterThan($this->length)->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this string', '$startIndex');
 
-        return $this->substring(NNumber::get(0), $startIndex)->concat($value, $this->substring($startIndex));
+        return $this->substring(NInt::get(0), $startIndex)->concat($value, $this->substring($startIndex));
     }   
 
     public function isEmpty()
@@ -458,19 +458,19 @@ final class NString
     }
 
     public function lastIndexOf(NString $value = null, 
-            NNumber $startIndex = null, NNumber $count = null,
+            NInt $startIndex = null, NInt $count = null,
             NBoolean $ignoreCase = null)
     {
         if ($value === null)
             throw new ArgumentNullException(null, '$value');       
 
-        if ($startIndex !== null && $startIndex->isLessThan(NNumber::get(0))->bool())
+        if ($startIndex !== null && $startIndex->isLessThan(NInt::get(0))->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
 
         if ($startIndex !== null && $startIndex->isGreaterThan($this->length)->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this instance', '$startIndex');
 
-        if ($count !== null && $count->isLessThan(NNumber::get(0))->bool())
+        if ($count !== null && $count->isLessThan(NInt::get(0))->bool())
             throw new ArgumentOutOfRangeException('$count must be nonnegative', '$count');
 
         if ($startIndex === null) $startIndex = $this->length;
@@ -484,7 +484,7 @@ final class NString
         return $this->length->minus($index)->minus($val->getLength());
     }
 
-    public function padLeft(NNumber $totalWidth, NString $paddingChar = null)
+    public function padLeft(NInt $totalWidth, NString $paddingChar = null)
     {
         if ($paddingChar === null) $paddingChar = self::get(' ');
 
@@ -496,7 +496,7 @@ final class NString
         return self::get($padded);
     }
 
-    public function padRight(NNumber $totalWidth, NString $paddingChar = null)
+    public function padRight(NInt $totalWidth, NString $paddingChar = null)
     {
         if ($paddingChar === null) $paddingChar = self::get(' ');
 
@@ -508,15 +508,15 @@ final class NString
         return self::get($padded);
     }
 
-    public function remove(NNumber $startIndex, NNumber $count = null)
+    public function remove(NInt $startIndex, NInt $count = null)
     {
-        if ($startIndex->isLessThan(NNumber::get(0))->bool())
+        if ($startIndex->isLessThan(NInt::get(0))->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be nonnegative', '$startIndex');
 
         if ($startIndex->isGreaterThan($this->length)->bool())
             throw new ArgumentOutOfRangeException('$startIndex must be less than the length of this string', '$startIndex');
 
-        if ($count !== null && $count->isLessThan(NNumber::get(0))->bool())
+        if ($count !== null && $count->isLessThan(NInt::get(0))->bool())
             throw new ArgumentOutOfRangeException('$count must be nonnegative', '$count');
 
         
@@ -584,15 +584,15 @@ final class NString
      * throw an exception if the $startIndex + $length position is not within
      * this instance.
      *
-     * @param NNumber $startIndex The zero-based starting character position
+     * @param NInt $startIndex The zero-based starting character position
      * of a substring in this instance.
-     * @param NNumber $length The number of characters in the substring.
+     * @param NInt $length The number of characters in the substring.
      * @return NString A string that is equivalent to the substring of
      * length $length that begins at $startIndex in this instance, or the empty
      * string if $startIndex is equal to the length of this instance and length
      * is zero.
      */
-    public function substring(NNumber $startIndex, NNumber $length = null)
+    public function substring(NInt $startIndex, NInt $length = null)
     {
         if ($length !== null && $startIndex->plus($length)->isGreaterThan($this->length)->bool())
                 throw new ArgumentOutOfRangeException('$length must refer to a location within this instance', '$length');
@@ -656,9 +656,14 @@ final class NString
         return NBoolean::parse($this);
     }
 
-    public function toNumber()
+    public function toInteger()
     {
-        return NNumber::parse($this);
+        return NInt::parse($this);
+    }
+
+    public function toFloat()
+    {
+        //return NFloat::parse($this);
     }
 
     public function toString()

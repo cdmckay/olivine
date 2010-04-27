@@ -445,6 +445,6 @@ class NStringTest extends PHPUnit_Framework_TestCase
     public function testSubstringWithStartIndexPlusLengthGreaterThanLength()
     {
         $this->setExpectedException('System\ArgumentOutOfRangeException');
-        $this->assertEquals(is("superman"), is("superman")->substring(is(0), _number("10e10")));
+        $this->assertEquals(is("superman"), is("superman")->substring(is(0), is(1000000)));
     }
 }

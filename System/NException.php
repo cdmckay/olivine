@@ -12,7 +12,7 @@ class NException extends \Exception implements IObject
         if ($message !== null)
             $this->message = NString::get($message);
 
-        $this->code = NNumber::get($errorCode);
+        $this->code = NInt::get($errorCode);
     }
 
     public static function referenceEquals($object1, $object2)

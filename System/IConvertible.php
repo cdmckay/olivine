@@ -13,6 +13,7 @@ interface IConvertible
 
     // To Olivine types.
     public function toBoolean();
-    public function toNumber();
+    public function toInteger();
+    public function toFloat();
 
 }

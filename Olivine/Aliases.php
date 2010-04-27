@@ -2,7 +2,8 @@
 
 use \System\NObject;
 use \System\NBoolean;
-use \System\NNumber;
+use \System\NInt;
+use \System\NFloat;
 use \System\NString;
 
 /**
@@ -17,14 +18,25 @@ function _bool($var)
 }
 
 /**
- * Returns an NNumber instance.
+ * Returns an NInt instance.
  *
- * @param int|float|string $var
- * @return NNumber
+ * @param int $var
+ * @return NInt
  */
-function _number($var)
+function _int($var)
 {
-    return NNumber::get($var);
+    return NInt::get($var);
+}
+
+/**
+ * Returns an NFloat instance.
+ *
+ * @param float $var
+ * @return NFloat
+ */
+function _float($var)
+{    
+    return NFloat::get($var);
 }
 
 /**
@@ -58,8 +70,10 @@ function is($var = null)
 {
     if (is_bool($var))
         return _bool($var);
-    if (is_int($var) || is_float($var))
-        return _number($var);
+    if (is_int($var))
+        return _int($var);
+    if (is_float($var))
+        return _float($var);
     if (is_string($var))
         return _string($var);    
 

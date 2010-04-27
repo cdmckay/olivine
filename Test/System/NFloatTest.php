@@ -3,81 +3,71 @@
 require_once 'PHPUnit/Framework.php';
 require_once dirname(__FILE__) . '/../../Olivine/Framework.php';
 
-use \System\NNumber;
+use \System\NFloat;
 
 Olivine::import("System");
 Olivine::useAliases();
 
-class NNumberTest extends PHPUnit_Framework_TestCase
+class NFloatTest extends PHPUnit_Framework_TestCase
 {
-    const DELTA = 0.05;
+    const DELTA = 0.5;
 
     public function testConstructorUsingInt()
     {
-        $val1 = NNumber::get(0);
-        $val2 = NNumber::get(12);
-        $val3 = NNumber::get(-12);
+        $val1 = NFloat::get(0);
+        $val2 = NFloat::get(12);
+        $val3 = NFloat::get(-12);
 
-        $this->assertEquals(0, $val1->int());
-        $this->assertEquals(12, $val2->int());
-        $this->assertEquals(-12, $val3->int());
+        $this->assertEquals(0, $val1->float());
+        $this->assertEquals(12, $val2->float());
+        $this->assertEquals(-12, $val3->float());
     }
 
     public function testConstructorUsingFloat()
     {
-        $val1 = NNumber::get(0.0);
-        $val2 = NNumber::get(12.12);
-        $val3 = NNumber::get(-12.12);
+        $val1 = NFloat::get(0.0);
+        $val2 = NFloat::get(12.12);
+        $val3 = NFloat::get(-12.12);
 
-        $this->assertEquals(0.0, $val1->float(), '', self::DELTA);
-        $this->assertEquals(12.12, $val2->float(), '', self::DELTA);
-        $this->assertEquals(-12.12, $val3->float(), '', self::DELTA);
+        $this->assertEquals(0.0, $val1->float());
+        $this->assertEquals(12.12, $val2->float());
+        $this->assertEquals(-12.12, $val3->float());
     }
 
-    public function testConstructorUsingString()
+    public function testConstructorUsingNFloat()
     {
-        $val1 = NNumber::get("0");
-        $val2 = NNumber::get("0.0");
-        $val3 = NNumber::get("-12.12");
-        $val4 = NNumber::get("12e12");
-
-        $this->assertEquals(0, $val1->int());
-        $this->assertEquals(0.0, $val2->float(), '', self::DELTA);
-        $this->assertEquals(-12.12, $val3->float(), '', self::DELTA);       
-        $this->assertEquals(12e12, $val4->float(), '', self::DELTA);
-    }
-
-    public function testConstructorUsingNNumber()
-    {
-        $val1 = NNumber::get(0);
-        $val2 = NNumber::get($val1);
+        $val1 = NFloat::get(0);
+        $val2 = NFloat::get($val1);
 
         $this->assertEquals($val1, $val2);
     }
 
+    public function testConstructorUsingNonNumeric()
+    {
+        $this->setExpectedException('System\ArgumentException');
+        $val1 = NFloat::get("0");
+    }  
+
     public function testAlias()
     {
-        $val1 = NNumber::get(0);
-        $val2 = NNumber::get(12);
-        $val3 = NNumber::get(-12);
-        $val4 = NNUmber::get("12e12");
+        $val1 = NFloat::get(0.0);
+        $val2 = NFloat::get(12.0);
+        $val3 = NFloat::get(-12.0);
 
-        $alias1 = is(0);
-        $alias2 = is(12);
-        $alias3 = is(-12);
-        $alias4 = _number("12e12");
+        $alias1 = is(0.0);
+        $alias2 = is(12.0);
+        $alias3 = is(-12.0);
 
-        $this->assertEquals($val1->int(), $alias1->int());
-        $this->assertEquals($val2->int(), $alias2->int());
-        $this->assertEquals($val3->int(), $alias3->int());
-        $this->assertEquals($val4->float(), $alias4->float());
+        $this->assertEquals($val1->float(), $alias1->float());
+        $this->assertEquals($val2->float(), $alias2->float());
+        $this->assertEquals($val3->float(), $alias3->float());
     }
 
     public function testCompareTo()
     {
-        $neg  = is(-12);
-        $zero = is(0);
-        $pos  = is(553);
+        $neg  = is(-12.0);
+        $zero = is(0.0);
+        $pos  = is(553.0);
 
         $this->assertLessThan(0, $neg->compareTo($zero)->int());
         $this->assertEquals(0, $zero->compareTo($zero)->int());
@@ -86,26 +76,26 @@ class NNumberTest extends PHPUnit_Framework_TestCase
 
     public function testCompareToWithNull()
     {
-        $num = is(42);
+        $num = is(42.0);
         $this->assertGreaterThan(0, $num->compareTo(null)->int());
     }
 
     public function testCompareToWithAutoBoxing()
     {
-        $neg  = is(-12);
-        $zero = is(0);
-        $pos  = is(553);
+        $neg  = is(-12.0);
+        $zero = is(0.0);
+        $pos  = is(553.0);
 
-        $this->assertLessThan(0, $neg->compareTo(0)->int());
-        $this->assertEquals(0, $zero->compareTo(0)->int());
-        $this->assertGreaterThan(0, $pos->compareTo(0)->int());
+        $this->assertLessThan(0, $neg->compareTo(0.0)->int());
+        $this->assertEquals(0, $zero->compareTo(0.0)->int());
+        $this->assertGreaterThan(0, $pos->compareTo(0.0)->int());
     }
 
     public function testEquals()
     {
-        $int1 = is(10);
-        $int2 = is(10);
-        $int3 = is(11);
+        $int1 = is(10.5);
+        $int2 = is(10.5);
+        $int3 = is(11.0);
 
         $this->assertTrue( $int1->equals($int2)->bool() );
         $this->assertFalse( $int1->equals($int3)->bool() );
@@ -125,72 +115,77 @@ class NNumberTest extends PHPUnit_Framework_TestCase
     }
 
     public function testParse()
-    {        
-        $this->assertTrue( is(0)->equals(NNumber::parse(is("0")))->bool() ) ;
-        $this->assertTrue( is(-100)->equals(NNumber::parse(is("-100")))->bool() );
-        $this->assertTrue( is(42e4)->equals(NNumber::parse(is("42e4")))->bool() );
+    {
+        $this->assertTrue( is(0.0)->equals(NFloat::parse(is("0.0")))->bool() ) ;
+        $this->assertTrue( is(-100.0)->equals(NFloat::parse(is("-100.0")))->bool() );
     }
 
     public function testParseWithAutoBoxing()
     {
-        $this->assertTrue( is(0)->equals(NNumber::parse("0"))->bool() ) ;
-        $this->assertTrue( is(-100)->equals(NNumber::parse("-100"))->bool() );
-        $this->assertTrue( is(42e4)->equals(NNumber::parse("42e4"))->bool() );
+        $this->assertTrue( is(0.0)->equals(NFloat::parse("0.0"))->bool() ) ;
+        $this->assertTrue( is(-100.0)->equals(NFloat::parse("-100.0"))->bool() );
+        $this->assertTrue( is(10.0)->equals(NFloat::parse("1e1"))->bool() );
     }
 
     public function testParseNull()
     {
         $this->setExpectedException('System\ArgumentNullException');
-        NNumber::parse(null);
+        NFloat::parse(null);
     }
 
     public function testParseWithInvalidFormat()
     {
         $this->setExpectedException('System\FormatException');
-        NNumber::parse(is("I love lamp"));
+        NFloat::parse(is("I love lamp"));
+    }
+
+    public function testParseWithTooLargeFloat()
+    {
+        $this->setExpectedException('System\OverflowException');
+        NFloat::parse("10e1000");
     }
 
     public function testTryParse()
     {
-        $successful = NNumber::tryParse(is("10"), $result);
+        $successful = NFloat::tryParse(is("10.0"), $result);
         $this->assertTrue(is(true)->equals($successful)->bool());
-        $this->assertTrue(is(10)->equals($result)->bool());
+        $this->assertTrue(is(10.0)->equals($result)->bool());
     }
 
     public function testTryParseWithAutoBoxing()
     {
-        $successful = NNumber::tryParse("10", $result);
+        $successful = NFloat::tryParse("10.0", $result);
         $this->assertTrue(is(true)->equals($successful)->bool());
-        $this->assertTrue(is(10)->equals($result)->bool());
+        $this->assertTrue(is(10.0)->equals($result)->bool());
     }
 
     public function testTryParseWithInvalidFormat()
     {
-        $successful = NNumber::tryParse(is("I hate lamp"), $result);
+        $successful = NFloat::tryParse(is("I hate lamp"), $result);
         $this->assertTrue(is(false)->equals($successful)->bool());
-        $this->assertTrue(is(0)->equals($result)->bool());
-    }
+        $this->assertTrue(is(0.0)->equals($result)->bool());
+    }    
 
     public function testNegate()
     {
-        $val = is(1);
+        $val = is(1.0);
         $this->assertEquals(-1, $val->negate()->int());
     }
 
     public function testPlus()
     {
-        $val1 = is(1);
-        $val2 = is(2);
-        $this->assertEquals(3, $val1->plus($val2)->int());
-        $this->assertEquals(3, $val1->plus(2)->int());
-    }   
+        $val1 = is(1.0);
+        $val2 = is(2.0);
+        $this->assertEquals(3.0, $val1->plus($val2)->int());
+        $this->assertEquals(3.0, $val1->plus(2.0)->int());
+    }
 
     public function testMinus()
     {
-        $val1 = is(1);
-        $val2 = is(2);
-        $this->assertEquals(-1, $val1->minus($val2)->int());
-        $this->assertEquals(-1, $val1->minus(2)->int());
+        $val1 = is(1.9);
+        $val2 = is(2.9);
+        $this->assertEquals(-1.0, $val1->minus($val2)->int());
+        $this->assertEquals(-1.0, $val1->minus(2.9)->int());
     }
 
     public function testTimes()
@@ -221,14 +216,14 @@ class NNumberTest extends PHPUnit_Framework_TestCase
     {
         $val1 = is(5);
         $val2 = is(10);
-        
+
         $this->assertFalse( $val1->isLessThan($val1)->bool() );
         $this->assertFalse( $val1->isLessThan(5)->bool() );
 
         $this->assertTrue(  $val1->isLessThan($val2)->bool() );
         $this->assertTrue(  $val1->isLessThan(10)->bool() );
 
-        $this->assertFalse( $val2->isLessThan($val1)->bool() );                
+        $this->assertFalse( $val2->isLessThan($val1)->bool() );
         $this->assertFalse( $val2->isLessThan(5)->bool() );
     }
 
@@ -286,12 +281,6 @@ class NNumberTest extends PHPUnit_Framework_TestCase
     public function testIntOverflow()
     {
         $this->setExpectedException('System\OverflowException');
-        is(1e20)->int();
-    }
-
-    public function testFloatOverflow()
-    {
-        $this->setExpectedException('System\OverflowException');
-        _number("1e1000")->float();
-    }
+        is(PHP_INT_MAX)->plus(1);
+    }    
 }

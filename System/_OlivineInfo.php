@@ -7,11 +7,13 @@ final class OlivineInfo
     private static $tree = array(        
         "IObject" => array(
             "NObject" => array(                
-                "NBoolean" => array(),                
-                "NNumber" => array(),
+                "NBoolean" => array(),                                
+                "NInt" => array(),
+                "NFloat" => array(),
                 "NString" => array(),
                 "Console" => array(),
                 "Environment" => array(),
+                "Math" => array()
             ),
             "NException" => array(
                 "SystemException" => array(
@@ -33,12 +35,12 @@ final class OlivineInfo
                 )
             )
         ),
+        "INumber" => array(),
         "ICloneable" => array(),
         "IComparable" => array(),
         "IConvertible" => array(),
         "IEnumerable" => array(),        
-        "IFormattable" => array(),        
-        "Math" => array()        
+        "IFormattable" => array()                
     );
 
     public static function import()

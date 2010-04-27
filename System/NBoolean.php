@@ -101,23 +101,23 @@ final class NBoolean
      * $object is false, or if $object is null.
      *
      * @param bool|NBoolean $value
-     * @return NNumber
+     * @return NInt
      */
     public function compareTo($value)
     {                
         if ($value === null)
-            return NNumber::get(1);                
+            return NInt::get(1);
 
         $o1 = $this->value;
         $o2 = self::primitive($value);
             
         if ($o1 === false && $o2 === true)
-            return NNumber::get(-1);
+            return NInt::get(-1);
 
         if ($o1 === true && $o2 === false)
-            return NNumber::get(1);
+            return NInt::get(1);
 
-        return NNumber::get(0);
+        return NInt::get(0);
     }
 
     /**
@@ -142,11 +142,11 @@ final class NBoolean
      * the integer, 0. However, a particular programming language might
      * represent true and false with other values.
      *
-     * @return NNumber
+     * @return NInt
      */
     public function getHashCode()
     {
-        return $this->value ? NNumber::get(1) : NNumber::get(0);
+        return $this->value ? NInt::get(1) : NInt::get(0);
     }    
 
     /**
@@ -295,11 +295,16 @@ final class NBoolean
      * Converts the value of this instance to its equivalent number
      * representation (either 1 for true or 0 for false).
      *
-     * @return NNumber
+     * @return NInt
      */
-    public function toNumber()
+    public function toInteger()
     {
-        return NNumber::get($this->int());
+        return NInt::get($this->int());
+    }
+
+    public function toFloat()
+    {
+        return NFloat::get($this->float());
     }
 
     /**

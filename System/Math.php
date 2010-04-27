@@ -2,55 +2,36 @@
 
 namespace System;
 
-final class Math
+final class Math extends NObject
 {
-    public static function ceiling(NNumber $value)
+    public static function ceiling($value)
     {
-        $val = $value->string();
-        $ret = $val;
-
-        if (($pos = strpos($val, '.')) !== false)
-        {
-            if ($val[$pos + 1] != 0 && $val[0] != '-')
-                $ret = bcadd(substr($val, 0, $pos), 1, 0);
-            else
-                $ret = substr($val, 0, $pos);
-        }
-
-        return NNumber::get($ret);
+        
     }
 
-    public static function floor(NNumber $value)
+    public static function floor($value)
     {
-        $val = $value->string();
-        $ret = $val;
-
-        if (($pos = strpos($val, '.')) !== false)
-        {
-            if ($val[$pos + 1] != 0 && $val[0] == '-')
-                $ret = bcsub(substr($val, 0, $pos), 1, 0);
-            else
-                $ret = substr($val, 0, $pos);
-        }
-
-        return NNumber::get($ret);
+        
     }
 
-    public static function round(NNumber $value, NNumber $decimals)
+    public static function round($value, $decimals)
     {
 
     }
 
-    public static function min(NNumber $val1, NNumber $val2)
+    public static function min($val1, $val2)
     {
-        if ($val1->isLessThan($val2)->bool()) return $val1;
-        return $val2;
+        $a = NInt::get($val1);
+        $b = NInt::get($val2);
+
+        return NInt::get(min($a, $b));
     }
 
-    public static function max(NNumber $val1, NNumber $val2)
+    public static function max($val1, $val2)
     {
-        if ($val1->isGreaterThan($val2)->bool()) return $val1;
-        return $val2;
-    }
+        $a = NInt::get($val1);
+        $b = NInt::get($val2);
 
+        return NInt::get(max($a, $b));
+    }    
 }
