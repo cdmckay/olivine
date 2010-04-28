@@ -42,7 +42,7 @@ final class NFloat
     {
         if ($value instanceof self)
             return $value;
-
+        
         if (!is_int($value) && !is_float($value))
             throw new ArgumentException('$value must be an int, a float or an NFloat', '$value');
 

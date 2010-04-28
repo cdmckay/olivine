@@ -426,9 +426,14 @@ final class NInt
         return $this;
     }
 
+    /**
+     * Returns an NFloat version of this instance.
+     *
+     * @return NFloat
+     */
     public function toFloat()
     {
-        //return NFloat::get($this);
+        return NFloat::get($this->value);
     }
 
     /**

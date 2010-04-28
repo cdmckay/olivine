@@ -297,7 +297,7 @@ class NIntTest extends PHPUnit_Framework_TestCase
         is(PHP_INT_MAX)->plus(1);
     }
 
-    public function testIntUnderflow()
+    public function testNegativeIntOverflow()
     {
         $this->setExpectedException('System\OverflowException');
         is(-PHP_INT_MAX)->minus(2);

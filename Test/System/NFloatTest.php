@@ -209,97 +209,103 @@ class NFloatTest extends PHPUnit_Framework_TestCase
 
     public function testTimes()
     {
-        $val1 = is(10);
-        $val2 = is(2);
-        $this->assertEquals(20, $val1->times($val2)->int());
-        $this->assertEquals(20, $val1->times(2)->int());
+        $val1 = is(10.0);
+        $val2 = is(2.0);
+        $this->assertEquals(20.0, $val1->times($val2)->int());
+        $this->assertEquals(20.0, $val1->times(2.0)->int());
     }
 
     public function testDivide()
     {
-        $val1 = is(10);
-        $val2 = is(2);
-        $this->assertEquals(5, $val1->divide($val2)->int());
-        $this->assertEquals(5, $val1->divide(2)->int());
+        $val1 = is(10.0);
+        $val2 = is(2.0);
+        $this->assertEquals(5.0, $val1->divide($val2)->int());
+        $this->assertEquals(5.0, $val1->divide(2.0)->int());
     }
 
     public function testModulus()
     {
-        $val1 = is(10);
-        $val2 = is(3);
-        $this->assertEquals(1, $val1->modulus($val2)->int());
-        $this->assertEquals(1, $val1->modulus(3)->int());
+        $val1 = is(10.0);
+        $val2 = is(3.0);
+        $this->assertEquals(1.0, $val1->modulus($val2)->int());
+        $this->assertEquals(1.0, $val1->modulus(3.0)->int());
     }
 
     public function testIsLessThan()
     {
-        $val1 = is(5);
-        $val2 = is(10);
+        $val1 = is(5.4);
+        $val2 = is(10.0);
 
         $this->assertFalse( $val1->isLessThan($val1)->bool() );
-        $this->assertFalse( $val1->isLessThan(5)->bool() );
+        $this->assertFalse( $val1->isLessThan(5.4)->bool() );
 
         $this->assertTrue(  $val1->isLessThan($val2)->bool() );
-        $this->assertTrue(  $val1->isLessThan(10)->bool() );
+        $this->assertTrue(  $val1->isLessThan(10.0)->bool() );
 
         $this->assertFalse( $val2->isLessThan($val1)->bool() );
-        $this->assertFalse( $val2->isLessThan(5)->bool() );
+        $this->assertFalse( $val2->isLessThan(5.4)->bool() );
     }
 
     public function testIsLessThanOrEqualTo()
     {
-        $val1 = is(5);
-        $val2 = is(10);
+        $val1 = is(5.0);
+        $val2 = is(10.0);
 
         $this->assertTrue(  $val1->isLessThanOrEqualTo($val1)->bool() );
-        $this->assertTrue(  $val1->isLessThanOrEqualTo(5)->bool() );
+        $this->assertTrue(  $val1->isLessThanOrEqualTo(5.0)->bool() );
 
         $this->assertTrue(  $val1->isLessThanOrEqualTo($val2)->bool() );
-        $this->assertTrue(  $val1->isLessThanOrEqualTo(10)->bool() );
+        $this->assertTrue(  $val1->isLessThanOrEqualTo(10.0)->bool() );
 
         $this->assertFalse( $val2->isLessThanOrEqualTo($val1)->bool() );
-        $this->assertFalse( $val2->isLessThanOrEqualTo(5)->bool() );
+        $this->assertFalse( $val2->isLessThanOrEqualTo(5.0)->bool() );
     }
 
     public function testIsGreaterThan()
     {
-        $val1 = is(15);
-        $val2 = is(5);
+        $val1 = is(15.0);
+        $val2 = is(5.0);
 
         $this->assertFalse( $val1->isGreaterThan($val1)->bool() );
-        $this->assertFalse( $val1->isGreaterThan(15)->bool() );
+        $this->assertFalse( $val1->isGreaterThan(15.0)->bool() );
 
         $this->assertTrue(  $val1->isGreaterThan($val2)->bool() );
-        $this->assertTrue(  $val1->isGreaterThan(5)->bool() );
+        $this->assertTrue(  $val1->isGreaterThan(5.0)->bool() );
 
         $this->assertFalse( $val2->isGreaterThan($val1)->bool() );
-        $this->assertFalse( $val2->isGreaterThan(15)->bool() );
+        $this->assertFalse( $val2->isGreaterThan(15.0)->bool() );
 
-        $this->assertTrue(  is(0)->isGreaterThan(is(-10))->bool() );
-        $this->assertTrue(  is(0)->isGreaterThan(-10)->bool() );
+        $this->assertTrue(  is(0.0)->isGreaterThan(is(-10.0))->bool() );
+        $this->assertTrue(  is(0.0)->isGreaterThan(-10.0)->bool() );
 
-        $this->assertFalse( is(-10)->isGreaterThan(is(0))->bool() );
-        $this->assertFalse( is(-10)->isGreaterThan(0)->bool() );
+        $this->assertFalse( is(-10.0)->isGreaterThan(is(0.0))->bool() );
+        $this->assertFalse( is(-10.0)->isGreaterThan(0.0)->bool() );
     }
 
     public function testIsGreaterThanOrEqualTo()
     {
-        $val1 = is(15);
-        $val2 = is(5);
+        $val1 = is(15.0);
+        $val2 = is(5.0);
 
         $this->assertTrue(  $val1->isGreaterThanOrEqualTo($val1)->bool() );
-        $this->assertTrue(  $val1->isGreaterThanOrEqualTo(15)->bool() );
+        $this->assertTrue(  $val1->isGreaterThanOrEqualTo(15.0)->bool() );
 
         $this->assertTrue(  $val1->isGreaterThanOrEqualTo($val2)->bool() );
-        $this->assertTrue(  $val1->isGreaterThanOrEqualTo(5)->bool() );
+        $this->assertTrue(  $val1->isGreaterThanOrEqualTo(5.0)->bool() );
 
         $this->assertFalse( $val2->isGreaterThanOrEqualTo($val1)->bool() );
-        $this->assertFalse( $val2->isGreaterThanOrEqualTo(15)->bool() );
+        $this->assertFalse( $val2->isGreaterThanOrEqualTo(15.0)->bool() );
     }
 
-    public function testIntOverflow()
+    public function testFloatOverflow()
     {
         $this->setExpectedException('System\OverflowException');
-        is(PHP_INT_MAX)->plus(1);
-    }    
+        is(1e308)->plus(1e308);
+    }
+
+    public function testNegativeFloatOverflow()
+    {
+        $this->setExpectedException('System\OverflowException');
+        is(-1e308)->minus(1e308);
+    }
 }
