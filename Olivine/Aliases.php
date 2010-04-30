@@ -83,7 +83,7 @@ function _object()
  * Returns an appropriate Olivine type depending on the argument.
  *
  * @param bool|int|float|string $var
- * @return <type>
+ * @return mixed
  */
 function is($var = null)
 {

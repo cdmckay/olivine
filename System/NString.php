@@ -24,8 +24,7 @@ namespace System;
 final class NString
     extends NObject
     implements IComparable, ICloneable, IConvertible, IEnumerable
-{
-    private static $internPool = array();
+{    
     private static $emptyString;
 
     /**
@@ -471,10 +470,10 @@ final class NString
         return NBool::get($value === null)->orElse($value->trim()->isEmpty());
     }
 
-    public static function join()
-    {        
-        throw new NotImplementedException();
-    }
+//    public static function join()
+//    {
+//        throw new NotImplementedException();
+//    }
 
     public function lastIndexOf(NString $value = null, 
             NInt $startIndex = null, NInt $count = null,
