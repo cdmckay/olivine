@@ -3,7 +3,8 @@ Olivine
 
 Olivine is a .NET (and Java and Objective C to a lesser extent) inspired PHP class library that attempts to provide useful types for PHP.
 
-== Motivation ==
+Motivation
+----------
 
 PHP is an unplanned language that was developed in a more-or-less ad-hoc fashion. As a result, PHP did not gain a useful object system until PHP 5. So, even though PHP has things like classes, inheritance, data-hiding, namespaces and other goodies that you’d find in languages like C# and Java, it doesn’t really make use of them in the standard API.
 
